@@ -81,3 +81,4 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=YOUR_SUPABASE_ANON_KEY
 EmailとPasswordを入力しSIGN UPボタンをクリックすると入力したメールアドレスに登録用のメールが届く
 Confirm your mailをクリックすると登録が完了し
 [localhost:3000/account](http://localhost:3000/account)へ移動し各種プロフィールの設定が可能に。
+# supabase-groupchat1
