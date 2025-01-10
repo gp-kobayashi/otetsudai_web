@@ -82,3 +82,4 @@ EmailとPasswordを入力しSIGN UPボタンをクリックすると入力した
 Confirm your mailをクリックすると登録が完了し
 [localhost:3000/account](http://localhost:3000/account)へ移動し各種プロフィールの設定が可能に。
 # supabase-groupchat1
+# supabase-groupchat1
