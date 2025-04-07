@@ -3,7 +3,7 @@ import type { Recruitment, SupabaseResponse } from "../type/types";
 
 const supabase = createClient();
 
-export const getRecruitment = async (): Promise<
+export const getRecruitmentList = async (): Promise<
   SupabaseResponse<Recruitment[]>
 > => {
   const { data, error } = await supabase.from("recruitments").select("*");
@@ -15,7 +15,7 @@ export const getRecruitment = async (): Promise<
   return { data, error: null };
 };
 
-export const getRecruitmentBytag = async (
+export const getRecruitmentBytagList = async (
   tag: string,
 ): Promise<SupabaseResponse<Recruitment[]>> => {
   const { data, error } = await supabase
@@ -30,7 +30,7 @@ export const getRecruitmentBytag = async (
   return { data, error: null };
 };
 
-export const getRecruitmentByUser = async (
+export const getRecruitmentByUserList = async (
   user_id: string,
 ): Promise<SupabaseResponse<Recruitment[]>> => {
   const { data, error } = await supabase
