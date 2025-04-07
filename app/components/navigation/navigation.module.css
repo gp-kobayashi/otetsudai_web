@@ -23,3 +23,9 @@
   font-weight: bold;
   margin: 15px 30px;
 }
+.login_link {
+  text-decoration: none;
+  color: #007bff;
+  font-weight: bold;
+  margin: 15px 15px;
+}
