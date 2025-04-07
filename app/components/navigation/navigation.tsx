@@ -9,6 +9,9 @@ const Navigation = () => {
         <Link href="/createRecruitment" className={styles.recruitment_link}>
           募集する
         </Link>
+        <Link href="/help " className={styles.help_link}>
+          help
+        </Link>
         <p>plofile</p>
       </div>
     </div>
