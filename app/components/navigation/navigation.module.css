@@ -1,0 +1,31 @@
+.navigation_container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  hight: 50px;
+  background-color: #f8f9fa;
+}
+.navigation_link {
+  display: flex;
+  text-decoration: none;
+  margin: 0 30px;
+}
+
+.recruitment_link {
+  text-decoration: none;
+  color: #007bff;
+  font-weight: bold;
+  margin: 15px 15px;
+}
+.help_link {
+  text-decoration: none;
+  color: coral;
+  font-weight: bold;
+  margin: 15px 30px;
+}
+.login_link {
+  text-decoration: none;
+  color: #007bff;
+  font-weight: bold;
+  margin: 15px 15px;
+}
