@@ -1,7 +1,14 @@
+import { createClient } from "@/utils/supabase/server";
 import styles from "./navigation.module.css";
 import Link from "next/link";
 
-const Navigation = () => {
+const Navigation = async () => {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   return (
     <div className={styles.navigation_container}>
       <h1>otetsudai</h1>
@@ -12,7 +19,13 @@ const Navigation = () => {
         <Link href="/help " className={styles.help_link}>
           help
         </Link>
-        <p>plofile</p>
+        {user ? (
+          <p>plofile</p>
+        ) : (
+          <Link href="/login" className={styles.login_link}>
+            ログイン
+          </Link>
+        )}
       </div>
     </div>
   );
