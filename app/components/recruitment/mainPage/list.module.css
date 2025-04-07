@@ -1,0 +1,7 @@
+.recruitment_info {
+  display: flex;
+}
+
+.info_item {
+  margin: 0 10px;
+}
