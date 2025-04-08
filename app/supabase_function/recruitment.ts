@@ -1,18 +1,30 @@
 import { createClient } from "@/utils/supabase/client";
-import type { Recruitment, SupabaseResponse } from "../type/types";
+import type { Recruitment,RecruitmentWithProfile ,SupabaseResponse } from "../type/types";
+import { formatAvatarUrl } from "./profile";
 
 const supabase = createClient();
 
-export const getRecruitmentList = async (): Promise<
-  SupabaseResponse<Recruitment[]>
+
+export const getRecruitmentListWithProfile = async (): Promise<
+  SupabaseResponse<RecruitmentWithProfile[]>
 > => {
-  const { data, error } = await supabase.from("recruitments").select("*");
+  const { data, error } = await supabase.from("recruitments").select("*,profiles(avatar_url,username)",
+
+  ).order("created_at", { ascending: false });
 
   if (error) {
     return { data: null, error };
   }
-
-  return { data, error: null };
+  const RecruitmentData = data.map((recruitmen) => {
+    const avatarUrl = formatAvatarUrl(recruitmen.profiles.avatar_url);
+    const userName = recruitmen.profiles.username? recruitmen.profiles.username : "名無し";
+    return {
+      ...recruitmen,
+      avatar_url: avatarUrl,
+      username: userName,
+    };
+  });
+  return { data: RecruitmentData, error: null };
 };
 
 export const getRecruitmentBytagList = async (
