@@ -11,7 +11,9 @@ const Navigation = async () => {
 
   return (
     <div className={styles.navigation_container}>
-      <h1>otetsudai</h1>
+      <Link href="/" className={styles.logo}>
+        <h1>otetsudai</h1>
+      </Link>
       <div className={styles.navigation_link}>
         <Link href="/createRecruitment" className={styles.recruitment_link}>
           募集する
@@ -20,7 +22,9 @@ const Navigation = async () => {
           help
         </Link>
         {user ? (
-          <p>plofile</p>
+          <Link href="/account" className={styles.account_link}>
+            plofile
+          </Link>
         ) : (
           <Link href="/login" className={styles.login_link}>
             ログイン
