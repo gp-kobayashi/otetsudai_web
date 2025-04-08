@@ -5,6 +5,11 @@
   hight: 50px;
   background-color: #f8f9fa;
 }
+.logo {
+  text-decoration: none;
+  color: gray;
+}
+
 .navigation_link {
   display: flex;
   text-decoration: none;
@@ -23,6 +28,14 @@
   font-weight: bold;
   margin: 15px 30px;
 }
+
+.account_link {
+  text-decoration: none;
+  color: gray;
+  font-weight: bold;
+  margin: 15px 30px;
+}
+
 .login_link {
   text-decoration: none;
   color: #007bff;
