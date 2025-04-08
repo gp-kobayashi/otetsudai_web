@@ -28,6 +28,7 @@ const MainPageList = () => {
     <div>
       <h1 className={styles.title}>募集一覧</h1>
       <ul className={styles.recruitment_list_container}>
+        {message && <p className={styles.error_message}>{message}</p>}
         {recruitmentList?.map((recruitment) => (
           <li key={recruitment.id} className={styles.recruitment_list}>
             <h3 className={styles.list_title}>{recruitment.title}</h3>
