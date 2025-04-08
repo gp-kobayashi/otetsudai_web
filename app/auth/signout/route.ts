@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
 
   if (user) {
     await supabase.auth.signOut();
-  }
+  };
 
   revalidatePath("/", "layout");
   return NextResponse.redirect(new URL("/login", req.url), {
