@@ -1,18 +1,20 @@
 "use client";
-import { getRecruitmentList } from "@/app/supabase_function/recruitment";
+import { getRecruitmentListWithProfile } from "@/app/supabase_function/recruitment";
 import { useEffect, useState } from "react";
-import type { Recruitment } from "@/app/type/types";
-import styles from "./List.module.css";
+import type { RecruitmentWithProfile } from "@/app/type/types";
+import styles from "./list.module.css";
+import Image from "next/image";
+import { CiClock2 } from "react-icons/ci";
 
 const MainPageList = () => {
-  const [recruitmentList, setRecruitmentList] = useState<Recruitment[] | null>(
-    [],
-  );
+  const [recruitmentList, setRecruitmentList] = useState<
+    RecruitmentWithProfile[] | null
+  >([]);
   const [message, setMessages] = useState("");
 
   useEffect(() => {
     const recruitmentList = async () => {
-      const { data, error } = await getRecruitmentList();
+      const { data, error } = await getRecruitmentListWithProfile();
       if (error) {
         setMessages("エラーが発生しました" + error.message);
         return;
@@ -24,15 +26,23 @@ const MainPageList = () => {
 
   return (
     <div>
-      <h1>募集一覧</h1>
-      <ul>
+      <h1 className={styles.title}>募集一覧</h1>
+      <ul className={styles.recruitment_list_container}>
         {recruitmentList?.map((recruitment) => (
-          <li key={recruitment.id}>
-            <h3>{recruitment.title}</h3>
-            <p>{recruitment.explanation}</p>
+          <li key={recruitment.id} className={styles.recruitment_list}>
+            <h3 className={styles.list_title}>{recruitment.title}</h3>
+            <p className={styles.list_text}>{recruitment.explanation}</p>
             <div className={styles.recruitment_info}>
-              <p className={styles.info_item}>{recruitment.tag}</p>
-              <p className={styles.info_item}>{recruitment.user_id}</p>
+              <p className={styles.info_tag}>{recruitment.tag}</p>
+              <Image
+                src={recruitment.avatar_url}
+                alt="avatar"
+                width={20}
+                height={20}
+                className={styles.avatar_img}
+              />
+              <p className={styles.info_item}>{recruitment.username}</p>
+              <CiClock2 className={styles.info_icon} />
               <p className={styles.info_item}>{recruitment.created_at}</p>
             </div>
           </li>
