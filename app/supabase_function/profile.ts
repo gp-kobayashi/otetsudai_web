@@ -21,10 +21,10 @@ export const getProfile = async (
 };
 
 export const getAvatarUrl = (avatarUrl: string) => {
-    const { data }= supabase.storage.from("avatars").getPublicUrl(avatarUrl);
-    return data.publicUrl;
-}
+  const { data } = supabase.storage.from("avatars").getPublicUrl(avatarUrl);
+  return data.publicUrl;
+};
 
-export const formatAvatarUrl = (avatarUrl: string | null| undefined) => {
-    return avatarUrl ? getAvatarUrl(avatarUrl) : DEFAULT_AVATAR_URL;
-}
+export const formatAvatarUrl = (avatarUrl: string | null | undefined) => {
+  return avatarUrl ? getAvatarUrl(avatarUrl) : DEFAULT_AVATAR_URL;
+};
