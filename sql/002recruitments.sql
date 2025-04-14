@@ -11,13 +11,13 @@ CREATE TABLE recruitments (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE comments(
+CREATE TABLE comments(
     id SERIAL PRIMARY KEY,
     recruitment_id INT NOT NULL,
     FOREIGN KEY (recruitment_id) REFERENCES recruitments(id),
     user_id uuid NOT NULL,
     FOREIGN KEY (user_id) REFERENCES profiles(id),
-    content TEXT NOT NULL,
+    text TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
