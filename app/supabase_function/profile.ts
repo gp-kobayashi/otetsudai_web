@@ -28,3 +28,7 @@ export const getAvatarUrl = (avatarUrl: string) => {
 export const formatAvatarUrl = (avatarUrl: string | null | undefined) => {
   return avatarUrl ? getAvatarUrl(avatarUrl) : DEFAULT_AVATAR_URL;
 };
+
+export const formatUserName = (username: string | null | undefined) => {
+  return username ? username : "名無し";
+}

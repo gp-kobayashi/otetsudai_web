@@ -1,4 +1,5 @@
 import { createClient } from "@/utils/supabase/client";
+import { formatAvatarUrl, formatUserName } from "./profile";
 
 import type { Comment, SupabaseResponse } from "../type/types";
 
@@ -19,14 +20,22 @@ export const getCommentByRecruitment = async (
 ): Promise<SupabaseResponse<Comment[]>> => {
   const { data, error } = await supabase
     .from("comments")
-    .select("*")
+    .select("*,profiles(avatar_url,username)")
     .eq("recruitment_id", recruitment_id);
-
+  
   if (error) {
     return { data: null, error };
   }
-
-  return { data, error: null };
+  const commentsData = data.map((recruitmen) => {
+      const avatarUrl = formatAvatarUrl(recruitmen.profiles.avatar_url);
+      const userName = formatUserName(recruitmen.profiles.username);
+      return {
+        ...recruitmen,
+        avatar_url: avatarUrl,
+        username: userName,
+      };
+    });
+    return { data: commentsData, error: null };
 };
 
 export const getCommentByUser = async (
