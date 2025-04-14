@@ -7,7 +7,7 @@ type Props = {
   id: number;
 };
 
-const ComentList = async ({ id }: Props) => {
+const CommentList = async ({ id }: Props) => {
   const { data } = await getCommentByRecruitment(id);
   if (!data) {
     redirect("/");
@@ -17,7 +17,7 @@ const ComentList = async ({ id }: Props) => {
       <h3>コメント</h3>
       {data.map((comment) => (
         <div key={comment.id} className={styles.comment_item}>
-          <p>{comment.content}</p>
+          <p>{comment.text}</p>
           <div className={styles.comment_user}>
             <Image
               src={comment.avatar_url}
@@ -35,4 +35,4 @@ const ComentList = async ({ id }: Props) => {
   );
 };
 
-export default ComentList;
+export default CommentList;
