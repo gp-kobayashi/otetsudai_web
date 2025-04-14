@@ -11,6 +11,11 @@ export type RecruitmentWithProfile =
     avatar_url: string;
   } & { username: string | null };
 
+export type CommentWithProfile =
+  Database["public"]["Tables"]["comments"]["Row"] & {
+    avatar_url: string;
+  } & { username: string | null };
+  
 export type SupabaseResponse<T> = {
   data: T | null;
   error: Error | null;
