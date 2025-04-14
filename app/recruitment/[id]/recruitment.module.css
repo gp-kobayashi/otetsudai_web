@@ -1,0 +1,32 @@
+.recruitment_container {
+  width: 90%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: ivory;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+.title {
+  font-size: 20px;
+  border-bottom: 3px solid #ccc;
+}
+.tag {
+  border-radius: 5px;
+  background-color: steelblue;
+  color: white;
+  padding: 5px;
+}
+.item {
+  margin-left: 10px;
+  font-size: 15px;
+}
+.info_icon {
+  width: 20px;
+  height: 20px;
+  margin: 20px 0 0 15px;
+}
+
+.recruitment_user {
+  display: flex;
+}
