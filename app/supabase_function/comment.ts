@@ -52,3 +52,21 @@ export const getCommentByUser = async (
 
   return { data, error: null };
 };
+
+export const addComment = async (
+  user_id: string,
+  recruitment_id: number,
+  text: string,
+): Promise<SupabaseResponse<Comment>> => {
+  const { data, error } = await supabase
+    .from("comments")
+    .insert({ user_id, recruitment_id, text})
+    .select("*")
+    .single();
+
+  if (error) {
+    return { data: null, error };
+  }
+
+  return { data, error: null };
+}
