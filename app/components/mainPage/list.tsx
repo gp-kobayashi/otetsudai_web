@@ -1,5 +1,5 @@
 "use client";
-import { getRecruitmentListWithProfile } from "@/app/supabase_function/recruitment";
+import { getRecruitmentList } from "@/app/supabase_function/recruitment";
 import { useEffect, useState } from "react";
 import type { RecruitmentWithProfile } from "@/app/type/types";
 import styles from "./list.module.css";
@@ -14,7 +14,7 @@ const MainPageList = () => {
 
   useEffect(() => {
     const recruitmentList = async () => {
-      const { data, error } = await getRecruitmentListWithProfile();
+      const { data, error } = await getRecruitmentList();
       if (error) {
         setMessages("エラーが発生しました" + error.message);
         return;
