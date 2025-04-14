@@ -1,5 +1,5 @@
 import styles from "./page.module.css";
-import List from "./components/recruitment/mainPage/list";
+import List from "./components/mainPage/list";
 export default function Home() {
   return (
     <div>
