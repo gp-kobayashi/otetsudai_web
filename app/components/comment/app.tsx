@@ -4,7 +4,10 @@ import styles from "./comment.module.css";
 import { addComment } from "@/app/supabase_function/comment";
 import CommentList from "@/app/components/comment/list";
 import { CommentWithProfile } from "@/app/type/types";
-import { formatUserName, getAvatarUrl } from "@/app/supabase_function/profile";
+import {
+  formatAvatarUrl,
+  formatUserName,
+} from "@/app/supabase_function/profile";
 type Props = {
   id: number;
   userId: string;
@@ -20,9 +23,10 @@ const CommentApp = (props: Props) => {
     e.preventDefault();
     if (!text || !user_id) return;
     const { data } = await addComment(user_id, recruitment_id, text);
-    const updatedComment: CommentWithProfile = {
+    if (!data) return;
+    const updatedComment = {
       ...data,
-      avatar_url: getAvatarUrl(user_id),
+      avatar_url: formatAvatarUrl(user_id),
       username: formatUserName(user_id),
     };
     setCommentList((prev) => [...prev, updatedComment]);
