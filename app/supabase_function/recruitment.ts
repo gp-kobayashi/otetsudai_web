@@ -31,19 +31,27 @@ export const getRecruitmentList = async (): Promise<
   return { data: RecruitmentData, error: null };
 };
 
-export const getRecruitmentBytagList = async (
+export const getRecruitmentBytag = async (
   tag: string,
-): Promise<SupabaseResponse<Recruitment[]>> => {
+): Promise<SupabaseResponse<RecruitmentWithProfile[]>> => {
   const { data, error } = await supabase
     .from("recruitments")
-    .select("*")
+    .select("*,profiles(avatar_url,username)")
     .eq("tag", tag);
 
   if (error) {
     return { data: null, error };
   }
-
-  return { data, error: null };
+  const RecruitmentData = data.map((recruitmen) => {
+    const avatarUrl = formatAvatarUrl(recruitmen.profiles.avatar_url);
+    const userName =formatUserName(recruitmen.profiles.username);
+    return {
+      ...recruitmen,
+      avatar_url: avatarUrl,
+      username: userName,
+    };
+  });
+  return { data:RecruitmentData, error: null };
 };
 
 export const getRecruitmentByUserList = async (
