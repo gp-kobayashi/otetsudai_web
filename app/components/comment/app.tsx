@@ -1,12 +1,16 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./comment.module.css";
-import { addComment } from "@/app/supabase_function/comment";
+import {
+  addComment,
+  getCommentByRecruitment,
+} from "@/app/supabase_function/comment";
 import CommentList from "@/app/components/comment/list";
 import { CommentWithProfile } from "@/app/type/types";
 import {
   formatAvatarUrl,
   formatUserName,
+  getusername,
 } from "@/app/supabase_function/profile";
 type Props = {
   id: number;
@@ -19,6 +23,15 @@ const CommentApp = (props: Props) => {
   const [commentList, setCommentList] = useState<CommentWithProfile[]>([]);
   const [text, setText] = useState<string>("");
 
+  useEffect(() => {
+    const commentList = async () => {
+      const { data } = await getCommentByRecruitment(recruitment_id);
+      if (!data) return;
+      setCommentList(data || []);
+    };
+    commentList();
+  }, [recruitment_id]);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!text || !user_id) return;
@@ -27,7 +40,7 @@ const CommentApp = (props: Props) => {
     const updatedComment = {
       ...data,
       avatar_url: formatAvatarUrl(user_id),
-      username: formatUserName(user_id),
+      username: await getusername(user_id),
     };
     setCommentList((prev) => [...prev, updatedComment]);
     setText("");
@@ -35,7 +48,7 @@ const CommentApp = (props: Props) => {
 
   return (
     <div>
-      <CommentList id={recruitment_id} />
+      <CommentList id={recruitment_id} commentList={commentList} />
       <div className={styles.app_container}>
         <form onSubmit={(e) => handleSubmit(e)}>
           <div>
