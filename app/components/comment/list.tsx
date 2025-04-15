@@ -1,21 +1,21 @@
-import { getCommentByRecruitment } from "@/app/supabase_function/comment";
-import { redirect } from "next/navigation";
+"use client";
+
 import styles from "./comment.module.css";
 import Image from "next/image";
 import { CiClock2 } from "react-icons/ci";
+import { CommentWithProfile } from "@/app/type/types";
 type Props = {
   id: number;
+  commentList: CommentWithProfile[];
 };
 
-const CommentList = async ({ id }: Props) => {
-  const { data } = await getCommentByRecruitment(id);
-  if (!data) {
-    redirect("/");
-  }
+const CommentList = (props: Props) => {
+  const { id, commentList } = props;
+
   return (
     <div className={styles.comment_container}>
       <h3>コメント</h3>
-      {data.map((comment) => (
+      {commentList.map((comment) => (
         <div key={comment.id} className={styles.comment_item}>
           <p>{comment.text}</p>
           <div className={styles.comment_user}>
