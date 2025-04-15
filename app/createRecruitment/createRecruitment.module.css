@@ -1,0 +1,35 @@
+.page_container {
+  width: 90%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.form_container {
+  padding: 20px;
+  border: 1px solid gray;
+  border-radius: 5px;
+  background-color: lavender;
+}
+
+.form_item {
+  margin-bottom: 20px;
+}
+
+.form_label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+.from_input {
+  width: 60%;
+  height: 20px;
+}
+
+.from_textarea {
+  width: 60%;
+  height: 100px;
+}
+
+.form_btn {
+  text-align: center;
+}
