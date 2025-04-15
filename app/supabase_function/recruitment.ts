@@ -4,11 +4,11 @@ import type {
   RecruitmentWithProfile,
   SupabaseResponse,
 } from "../type/types";
-import { formatAvatarUrl } from "./profile";
+import { formatAvatarUrl, formatUserName } from "./profile";
 
 const supabase = createClient();
 
-export const getRecruitmentListWithProfile = async (): Promise<
+export const getRecruitmentList = async (): Promise<
   SupabaseResponse<RecruitmentWithProfile[]>
 > => {
   const { data, error } = await supabase
@@ -21,9 +21,7 @@ export const getRecruitmentListWithProfile = async (): Promise<
   }
   const RecruitmentData = data.map((recruitmen) => {
     const avatarUrl = formatAvatarUrl(recruitmen.profiles.avatar_url);
-    const userName = recruitmen.profiles.username
-      ? recruitmen.profiles.username
-      : "名無し";
+    const userName =formatUserName(recruitmen.profiles.username);
     return {
       ...recruitmen,
       avatar_url: avatarUrl,
@@ -62,6 +60,31 @@ export const getRecruitmentByUserList = async (
 
   return { data, error: null };
 };
+
+export const getRecruitmentById = async (
+  id: number,
+): Promise<SupabaseResponse<RecruitmentWithProfile>> => {
+  const { data, error } = await supabase
+    .from("recruitments")
+    .select("*,profiles(avatar_url,username)")
+    .eq("id", id)
+    .single();
+
+  if (error) {
+    return { data: null, error };
+  }
+
+  const avatarUrl = formatAvatarUrl(data.profiles.avatar_url);
+  const userName = formatUserName(data.profiles.username);
+
+  const recruitmentData = {
+    ...data,
+    avatar_url: avatarUrl,
+    username: userName,
+  };
+
+  return { data: recruitmentData, error: null };
+}
 
 export const addRecruitment = async (
   title: string,
