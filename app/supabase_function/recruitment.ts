@@ -32,15 +32,17 @@ export const getRecruitmentList = async (): Promise<
 };
 
 export const getRecruitmentBytag = async (
-  tag: string,
-): Promise<SupabaseResponse<RecruitmentWithProfile[]>> => {
-  const { data, error } = await supabase
+  tag: string, limit = 5, offset = 0
+): Promise<{data:RecruitmentWithProfile[]|null;count: number | null;
+  error: any;}> => {
+  const { data,count, error } = await supabase
     .from("recruitments")
-    .select("*,profiles(avatar_url,username)")
-    .eq("tag", tag);
+    .select("*,profiles(avatar_url,username)",{ count: "exact" })
+    .eq("tag", tag)
+    .range(offset, offset + limit - 1);
 
   if (error) {
-    return { data: null, error };
+    return { data: null,count:null ,error };
   }
   const RecruitmentData = data.map((recruitmen) => {
     const avatarUrl = formatAvatarUrl(recruitmen.profiles.avatar_url);
@@ -51,7 +53,7 @@ export const getRecruitmentBytag = async (
       username: userName,
     };
   });
-  return { data:RecruitmentData, error: null };
+  return { data:RecruitmentData,count, error: null };
 };
 
 export const getRecruitmentByUserList = async (
