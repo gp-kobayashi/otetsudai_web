@@ -11,7 +11,7 @@ export default function Home() {
       <div className={styles.tag_container}>
         {tags.map((tag) => (
           <div key={tag}>
-            <a href={`/category/${tag}`} className={styles.tag}>
+            <a href={`/category/${tag}/1`} className={styles.tag}>
               {tag}
             </a>
           </div>
