@@ -10,8 +10,8 @@ interface Params {
   id: number;
 }
 
-const recruitment = async ({ params }: { params: Promise<Params> }) => {
-  const { id } = await params;
+const recruitment = async ({ params }: { params: Params }) => {
+  const { id } = params;
   const { data } = await getRecruitmentById(id);
   const supabase = await createClient();
 
