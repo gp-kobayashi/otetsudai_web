@@ -39,7 +39,8 @@ export const getRecruitmentBytag = async (
     .from("recruitments")
     .select("*,profiles(avatar_url,username)",{ count: "exact" })
     .eq("tag", tag)
-    .range(offset, offset + limit - 1);
+    .range(offset, offset + limit - 1)
+    .order("created_at", { ascending: false });
 
   if (error) {
     return { data: null,count:null ,error };
