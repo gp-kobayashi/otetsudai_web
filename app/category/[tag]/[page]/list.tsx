@@ -40,7 +40,9 @@ const CategoryList = (props: Props) => {
                 height={30}
                 className={styles.avatar_img}
               />
-              <p className={styles.info_item}>{recruitment.username}</p>
+              <Link href={`/userProfile/${recruitment.username}`}>
+                <p className={styles.info_item}>{recruitment.username}</p>
+              </Link>
               <CiClock2 className={styles.info_icon} />
               <p className={styles.info_item}>{recruitment.created_at}</p>
             </div>
