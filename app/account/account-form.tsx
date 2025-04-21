@@ -3,12 +3,12 @@ import { useCallback, useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { type User } from "@supabase/supabase-js";
 import Avatar from "./avatar";
+import styles from "./account.module.css";
 // ...
 
 export default function AccountForm({ user }: { user: User | null }) {
   const supabase = createClient();
   const [loading, setLoading] = useState(true);
-  const [fullname, setFullname] = useState<string | null>(null);
   const [username, setUsername] = useState<string | null>(null);
   const [website, setWebsite] = useState<string | null>(null);
   const [avatar_url, setAvatarUrl] = useState<string | null>(null);
@@ -20,7 +20,7 @@ export default function AccountForm({ user }: { user: User | null }) {
 
       const { data, error, status } = await supabase
         .from("profiles")
-        .select(`full_name, username, website, avatar_url,bio`)
+        .select(`username, website, avatar_url,bio`)
         .eq("id", user?.id)
         .single();
 
@@ -30,7 +30,6 @@ export default function AccountForm({ user }: { user: User | null }) {
       }
 
       if (data) {
-        setFullname(data.full_name);
         setUsername(data.username);
         setWebsite(data.website);
         setAvatarUrl(data.avatar_url);
@@ -51,7 +50,6 @@ export default function AccountForm({ user }: { user: User | null }) {
     avatar_url,
   }: {
     username: string | null;
-    fullname: string | null;
     website: string | null;
     avatar_url: string | null;
     bio: string | null;
@@ -61,7 +59,6 @@ export default function AccountForm({ user }: { user: User | null }) {
 
       const { error } = await supabase.from("profiles").upsert({
         id: user?.id as string,
-        full_name: fullname,
         username,
         website,
         avatar_url,
@@ -76,29 +73,26 @@ export default function AccountForm({ user }: { user: User | null }) {
   }
 
   return (
-    <div className="form-widget">
+    <div className={styles.account_container}>
       <Avatar
         uid={user?.id ?? null}
         url={avatar_url}
         size={150}
         onUpload={(url) => {
           setAvatarUrl(url);
-          updateProfile({ fullname, username, website, avatar_url: url, bio });
+          updateProfile({ username, website, avatar_url: url, bio });
         }}
       />
       {/* ... */}
 
       <div>
         <label htmlFor="email">Email</label>
-        <input id="email" type="text" value={user?.email} disabled />
-      </div>
-      <div>
-        <label htmlFor="fullName">Full Name</label>
         <input
-          id="fullName"
+          id="email"
           type="text"
-          value={fullname || ""}
-          onChange={(e) => setFullname(e.target.value)}
+          value={user?.email}
+          disabled
+          className={styles.account_input}
         />
       </div>
       <div>
@@ -108,6 +102,7 @@ export default function AccountForm({ user }: { user: User | null }) {
           type="text"
           value={username || ""}
           onChange={(e) => setUsername(e.target.value)}
+          className={styles.account_input}
         />
       </div>
       <div>
@@ -117,23 +112,22 @@ export default function AccountForm({ user }: { user: User | null }) {
           type="url"
           value={website || ""}
           onChange={(e) => setWebsite(e.target.value)}
+          className={styles.account_input}
         />
       </div>
       <div>
-        <label htmlFor="bio">bio</label>
-        <input
+        <label htmlFor="bio">自己紹介</label>
+        <textarea
           id="bio"
-          type="text"
           value={bio || ""}
           onChange={(e) => setBio(e.target.value)}
+          className={styles.account_textarea}
         />
       </div>
       <div>
         <button
-          className="button primary block"
-          onClick={() =>
-            updateProfile({ fullname, username, website, avatar_url, bio })
-          }
+          className={styles.account_btn}
+          onClick={() => updateProfile({ username, website, avatar_url, bio })}
           disabled={loading}
         >
           {loading ? "Loading ..." : "Update"}
@@ -142,7 +136,7 @@ export default function AccountForm({ user }: { user: User | null }) {
 
       <div>
         <form action="/auth/signout" method="post">
-          <button className="button block" type="submit">
+          <button className={styles.account_btn} type="submit">
             Sign out
           </button>
         </form>
