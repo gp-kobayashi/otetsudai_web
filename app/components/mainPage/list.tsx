@@ -6,7 +6,6 @@ import styles from "./list.module.css";
 import Image from "next/image";
 import { CiClock2 } from "react-icons/ci";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 
 const MainPageList = () => {
   const router = useRouter();
@@ -53,9 +52,7 @@ const MainPageList = () => {
                 height={20}
                 className={styles.avatar_img}
               />
-              <Link href={`/userProfile/${recruitment.username}`}>
-                <p className={styles.info_item}>{recruitment.username}</p>
-              </Link>
+              <p className={styles.info_item}>{recruitment.username}</p>
               <CiClock2 className={styles.info_icon} />
               <p className={styles.info_item}>{recruitment.created_at}</p>
             </div>
