@@ -20,6 +20,23 @@ export const fetchProfile = async (
   return { data, error: null };
 };
 
+export const fetchProfileByUsername = async (
+  username: string,
+): Promise<SupabaseResponse<Profile>> => {
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("username", username)
+    .single();
+
+  if (error) {
+    return { data: null, error };
+  }
+
+  return { data, error: null };
+};
+
+
 export const getAvatarUrl = (avatarUrl: string) => {
   const { data } = supabase.storage.from("avatars").getPublicUrl(avatarUrl);
   return data.publicUrl;
