@@ -12,6 +12,7 @@ export default function AccountForm({ user }: { user: User | null }) {
   const [username, setUsername] = useState<string | null>(null);
   const [website, setWebsite] = useState<string | null>(null);
   const [avatar_url, setAvatarUrl] = useState<string | null>(null);
+  const [bio, setBio] = useState<string | null>(null);
 
   const getProfile = useCallback(async () => {
     try {
@@ -32,6 +33,7 @@ export default function AccountForm({ user }: { user: User | null }) {
         setUsername(data.username);
         setWebsite(data.website);
         setAvatarUrl(data.avatar_url);
+        setBio(data.bio);
       }
     } finally {
       setLoading(false);
@@ -50,6 +52,7 @@ export default function AccountForm({ user }: { user: User | null }) {
     username: string | null;
     website: string | null;
     avatar_url: string | null;
+    bio: string | null;
   }) {
     try {
       setLoading(true);
@@ -60,6 +63,7 @@ export default function AccountForm({ user }: { user: User | null }) {
         website,
         avatar_url,
         updated_at: new Date().toISOString(),
+        bio,
       });
       if (error) throw error;
       alert("Profile updated!");
