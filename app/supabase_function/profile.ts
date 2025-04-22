@@ -36,6 +36,19 @@ export const fetchProfileByUsername = async (
   return { data, error: null };
 };
 
+export const insertUsername = async (user_id: string, username: string) => {
+  const { data, error } = await supabase
+    .from("profiles")
+    .update({ username })
+    .eq("id", user_id);
+
+  if (error) {
+    return { data: null, error };
+  }
+
+  return { data, error: null };
+}
+
 
 export const getAvatarUrl = (avatarUrl: string) => {
   const { data } = supabase.storage.from("avatars").getPublicUrl(avatarUrl);
