@@ -53,3 +53,7 @@ create policy "Anyone can upload an avatar." on storage.objects
 
 create policy "Anyone can update their own avatar." on storage.objects
   for update using ((select auth.uid()) = owner) with check (bucket_id = 'avatars');
+
+update storage.buckets
+set public = true
+where id = 'avatars';
