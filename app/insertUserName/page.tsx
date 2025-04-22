@@ -7,7 +7,6 @@ const InsertUserName = async () => {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
-    s;
     return redirect("/login");
   }
   const user_id = user.id;
