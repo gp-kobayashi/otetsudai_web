@@ -2,6 +2,7 @@
 import { insertUsername } from "@/app/supabase_function/profile";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import styles from "./inserUserName.module.css";
 type props = {
   user_id: string;
 };
@@ -31,8 +32,11 @@ const InsertUserNameApp = ({ user_id }: props) => {
           required
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          className={styles.input}
         />
-        <button type="submit">Submit</button>
+        <button type="submit" className={styles.btn}>
+          Submit
+        </button>
       </form>
     </div>
   );
