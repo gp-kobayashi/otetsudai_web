@@ -34,7 +34,6 @@ const InsertUserNameApp = ({ user_id }: props) => {
         />
         <button type="submit">Submit</button>
       </form>
-      {/* <p>ユーザーネームは英数字のみ使用できます。</p> */}
     </div>
   );
 };
