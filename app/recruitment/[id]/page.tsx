@@ -1,4 +1,7 @@
-import { getRecruitmentById } from "@/app/supabase_function/recruitment";
+import {
+  deleteRecruitment,
+  getRecruitmentById,
+} from "@/app/supabase_function/recruitment";
 import { fetchProfile } from "@/app/supabase_function/profile";
 import { redirect } from "next/navigation";
 import styles from "./recruitment.module.css";
@@ -7,6 +10,7 @@ import { CiClock2 } from "react-icons/ci";
 import CommentApp from "@/app/components/comment/app";
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
+import DeleteButton from "./deleteButton";
 
 interface Params {
   id: number;
@@ -32,7 +36,13 @@ const recruitment = async ({ params }: { params: Params }) => {
   if (!data) {
     return <div>募集が見つかりませんでした</div>;
   }
-
+  const deleteBtn = async (id: number) => {
+    if (!confirm("本当に削除しますか？")) {
+      return;
+    }
+    await deleteRecruitment(id);
+    redirect("/userProfile/" + username);
+  };
   return (
     <div>
       <div className={styles.recruitment_container}>
@@ -52,6 +62,7 @@ const recruitment = async ({ params }: { params: Params }) => {
           </Link>
           <CiClock2 className={styles.info_icon} />
           <p className={styles.item}>{data.created_at}</p>
+          {userId === data.user_id && <DeleteButton id={data.id} />}
         </div>
       </div>
 
