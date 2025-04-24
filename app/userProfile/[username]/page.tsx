@@ -9,6 +9,7 @@ import UserRecruitmentList from "./list";
 import { getRecruitmentByUserList } from "@/app/supabase_function/recruitment";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
+import { GoLink } from "react-icons/go";
 interface Params {
   username: string;
 }
@@ -39,7 +40,10 @@ const UserProfile = async ({ params }: { params: Params }) => {
           </a>
         )}
         <h2 className={styles.username}>{profileData.username}</h2>
-        <p>website:{profileData.website}</p>
+        <p className={styles.website}>
+          <GoLink className={styles.website_icon} />
+          {profileData.website}
+        </p>
         <div className={styles.profile_item}>
           <Image
             src={avatar_url}
