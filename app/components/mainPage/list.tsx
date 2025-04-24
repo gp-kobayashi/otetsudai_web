@@ -21,7 +21,7 @@ const MainPageList = () => {
         setMessages("エラーが発生しました" + error.message);
         return;
       }
-      setRecruitmentList(data);
+      setRecruitmentList(data?.slice(0, 10) || []);
     };
     recruitmentList();
   }, []);
@@ -32,7 +32,7 @@ const MainPageList = () => {
 
   return (
     <div>
-      <h1 className={styles.title}>募集一覧</h1>
+      <h1 className={styles.title}>最新募集一覧</h1>
       <ul className={styles.recruitment_list_container}>
         {message && <p className={styles.error_message}>{message}</p>}
         {recruitmentList?.map((recruitment) => (
