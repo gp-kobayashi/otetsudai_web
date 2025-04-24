@@ -119,7 +119,7 @@ export const addRecruitment = async (
 };
 
 export const deleteRecruitment = async (
-  id: string,
+  id: number,
 ): Promise<SupabaseResponse<Recruitment>> => {
   const { data, error } = await supabase
     .from("recruitments")
