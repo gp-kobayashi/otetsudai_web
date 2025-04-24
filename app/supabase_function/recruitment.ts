@@ -63,7 +63,8 @@ export const getRecruitmentByUserList = async (
   const { data, error } = await supabase
     .from("recruitments")
     .select("*")
-    .eq("user_id", user_id);
+    .eq("user_id", user_id)
+    .order("created_at" , { ascending: false });
 
   if (error) {
     return { data: null, error };
