@@ -36,13 +36,6 @@ const recruitment = async ({ params }: { params: Params }) => {
   if (!data) {
     return <div>募集が見つかりませんでした</div>;
   }
-  const deleteBtn = async (id: number) => {
-    if (!confirm("本当に削除しますか？")) {
-      return;
-    }
-    await deleteRecruitment(id);
-    redirect("/userProfile/" + username);
-  };
   return (
     <div>
       <div className={styles.recruitment_container}>
@@ -62,7 +55,7 @@ const recruitment = async ({ params }: { params: Params }) => {
           </Link>
           <CiClock2 className={styles.info_icon} />
           <p className={styles.item}>{data.created_at}</p>
-          {userId === data.user_id && <DeleteButton id={data.id} />}
+          {userId === data.user_id && <DeleteButton id={id} />}
         </div>
       </div>
 
