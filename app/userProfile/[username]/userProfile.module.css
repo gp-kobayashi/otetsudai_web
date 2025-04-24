@@ -23,6 +23,13 @@
 .profile_item {
   display: flex;
 }
+.website {
+  width: fit-content;
+  border-bottom: 2px solid #ccc;
+}
+.website_icon {
+  margin: 10px 10px 0 5px;
+}
 .bio {
   margin: 10px;
   padding: 10px;
