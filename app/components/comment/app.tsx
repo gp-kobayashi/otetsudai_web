@@ -12,6 +12,7 @@ import {
   formatUserName,
   getusername,
 } from "@/app/supabase_function/profile";
+import Link from "next/link";
 type Props = {
   id: number;
   userId: string | null;
@@ -66,7 +67,9 @@ const CommentApp = (props: Props) => {
         ) : (
           <div className={styles.attention}>
             <p>
-              コメントを投稿するにはログインしてユーザーネームの登録をしてください。
+              コメントを投稿するには<Link href="/login">ログイン</Link>して
+              <Link href="/insertUserName">ユーザーネーム</Link>
+              の登録をしてください。
             </p>
           </div>
         )}
