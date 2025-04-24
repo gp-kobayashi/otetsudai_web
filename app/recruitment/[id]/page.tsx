@@ -1,4 +1,5 @@
 import { getRecruitmentById } from "@/app/supabase_function/recruitment";
+import { fetchProfile } from "@/app/supabase_function/profile";
 import { redirect } from "next/navigation";
 import styles from "./recruitment.module.css";
 import Image from "next/image";
@@ -19,14 +20,19 @@ const recruitment = async ({ params }: { params: Params }) => {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) {
-    redirect("/login");
+
+  let userId = null;
+  let username = null;
+
+  if (user) {
+    userId = user.id;
+    username = (await fetchProfile(userId)).data?.username;
   }
-  const userId = user.id;
 
   if (!data) {
-    redirect("/");
+    return <div>募集が見つかりませんでした</div>;
   }
+
   return (
     <div>
       <div className={styles.recruitment_container}>
@@ -49,7 +55,7 @@ const recruitment = async ({ params }: { params: Params }) => {
         </div>
       </div>
 
-      <CommentApp id={id} userId={userId} />
+      <CommentApp id={id} userId={userId} username={username} />
     </div>
   );
 };
