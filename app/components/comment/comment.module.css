@@ -8,6 +8,9 @@
   font-size: 15px;
   border-bottom: 5px solid #ccc;
 }
+.comment_text {
+  white-space: pre-line;
+}
 .comment_user {
   display: flex;
 }

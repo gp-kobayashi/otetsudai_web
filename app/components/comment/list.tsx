@@ -17,7 +17,7 @@ const CommentList = (props: Props) => {
       <h3>コメント</h3>
       {commentList.map((comment) => (
         <div key={comment.id} className={styles.comment_item}>
-          <p>{comment.text}</p>
+          <p className={styles.comment_text}>{comment.text}</p>
           <div className={styles.comment_user}>
             <Image
               src={comment.avatar_url}

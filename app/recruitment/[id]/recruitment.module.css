@@ -11,6 +11,9 @@
   font-size: 20px;
   border-bottom: 3px solid #ccc;
 }
+.text {
+  white-space: pre-line;
+}
 .tag {
   border-radius: 5px;
   background-color: steelblue;
