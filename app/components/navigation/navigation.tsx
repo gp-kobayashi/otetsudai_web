@@ -1,6 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import styles from "./navigation.module.css";
 import Link from "next/link";
+import { fetchProfile } from "@/app/supabase_function/profile";
 
 const Navigation = async () => {
   const supabase = await createClient();
@@ -8,6 +9,9 @@ const Navigation = async () => {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  const { data } = await fetchProfile(user?.id!);
+  const username = data?.username || null;
 
   return (
     <div className={styles.navigation_container}>
@@ -22,8 +26,11 @@ const Navigation = async () => {
           help
         </Link>
         {user ? (
-          <Link href="/account" className={styles.account_link}>
-            plofile
+          <Link
+            href={`/userProfile/${username}`}
+            className={styles.account_link}
+          >
+            profile
           </Link>
         ) : (
           <Link href="/login" className={styles.login_link}>
