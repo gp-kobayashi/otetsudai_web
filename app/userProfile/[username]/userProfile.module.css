@@ -4,6 +4,22 @@
   padding: 20px;
   border: 1px solid #ccc;
 }
+.profile_link {
+  width: 40%;
+  margin: 0 auto;
+  border-radius: 5px;
+  background-color: steelblue;
+  color: white;
+  font-size: 15px;
+  padding: 5px;
+  text-decoration: none;
+}
+.profile_link:hover {
+  background-color: #4a8dc2;
+}
+.username {
+  border-top: 5px solid #ccc;
+}
 .profile_item {
   display: flex;
 }
@@ -34,10 +50,28 @@
   margin-bottom: 10px;
   border-bottom: 3px solid #ccc;
 }
+.list_item {
+  display: flex;
+  justify-content: space-between;
+}
 .list_tag {
   width: fit-content;
   border-radius: 5px;
   background-color: steelblue;
   color: white;
   padding: 5px;
+}
+.delete_button {
+  z-index: 100;
+  width: fit-content;
+  margin-left: auto;
+  border-radius: 5px;
+  background-color: crimson;
+  color: white;
+  font-size: 15px;
+  padding: 5px;
+  text-decoration: none;
+}
+.delete_button:hover {
+  background-color: #c72b2b;
 }
