@@ -1,0 +1,14 @@
+.help_container {
+  width: 80%;
+  max-width: 700px;
+  margin: 100px auto;
+}
+.title {
+  margin-top: 50px;
+  border-bottom: 3px solid #ccc;
+}
+
+.attention {
+  color: red;
+  font-weight: bold;
+}
