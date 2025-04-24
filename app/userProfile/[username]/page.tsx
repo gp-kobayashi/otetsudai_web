@@ -1,4 +1,5 @@
 import {
+  fetchProfile,
   fetchProfileByUsername,
   formatAvatarUrl,
 } from "@/app/supabase_function/profile";
@@ -6,22 +7,37 @@ import styles from "./userProfile.module.css";
 import Image from "next/image";
 import UserRecruitmentList from "./list";
 import { getRecruitmentByUserList } from "@/app/supabase_function/recruitment";
+import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
 interface Params {
   username: string;
 }
 
 const UserProfile = async ({ params }: { params: Params }) => {
   const username = params;
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const { data: profile } = await fetchProfile(user?.id!);
+
+  const checkUsername = profile?.username === username.username;
+
   const profileData = (await fetchProfileByUsername(username.username)).data;
   const avatar_url = formatAvatarUrl(profileData?.avatar_url);
 
   if (!profileData) {
-    return <div className={styles.error}>User not found</div>;
+    return <div className={styles.error}>ユーザーが存在しません</div>;
   }
   const { data } = await getRecruitmentByUserList(profileData.id);
   return (
     <div>
       <div className={styles.user_profile_container}>
+        {checkUsername && (
+          <a href="/account" className={styles.profile_link}>
+            プロフィールを編集する
+          </a>
+        )}
         <h2 className={styles.username}>{profileData.username}</h2>
         <p>website:{profileData.website}</p>
         <div className={styles.profile_item}>
@@ -35,7 +51,10 @@ const UserProfile = async ({ params }: { params: Params }) => {
           <p className={styles.bio}>{profileData.bio}</p>
         </div>
       </div>
-      <UserRecruitmentList recruitmentList={data} />
+      <UserRecruitmentList
+        recruitmentList={data}
+        checkUsername={checkUsername}
+      />
     </div>
   );
 };
