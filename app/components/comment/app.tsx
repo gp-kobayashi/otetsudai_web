@@ -14,11 +14,12 @@ import {
 } from "@/app/supabase_function/profile";
 type Props = {
   id: number;
-  userId: string;
+  userId: string | null;
+  username: string | null | undefined;
 };
 
 const CommentApp = (props: Props) => {
-  const { id: recruitment_id, userId: user_id } = props;
+  const { id: recruitment_id, userId: user_id, username } = props;
 
   const [commentList, setCommentList] = useState<CommentWithProfile[]>([]);
   const [text, setText] = useState<string>("");
@@ -50,17 +51,25 @@ const CommentApp = (props: Props) => {
     <div>
       <CommentList id={recruitment_id} commentList={commentList} />
       <div className={styles.app_container}>
-        <form onSubmit={(e) => handleSubmit(e)}>
-          <div>
-            <label>コメントを投稿:</label>
-            <textarea
-              className={styles.app_textarea}
-              onChange={(e) => setText(e.target.value)}
-              value={text}
-            ></textarea>
+        {username ? (
+          <form onSubmit={(e) => handleSubmit(e)}>
+            <div>
+              <label>コメントを投稿:</label>
+              <textarea
+                className={styles.app_textarea}
+                onChange={(e) => setText(e.target.value)}
+                value={text}
+              ></textarea>
+            </div>
+            <button type="submit">投稿</button>
+          </form>
+        ) : (
+          <div className={styles.attention}>
+            <p>
+              コメントを投稿するにはログインしてユーザーネームの登録をしてください。
+            </p>
           </div>
-          <button type="submit">投稿</button>
-        </form>
+        )}
       </div>
     </div>
   );
