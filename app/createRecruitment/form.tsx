@@ -3,14 +3,14 @@
 import styles from "./createRecruitment.module.css";
 import { addRecruitment } from "../supabase_function/recruitment";
 import { useState } from "react";
-
+import { useRouter } from "next/navigation";
 type Props = {
   user_id: string;
 };
 
 const RecruitmentForm = ({ user_id }: Props) => {
   const tags = ["Video", "Text", "Audio", "programming", "design", "other"];
-
+  const router = useRouter();
   const [title, setTitle] = useState("");
   const [explanation, setExplanation] = useState("");
   const [tag, setTag] = useState(tags[0]);
@@ -21,6 +21,7 @@ const RecruitmentForm = ({ user_id }: Props) => {
     setTitle("");
     setExplanation("");
     setTag(tags[0]);
+    router.push("/");
   };
   return (
     <form className={styles.form_container} onSubmit={handleSubmit}>
