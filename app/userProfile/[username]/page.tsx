@@ -8,7 +8,6 @@ import Image from "next/image";
 import UserRecruitmentList from "./list";
 import { getRecruitmentByUserList } from "@/app/supabase_function/recruitment";
 import { createClient } from "@/utils/supabase/server";
-import { redirect } from "next/navigation";
 import { GoLink } from "react-icons/go";
 interface Params {
   username: string;
@@ -20,9 +19,12 @@ const UserProfile = async ({ params }: { params: Params }) => {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const { data: profile } = await fetchProfile(user?.id!);
 
-  const checkUsername = profile?.username === username.username;
+  let checkUsername = false;
+  if (user) {
+    const { data: profile } = await fetchProfile(user.id);
+    checkUsername = profile?.username === username.username;
+  }
 
   const profileData = (await fetchProfileByUsername(username.username)).data;
   const avatar_url = formatAvatarUrl(profileData?.avatar_url);

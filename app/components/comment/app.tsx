@@ -7,11 +7,7 @@ import {
 } from "@/app/supabase_function/comment";
 import CommentList from "@/app/components/comment/list";
 import { CommentWithProfile } from "@/app/type/types";
-import {
-  formatAvatarUrl,
-  formatUserName,
-  getusername,
-} from "@/app/supabase_function/profile";
+import { formatAvatarUrl, getusername } from "@/app/supabase_function/profile";
 import Link from "next/link";
 type Props = {
   id: number;
@@ -50,7 +46,7 @@ const CommentApp = (props: Props) => {
 
   return (
     <div>
-      <CommentList id={recruitment_id} commentList={commentList} />
+      <CommentList commentList={commentList} />
       <div className={styles.app_container}>
         {username ? (
           <form onSubmit={(e) => handleSubmit(e)}>

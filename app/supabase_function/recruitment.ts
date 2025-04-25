@@ -4,6 +4,7 @@ import type {
   RecruitmentWithProfile,
   SupabaseResponse,
 } from "../type/types";
+import { PostgrestError } from "@supabase/supabase-js";
 import { formatAvatarUrl, formatUserName } from "./profile";
 
 const supabase = createClient();
@@ -34,7 +35,7 @@ export const getRecruitmentList = async (): Promise<
 export const getRecruitmentBytag = async (
   tag: string, limit = 5, offset = 0
 ): Promise<{data:RecruitmentWithProfile[]|null;count: number | null;
-  error: any;}> => {
+  error: PostgrestError | null}> => {
   const { data,count, error } = await supabase
     .from("recruitments")
     .select("*,profiles(avatar_url,username)",{ count: "exact" })

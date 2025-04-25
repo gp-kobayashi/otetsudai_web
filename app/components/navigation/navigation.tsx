@@ -10,8 +10,12 @@ const Navigation = async () => {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { data } = await fetchProfile(user?.id!);
-  const username = data?.username || null;
+  let username = null;
+
+  if (user) {
+    const { data } = await fetchProfile(user.id);
+    username = data?.username || null;
+  }
 
   return (
     <div className={styles.navigation_container}>
