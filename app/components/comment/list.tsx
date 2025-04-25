@@ -5,13 +5,10 @@ import Image from "next/image";
 import { CiClock2 } from "react-icons/ci";
 import { CommentWithProfile } from "@/app/type/types";
 type Props = {
-  id: number;
   commentList: CommentWithProfile[];
 };
 
-const CommentList = (props: Props) => {
-  const { id, commentList } = props;
-
+const CommentList = ({ commentList }: Props) => {
   return (
     <div className={styles.comment_container}>
       <h3>コメント</h3>

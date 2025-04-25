@@ -1,9 +1,5 @@
-import {
-  deleteRecruitment,
-  getRecruitmentById,
-} from "@/app/supabase_function/recruitment";
+import { getRecruitmentById } from "@/app/supabase_function/recruitment";
 import { fetchProfile } from "@/app/supabase_function/profile";
-import { redirect } from "next/navigation";
 import styles from "./recruitment.module.css";
 import Image from "next/image";
 import { CiClock2 } from "react-icons/ci";

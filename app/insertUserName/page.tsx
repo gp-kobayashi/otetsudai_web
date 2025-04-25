@@ -19,7 +19,7 @@ const InsertUserName = async () => {
       <p className={styles.text}>依頼やコメントの投稿に必須です。</p>
       <p>設定した名前はあなたのページのURLになります。</p>
 
-      <p className={styles.text}>例：/userProfile/"username"</p>
+      <p className={styles.text}>例：/userProfile/（username）</p>
 
       <InsertUserNameApp user_id={user_id} />
       <p className={styles.attention}>
