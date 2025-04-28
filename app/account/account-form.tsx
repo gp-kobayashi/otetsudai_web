@@ -65,8 +65,18 @@ export default function AccountForm({ user }: { user: User | null }) {
         updated_at: new Date().toISOString(),
         bio,
       });
-      if (error) throw error;
-      alert("Profile updated!");
+      if (error) {
+        if (error.code === "23505") {
+          alert(
+            "そのユーザー名はすでに使用されています。別のユーザー名を選択してください。",
+          );
+        } else {
+          console.error(error);
+          alert("プロフィールの更新中にエラーが発生しました。");
+        }
+        return;
+      }
+      alert("プロフィールが更新されました");
     } finally {
       setLoading(false);
     }
