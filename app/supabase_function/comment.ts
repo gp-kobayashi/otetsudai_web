@@ -1,7 +1,7 @@
 import { createClient } from "@/utils/supabase/client";
 import { formatAvatarUrl, formatUserName } from "./profile";
-
 import type { Comment, CommentWithProfile, SupabaseResponse } from "../type/types";
+import { formatCreateAt } from "./recruitment";
 
 const supabase = createClient();
 
@@ -29,10 +29,12 @@ export const getCommentByRecruitment = async (
   const commentsData = data.map((recruitmen) => {
       const avatarUrl = formatAvatarUrl(recruitmen.profiles.avatar_url);
       const userName = formatUserName(recruitmen.profiles.username);
+      const created_at = formatCreateAt(recruitmen.created_at);
       return {
         ...recruitmen,
         avatar_url: avatarUrl,
         username: userName,
+        created_at: created_at,
       };
     });
     return { data: commentsData, error: null };
