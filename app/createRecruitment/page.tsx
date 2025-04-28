@@ -16,6 +16,13 @@ const createRecruitment = async () => {
   }
 
   const UserProfile = await fetchProfile(user.id || "");
+  if (!UserProfile.data) {
+    redirect("/login");
+  }
+  if (!UserProfile.data.username) {
+    redirect("/insertUserName");
+  }
+
   const user_id = UserProfile.data?.id || "";
 
   return (
