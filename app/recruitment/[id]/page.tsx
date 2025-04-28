@@ -7,6 +7,7 @@ import CommentApp from "@/app/components/comment/app";
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import DeleteButton from "./deleteButton";
+import { redirect } from "next/navigation";
 
 interface Params {
   id: number;
@@ -28,7 +29,9 @@ const recruitment = async ({ params }: { params: Params }) => {
     userId = user.id;
     username = (await fetchProfile(userId)).data?.username;
   }
-
+  if (!username) {
+    redirect("/insertUserName");
+  }
   if (!data) {
     return <div>募集が見つかりませんでした</div>;
   }
