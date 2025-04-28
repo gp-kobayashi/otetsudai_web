@@ -22,11 +22,13 @@ export const getRecruitmentList = async (): Promise<
   }
   const RecruitmentData = data.map((recruitmen) => {
     const avatarUrl = formatAvatarUrl(recruitmen.profiles.avatar_url);
-    const userName =formatUserName(recruitmen.profiles.username);
+    const userName =formatUserName(recruitmen.profiles.username);7
+    const created_at = formatCreateAt(recruitmen.created_at);
     return {
       ...recruitmen,
       avatar_url: avatarUrl,
       username: userName,
+      created_at: created_at,
     };
   });
   return { data: RecruitmentData, error: null };
@@ -49,10 +51,12 @@ export const getRecruitmentBytag = async (
   const RecruitmentData = data.map((recruitmen) => {
     const avatarUrl = formatAvatarUrl(recruitmen.profiles.avatar_url);
     const userName =formatUserName(recruitmen.profiles.username);
+    const created_at = formatCreateAt(recruitmen.created_at);
     return {
       ...recruitmen,
       avatar_url: avatarUrl,
       username: userName,
+      created_at: created_at,
     };
   });
   return { data:RecruitmentData,count, error: null };
@@ -89,11 +93,12 @@ export const getRecruitmentById = async (
 
   const avatarUrl = formatAvatarUrl(data.profiles.avatar_url);
   const userName = formatUserName(data.profiles.username);
-
+  const created_at = formatCreateAt(data.created_at);
   const recruitmentData = {
     ...data,
     avatar_url: avatarUrl,
     username: userName,
+    created_at: created_at,
   };
 
   return { data: recruitmentData, error: null };
@@ -133,3 +138,16 @@ export const deleteRecruitment = async (
 
   return { data, error: null };
 };
+
+export const formatCreateAt = (created_at: string) => {
+  const date = new Date(created_at);
+  const jstDate = new Date(date.getTime() + 9 * 60 * 60 * 1000); 
+
+  const year = jstDate.getFullYear();
+  const month = String(jstDate.getMonth() + 1).padStart(2, '0');
+  const day = String(jstDate.getDate()).padStart(2, '0');
+  const hours = String(jstDate.getHours()).padStart(2, '0');
+  const minutes = String(jstDate.getMinutes()).padStart(2, '0');
+
+  return `${year}/${month}/${day} ${hours}:${minutes}`;
+}
