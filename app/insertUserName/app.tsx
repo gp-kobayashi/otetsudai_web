@@ -18,7 +18,14 @@ const InsertUserNameApp = ({ user_id }: props) => {
       alert("ユーザー名は英数字のみ使用できます");
       return;
     }
-    await insertUsername(user_id, username);
+    const { error } = await insertUsername(user_id, username);
+    if (error) {
+      alert(
+        "そのユーザー名はすでに使用されています。別のユーザー名を選択してください。",
+      );
+      return;
+    }
+
     router.push("/account");
   };
   return (
