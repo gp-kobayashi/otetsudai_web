@@ -6,7 +6,12 @@ import type {
 } from "../type/types";
 import { PostgrestError } from "@supabase/supabase-js";
 import { formatAvatarUrl, formatUserName } from "./profile";
+import dayjs from "dayjs";
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
 
+dayjs.extend(utc)
+dayjs.extend(timezone)
 const supabase = createClient();
 
 export const getRecruitmentList = async (): Promise<
@@ -140,14 +145,5 @@ export const deleteRecruitment = async (
 };
 
 export const formatCreateAt = (created_at: string) => {
-  const date = new Date(created_at);
-  const jstDate = new Date(date.getTime() + 9 * 60 * 60 * 1000); 
-
-  const year = jstDate.getFullYear();
-  const month = String(jstDate.getMonth() + 1).padStart(2, '0');
-  const day = String(jstDate.getDate()).padStart(2, '0');
-  const hours = String(jstDate.getHours()).padStart(2, '0');
-  const minutes = String(jstDate.getMinutes()).padStart(2, '0');
-
-  return `${year}/${month}/${day} ${hours}:${minutes}`;
+  return dayjs.utc(created_at).tz('Asia/Tokyo').format('YYYY/MM/DD HH:mm')
 }
