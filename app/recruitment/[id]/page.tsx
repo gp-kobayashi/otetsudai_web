@@ -8,6 +8,7 @@ import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import DeleteButton from "./deleteButton";
 import { redirect } from "next/navigation";
+import EditButton from "./editButton";
 
 interface Params {
   id: number;
@@ -38,6 +39,7 @@ const recruitment = async ({ params }: { params: Params }) => {
   return (
     <div>
       <div className={styles.recruitment_container}>
+        {userId === data.user_id && <EditButton id={id} />}
         <h3 className={styles.title}>{data.title}</h3>
         <p className={styles.text}>{data.explanation}</p>
         <div className={styles.recruitment_user}>
