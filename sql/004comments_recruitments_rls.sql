@@ -1,12 +1,17 @@
-ALTER TABLE comments ENABLE ROW LEVEL SECURITY;
+//commentsテーブルへのRLSポリシーを追加
 
-ALTER TABLE recruitments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE comments ENABLE ROW LEVEL SECURITY;
 
 CREATE policy "Public comments are viewable by everyone." on comments
   for select using (true);
 
 CREATE policy "Users can insert their own comments." on comments
   for insert with check (auth.uid() = user_id);
+  
+
+//recruitmentsテーブルへのRLSポリシーを追加
+
+ALTER TABLE recruitments ENABLE ROW LEVEL SECURITY;
 
 CREATE policy "Public recruitments are viewable by everyone." on recruitments
   for select using (true);
