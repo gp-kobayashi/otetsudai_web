@@ -21,3 +21,6 @@ CREATE policy "Users can insert their own recruitments." on recruitments
 
 CREATE policy "Users can delete their own recruitments." on recruitments
   for delete using (auth.uid() = user_id);
+
+CREATE policy "Users can update their own recruitments." on recruitments
+  for update using (auth.uid() = user_id);
