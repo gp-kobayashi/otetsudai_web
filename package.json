@@ -11,6 +11,8 @@
   "dependencies": {
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.47.10",
+    "dayjs": "^1.11.13",
+    "dayjs-plugin-utc": "^0.1.2",
     "next": "15.1.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
