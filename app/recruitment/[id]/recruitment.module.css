@@ -11,6 +11,14 @@
   font-size: 20px;
   border-bottom: 3px solid #ccc;
 }
+.info_status {
+  width: fit-content;
+  margin: 5px 5px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  background-color: lightcoral;
+  color: white;
+}
 .text {
   white-space: pre-line;
 }
