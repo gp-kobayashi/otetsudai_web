@@ -22,7 +22,7 @@ export const getRecruitmentList = async (): Promise<
   }
   const RecruitmentData = data.map((recruitmen) => {
     const avatarUrl = formatAvatarUrl(recruitmen.profiles.avatar_url);
-    const userName =formatUserName(recruitmen.profiles.username);7
+    const userName =formatUserName(recruitmen.profiles.username);
     const created_at = formatDatetime(recruitmen.created_at);
     return {
       ...recruitmen,
