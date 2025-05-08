@@ -6,7 +6,7 @@ import type {
 } from "../type/types";
 import { PostgrestError } from "@supabase/supabase-js";
 import { formatAvatarUrl, formatUserName } from "./profile";
-
+import{formatDatetime} from "@/app/utils/date";
 const supabase = createClient();
 
 export const getRecruitmentList = async (): Promise<
@@ -23,10 +23,12 @@ export const getRecruitmentList = async (): Promise<
   const RecruitmentData = data.map((recruitmen) => {
     const avatarUrl = formatAvatarUrl(recruitmen.profiles.avatar_url);
     const userName =formatUserName(recruitmen.profiles.username);
+    const created_at = formatDatetime(recruitmen.created_at);
     return {
       ...recruitmen,
       avatar_url: avatarUrl,
       username: userName,
+      created_at: created_at,
     };
   });
   return { data: RecruitmentData, error: null };
@@ -49,10 +51,12 @@ export const getRecruitmentBytag = async (
   const RecruitmentData = data.map((recruitmen) => {
     const avatarUrl = formatAvatarUrl(recruitmen.profiles.avatar_url);
     const userName =formatUserName(recruitmen.profiles.username);
+    const created_at = formatDatetime(recruitmen.created_at);
     return {
       ...recruitmen,
       avatar_url: avatarUrl,
       username: userName,
+      created_at: created_at,
     };
   });
   return { data:RecruitmentData,count, error: null };
@@ -89,11 +93,12 @@ export const getRecruitmentById = async (
 
   const avatarUrl = formatAvatarUrl(data.profiles.avatar_url);
   const userName = formatUserName(data.profiles.username);
-
+  const created_at = formatDatetime(data.created_at);
   const recruitmentData = {
     ...data,
     avatar_url: avatarUrl,
     username: userName,
+    created_at: created_at,
   };
 
   return { data: recruitmentData, error: null };
