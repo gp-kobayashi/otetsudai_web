@@ -65,6 +65,13 @@ export default function AccountForm({ user }: { user: User | null }) {
         updated_at: new Date().toISOString(),
         bio,
       });
+      if (username) {
+        const alphanumericRegex = /^[a-zA-Z0-9]+$/;
+        if (!alphanumericRegex.test(username)) {
+          alert("ユーザー名は英数字のみ使用できます");
+          return;
+        }
+      }
       if (error) {
         if (error.code === "23505") {
           alert(
