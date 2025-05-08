@@ -38,7 +38,10 @@ const UserRecruitmentList = (props: props) => {
             className={styles.recruitment_item}
             onClick={() => handleClick(recruitment.id)}
           >
-            <div className={styles.list_title}>{recruitment.title}</div>
+            <div className={styles.recruitment_info}>
+              <div className={styles.list_title}>{recruitment.title}</div>
+              <div className={styles.info_status}>{recruitment.status}</div>
+            </div>
             <div>{recruitment.explanation}</div>
             <div className={styles.list_item}>
               <div className={styles.list_tag}>{recruitment.tag}</div>
