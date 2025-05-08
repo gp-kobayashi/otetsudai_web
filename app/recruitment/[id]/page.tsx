@@ -38,6 +38,7 @@ const recruitment = async ({ params }: { params: Params }) => {
   return (
     <div>
       <div className={styles.recruitment_container}>
+        <div className={styles.info_status}>{data.status}</div>
         <h3 className={styles.title}>{data.title}</h3>
         <p className={styles.text}>{data.explanation}</p>
         <div className={styles.recruitment_user}>

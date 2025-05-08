@@ -41,7 +41,9 @@ const MainPageList = () => {
             className={styles.recruitment_list}
             onClick={() => handleClick(recruitment.id)}
           >
+            <div className={styles.info_status}>{recruitment.status}</div>
             <h3 className={styles.list_title}>{recruitment.title}</h3>
+
             <p className={styles.list_text}>{recruitment.explanation}</p>
             <div className={styles.recruitment_info}>
               <p className={styles.info_tag}>{recruitment.tag}</p>
