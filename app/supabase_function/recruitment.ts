@@ -147,6 +147,22 @@ export const deleteRecruitment = async (
   return { data, error: null };
 };
 
+export const updateStatus = async (
+  id: number,
+  status: string,
+): Promise<SupabaseResponse<Recruitment>> => {
+  const { data, error } = await supabase
+    .from("recruitments")
+    .update({ status: status })
+    .eq("id", id);
+
+  if (error) {
+    return { data: null, error };
+  }
+
+  return { data, error: null };
+}
+
 export const formatStatus = (status: string) => {
   return status ? status : "募集中";
 }
