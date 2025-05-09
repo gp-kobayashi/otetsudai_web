@@ -20,7 +20,7 @@ export default function AccountForm({ user }: { user: User | null }) {
     handleSubmit,
     setValue,
     reset,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
@@ -29,6 +29,7 @@ export default function AccountForm({ user }: { user: User | null }) {
       bio: "",
       avatar_url: "",
     },
+    mode: "onChange",
   });
 
   const getProfile = useCallback(async () => {
@@ -150,9 +151,11 @@ export default function AccountForm({ user }: { user: User | null }) {
         </div>
         <div>
           <button
-            className={styles.account_btn}
+            className={
+              isValid ? styles.account_btn : styles.account_btn_disabled
+            }
             type="submit"
-            disabled={loading}
+            disabled={loading || !isValid}
           >
             {loading ? "Loading ..." : "Update"}
           </button>
