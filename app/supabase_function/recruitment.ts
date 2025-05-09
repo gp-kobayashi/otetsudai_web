@@ -35,16 +35,19 @@ export const getRecruitmentList = async (): Promise<
 };
 
 export const getRecruitmentBytag = async (
-  tag: string, limit = 5, offset = 0
+  tag: string, limit = 5, offset = 0, showOnlyOpen = false,
 ): Promise<{data:RecruitmentWithProfile[]|null;count: number | null;
   error: PostgrestError | null}> => {
-  const { data,count, error } = await supabase
+    let query  = supabase
     .from("recruitments")
     .select("*,profiles(avatar_url,username)",{ count: "exact" })
     .eq("tag", tag)
     .range(offset, offset + limit - 1)
     .order("created_at", { ascending: false });
-
+  if (showOnlyOpen) {
+      query = query.eq("status", "募集中");
+    }
+  const { data, count, error } = await query;
   if (error) {
     return { data: null,count:null ,error };
   }
@@ -97,18 +100,15 @@ export const getRecruitmentById = async (
   if (error) {
     return { data: null, error };
   }
-
   const avatarUrl = formatAvatarUrl(data.profiles.avatar_url);
   const userName = formatUserName(data.profiles.username);
   const status = formatStatus(data.status);
-
   const recruitmentData = {
     ...data,
     avatar_url: avatarUrl,
     username: userName,
     status: status,
   };
-
   return { data: recruitmentData, error: null };
 }
 
