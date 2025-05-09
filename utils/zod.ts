@@ -10,7 +10,7 @@ export const usernameSchema = z.object({
   });
 
 export const profileSchema = z.object({
-    username: usernameSchema,
+    username: usernameSchema.shape.username,
     website: z
       .string()
       .url("正しいURL形式で入力してください")
