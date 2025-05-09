@@ -1,6 +1,5 @@
 import { getRecruitmentById } from "@/app/supabase_function/recruitment";
 import { fetchProfile } from "@/app/supabase_function/profile";
-import styles from "./recruitment.module.css";
 import RecruitmentComponent from "./recruitment";
 import CommentApp from "@/app/components/comment/app";
 import { createClient } from "@/utils/supabase/server";
