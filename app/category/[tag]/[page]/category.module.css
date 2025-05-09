@@ -61,6 +61,35 @@
   -webkit-line-clamp: 2;
   text-overflow: ellipsis;
 }
+.filter_btn {
+  display: flex;
+  width: fit-content;
+  margin: 0 10px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  background-color: lightcoral;
+}
+.filter_btn:hover {
+  background-color: #cc6c6c;
+  color: white;
+}
+.filter_text {
+  color: white;
+}
+.filter_marker {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  margin: 5px 5px;
+  background-color: white;
+}
+.filter_marker_active {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  margin: 5px 5px;
+  background-color: orangered;
+}
 .page_navigation {
   display: flex;
   justify-content: center;
