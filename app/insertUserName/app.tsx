@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { usernameSchema } from "@/app/utils/zod";
+import { usernameSchema } from "@/utils/zod";
 import styles from "./inserUserName.module.css";
 type props = {
   user_id: string;

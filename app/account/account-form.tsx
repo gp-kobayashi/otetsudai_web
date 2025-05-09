@@ -4,7 +4,7 @@ import { createClient } from "@/utils/supabase/client";
 import { type User } from "@supabase/supabase-js";
 import Avatar from "./avatar";
 import styles from "./account.module.css";
-import { profileSchema } from "@/app/utils/zod";
+import { profileSchema } from "@/utils/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
