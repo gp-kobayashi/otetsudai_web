@@ -32,6 +32,17 @@
   border-radius: 5px;
   cursor: pointer;
 }
+.account_btn_disabled {
+  width: 100%;
+  max-width: 600px;
+  padding: 10px;
+  margin: 15px 0;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #0056b3;
+}
 .account_error {
   color: red;
   font-size: 14px;
