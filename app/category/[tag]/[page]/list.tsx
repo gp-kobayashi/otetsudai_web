@@ -11,6 +11,7 @@ type Props = {
   currentPage: number;
   tag: string;
   hasNextPage: boolean;
+  filter: string | null;
 };
 
 const CategoryList = (props: Props) => {
@@ -19,7 +20,10 @@ const CategoryList = (props: Props) => {
     router.push(`/recruitment/${id}`);
   };
 
-  const { recruitmentList, currentPage, tag, hasNextPage } = props;
+  const { recruitmentList, currentPage, tag, hasNextPage, filter } = props;
+
+  const filterQuery = filter === "open" ? "?filter=open" : "";
+
   return (
     <div>
       <ul className={styles.recruitment_list_container}>
@@ -50,13 +54,13 @@ const CategoryList = (props: Props) => {
       </ul>
       <div className={styles.page_navigation}>
         {currentPage > 1 && (
-          <Link href={`/category/${tag}/${currentPage - 1}`}>
+          <Link href={`/category/${tag}/${currentPage - 1}/${filterQuery}`}>
             <GrLinkPrevious className={styles.page_link} />
           </Link>
         )}
         <span className={styles.current_page}> {currentPage} </span>
         {hasNextPage && (
-          <Link href={`/category/${tag}/${currentPage + 1}`}>
+          <Link href={`/category/${tag}/${currentPage + 1}/${filterQuery}`}>
             <GrLinkNext className={styles.page_link} />
           </Link>
         )}
