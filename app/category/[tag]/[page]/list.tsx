@@ -22,7 +22,8 @@ const CategoryList = (props: Props) => {
 
   const { recruitmentList, currentPage, tag, hasNextPage, filter } = props;
 
-  const filterQuery = filter === "open" ? "?filter=open" : "";
+  const filterQuery =
+    filter && filter !== "all" ? `?status=${encodeURIComponent(filter)}` : "";
 
   return (
     <div>
@@ -54,13 +55,13 @@ const CategoryList = (props: Props) => {
       </ul>
       <div className={styles.page_navigation}>
         {currentPage > 1 && (
-          <Link href={`/category/${tag}/${currentPage - 1}/${filterQuery}`}>
+          <Link href={`/category/${tag}/${currentPage - 1}${filterQuery}`}>
             <GrLinkPrevious className={styles.page_link} />
           </Link>
         )}
         <span className={styles.current_page}> {currentPage} </span>
         {hasNextPage && (
-          <Link href={`/category/${tag}/${currentPage + 1}/${filterQuery}`}>
+          <Link href={`/category/${tag}/${currentPage + 1}${filterQuery}`}>
             <GrLinkNext className={styles.page_link} />
           </Link>
         )}
