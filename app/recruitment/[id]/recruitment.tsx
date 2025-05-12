@@ -20,7 +20,11 @@ const Recruitment = (props: Props) => {
     <div className={styles.recruitment_container}>
       <div className={styles.info_status}>{currentStatus}</div>
       {userId === data.user_id && (
-        <RecruitmentStatus id={id} onStatusChange={setCurrentStatus} />
+        <RecruitmentStatus
+          id={id}
+          onStatusChange={setCurrentStatus}
+          currentStatus={currentStatus}
+        />
       )}
       <h3 className={styles.title}>{data.title}</h3>
       <p className={styles.text}>{data.explanation}</p>
