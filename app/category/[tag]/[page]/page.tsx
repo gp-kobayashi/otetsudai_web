@@ -59,9 +59,7 @@ const categoryPage = async ({
           </a>
 
           <div
-            className={
-              !showOnlyOpen ? styles.filter_marker : styles.filter_marker_active
-            }
+            className={`${styles.filter_marker} ${!showOnlyOpen ? styles.active : ""}`}
           ></div>
         </div>
         <h4>ページ：{page}</h4>
