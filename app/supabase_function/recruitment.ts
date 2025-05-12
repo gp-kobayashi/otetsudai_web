@@ -20,11 +20,11 @@ export const getRecruitmentList = async (): Promise<
   if (error) {
     return { data: null, error };
   }
-  const RecruitmentData = data.map((recruitmen) => {
-    const avatarUrl = formatAvatarUrl(recruitmen.profiles.avatar_url);
-    const userName =formatUserName(recruitmen.profiles.username);
+  const RecruitmentData = data.map((recruitment) => {
+    const avatarUrl = formatAvatarUrl(recruitment.profiles.avatar_url);
+    const userName =formatUserName(recruitment.profiles.username);
     return {
-      ...recruitmen,
+      ...recruitment,
       avatar_url: avatarUrl,
       username: userName,
     };
@@ -33,7 +33,7 @@ export const getRecruitmentList = async (): Promise<
 };
 
 export const getRecruitmentBytag = async (
-  tag: string, limit = 5, offset = 0, showOnlyOpen = false,
+  tag: string, limit = 5, offset = 0, status?: string | null,
 ): Promise<{data:RecruitmentWithProfile[]|null;count: number | null;
   error: PostgrestError | null}> => {
     let query  = supabase
@@ -42,18 +42,18 @@ export const getRecruitmentBytag = async (
     .eq("tag", tag)
     .range(offset, offset + limit - 1)
     .order("created_at", { ascending: false });
-  if (showOnlyOpen) {
-      query = query.eq("status", "募集中");
+  if (status) {
+      query = query.eq("status", status);
     }
   const { data, count, error } = await query;
   if (error) {
     return { data: null,count:null ,error };
   }
-  const RecruitmentData = data.map((recruitmen) => {
-    const avatarUrl = formatAvatarUrl(recruitmen.profiles.avatar_url);
-    const userName =formatUserName(recruitmen.profiles.username);
+  const RecruitmentData = data.map((recruitment) => {
+    const avatarUrl = formatAvatarUrl(recruitment.profiles.avatar_url);
+    const userName =formatUserName(recruitment.profiles.username);
     return {
-      ...recruitmen,
+      ...recruitment,
       avatar_url: avatarUrl,
       username: userName,
     };
