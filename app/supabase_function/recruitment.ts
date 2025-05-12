@@ -23,12 +23,10 @@ export const getRecruitmentList = async (): Promise<
   const RecruitmentData = data.map((recruitmen) => {
     const avatarUrl = formatAvatarUrl(recruitmen.profiles.avatar_url);
     const userName =formatUserName(recruitmen.profiles.username);
-    const status = formatStatus(recruitmen.status);
     return {
       ...recruitmen,
       avatar_url: avatarUrl,
       username: userName,
-      status: status,
     };
   });
   return { data: RecruitmentData, error: null };
@@ -54,12 +52,10 @@ export const getRecruitmentBytag = async (
   const RecruitmentData = data.map((recruitmen) => {
     const avatarUrl = formatAvatarUrl(recruitmen.profiles.avatar_url);
     const userName =formatUserName(recruitmen.profiles.username);
-    const status = formatStatus(recruitmen.status);
     return {
       ...recruitmen,
       avatar_url: avatarUrl,
       username: userName,
-      status: status,
     };
   });
   return { data:RecruitmentData,count, error: null };
@@ -77,15 +73,7 @@ export const getRecruitmentByUserList = async (
   if (error) {
     return { data: null, error };
   }
-  const RecruitmentData = data.map((recruitmen) => {
-    const status = formatStatus(recruitmen.status);
-    return {
-      ...recruitmen,
-      status: status,
-    };
-  });
-
-  return { data:RecruitmentData, error: null };
+  return { data, error: null };
 };
 
 export const getRecruitmentById = async (
@@ -102,12 +90,10 @@ export const getRecruitmentById = async (
   }
   const avatarUrl = formatAvatarUrl(data.profiles.avatar_url);
   const userName = formatUserName(data.profiles.username);
-  const status = formatStatus(data.status);
   const recruitmentData = {
     ...data,
     avatar_url: avatarUrl,
     username: userName,
-    status: status,
   };
   return { data: recruitmentData, error: null };
 }
@@ -161,8 +147,4 @@ export const updateStatus = async (
   }
 
   return { data, error: null };
-}
-
-export const formatStatus = (status: string) => {
-  return status ? status : "募集中";
 }
