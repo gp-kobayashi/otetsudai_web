@@ -4,11 +4,6 @@ import { redirect } from "next/navigation";
 import CategoryList from "./list";
 import styles from "./category.module.css";
 
-type Props = {
-  params: { tag: string; page: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
-};
-
 const categoryPage = async ({
   params,
   searchParams,
