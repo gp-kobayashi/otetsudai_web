@@ -6,12 +6,13 @@ type StatusType = "募集中" | "対応中" | "完了" | "キャンセル" | "�
 type Props = {
   id: number;
   onStatusChange: (status: StatusType) => void;
+  currentStatus: string | null;
 };
 
 const RecruitmentStatus = (props: Props) => {
-  const { id, onStatusChange } = props;
+  const { id, onStatusChange, currentStatus } = props;
   const statuses = ["募集中", "対応中", "完了", "キャンセル", "期限切れ"];
-  const [status, setStatus] = useState(statuses[0]);
+  const [status, setStatus] = useState(currentStatus ?? "募集中");
   const handleChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newStatus = e.target.value as StatusType;
     setStatus(newStatus);
