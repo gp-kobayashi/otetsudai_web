@@ -3,15 +3,16 @@ import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import CategoryList from "./list";
 import styles from "./category.module.css";
-
+import StatusFilter from "./filter";
 const categoryPage = async ({
   params,
   searchParams,
 }: {
   params: { tag: string; page: string };
-  searchParams: { filter?: string };
+  searchParams: { status?: string };
 }) => {
   const { tag, page } = params;
+  const status = searchParams.status ?? null;
   const currentPage = Number(page);
   const itemsPerPage = 5;
   const offset = (currentPage - 1) * itemsPerPage;
@@ -22,12 +23,11 @@ const categoryPage = async ({
   if (!user) {
     redirect("/login");
   }
-  const showOnlyOpen = searchParams.filter === "open";
   const { data, count } = await getRecruitmentBytag(
     tag,
     itemsPerPage,
     offset,
-    showOnlyOpen,
+    status,
   );
   if (!data) {
     redirect("/");
@@ -45,18 +45,7 @@ const categoryPage = async ({
     <div>
       <div className={styles.category_header}>
         <h3>カテゴリー：{tag}</h3>
-        <div className={styles.filter_btn}>
-          <a
-            href={!showOnlyOpen ? `?filter=open` : `/category/${tag}/${page}`}
-            className={styles.filter_text}
-          >
-            募集中のみ
-          </a>
-
-          <div
-            className={`${styles.filter_marker} ${!showOnlyOpen ? styles.active : ""}`}
-          ></div>
-        </div>
+        <StatusFilter tag={tag} page={page} currentStatus={status} />
         <h4>ページ：{page}</h4>
       </div>
       <CategoryList
@@ -64,7 +53,7 @@ const categoryPage = async ({
         tag={tag}
         currentPage={currentPage}
         hasNextPage={hasNextPage}
-        filter={searchParams?.filter ?? "all"}
+        filter={status ?? "all"}
       />
     </div>
   );
