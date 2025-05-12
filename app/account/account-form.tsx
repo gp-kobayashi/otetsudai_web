@@ -151,9 +151,7 @@ export default function AccountForm({ user }: { user: User | null }) {
         </div>
         <div>
           <button
-            className={
-              isValid ? styles.account_btn : styles.account_btn_disabled
-            }
+            className={`${styles.account_btn} ${!isValid ? styles.disabled : ""}`}
             type="submit"
             disabled={loading || !isValid}
           >
