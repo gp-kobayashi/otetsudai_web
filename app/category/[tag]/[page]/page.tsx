@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 import CategoryList from "./list";
 import styles from "./category.module.css";
 import StatusFilter from "./filter";
-import { use } from "react";
 
 type PageProps = {
   params: Promise<{
@@ -17,8 +16,8 @@ type PageProps = {
 };
 
 const categoryPage = async ({ params, searchParams }: PageProps) => {
-  const { tag, page } = use(params);
-  const status = use(searchParams).status ?? null;
+  const { tag, page } = await params;
+  const status = (await searchParams).status ?? null;
   const currentPage = Number(page);
   const itemsPerPage = 5;
   const offset = (currentPage - 1) * itemsPerPage;
