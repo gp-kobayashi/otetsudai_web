@@ -3,27 +3,16 @@ import { RecruitmentWithProfile } from "@/app/type/types";
 import styles from "./category.module.css";
 import { CiClock2 } from "react-icons/ci";
 import Image from "next/image";
-import Link from "next/link";
-import { GrLinkNext, GrLinkPrevious } from "react-icons/gr";
 import { useRouter } from "next/navigation";
 type Props = {
   recruitmentList: RecruitmentWithProfile[];
-  currentPage: number;
-  tag: string;
-  hasNextPage: boolean;
-  filter: string | null;
 };
 
-const CategoryList = (props: Props) => {
+const CategoryList = ({ recruitmentList }: Props) => {
   const router = useRouter();
   const handleClick = (id: number) => {
     router.push(`/recruitment/${id}`);
   };
-
-  const { recruitmentList, currentPage, tag, hasNextPage, filter } = props;
-
-  const filterQuery =
-    filter && filter !== "all" ? `?status=${encodeURIComponent(filter)}` : "";
 
   return (
     <div>
@@ -53,19 +42,6 @@ const CategoryList = (props: Props) => {
           </li>
         ))}
       </ul>
-      <div className={styles.page_navigation}>
-        {currentPage > 1 && (
-          <Link href={`/category/${tag}/${currentPage - 1}${filterQuery}`}>
-            <GrLinkPrevious className={styles.page_link} />
-          </Link>
-        )}
-        <span className={styles.current_page}> {currentPage} </span>
-        {hasNextPage && (
-          <Link href={`/category/${tag}/${currentPage + 1}${filterQuery}`}>
-            <GrLinkNext className={styles.page_link} />
-          </Link>
-        )}
-      </div>
     </div>
   );
 };

@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import CategoryList from "./list";
 import styles from "./category.module.css";
 import StatusFilter from "./filter";
+import Pagination from "./pagination";
 
 type PageProps = {
   params: Promise<{
@@ -53,12 +54,12 @@ const categoryPage = async ({ params, searchParams }: PageProps) => {
         <StatusFilter tag={tag} page={page} currentStatus={status} />
         <h4>ページ：{page}</h4>
       </div>
-      <CategoryList
-        recruitmentList={recruitmentList}
-        tag={tag}
+      <CategoryList recruitmentList={recruitmentList} />
+      <Pagination
+        filter={status ?? "all"}
         currentPage={currentPage}
         hasNextPage={hasNextPage}
-        filter={status ?? "all"}
+        tag={tag}
       />
     </div>
   );
