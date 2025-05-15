@@ -21,7 +21,7 @@ const StatusFilter = ({ tag, currentStatus }: Props) => {
           <Link
             key={status}
             href={href}
-            className={`${styles.filter_btn} ${isActive ? styles.active : ""}`}
+            className={`${styles.filter_btn} ${isActive && styles.active}`}
           >
             {status}
           </Link>
