@@ -50,7 +50,7 @@ const InsertUserNameApp = ({ user_id }: props) => {
           Submit
         </button>
         {errors.username && (
-          <p className={styles.account_error}>{errors.username.message}</p>
+          <p className={styles.error}>{errors.username.message}</p>
         )}
       </form>
     </div>
