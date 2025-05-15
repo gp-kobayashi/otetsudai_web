@@ -31,6 +31,10 @@
   border-radius: 5px;
   cursor: pointer;
 }
+.disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
 .error {
   color: red;
   font-size: 14px;

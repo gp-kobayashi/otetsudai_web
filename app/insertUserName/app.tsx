@@ -17,7 +17,7 @@ const InsertUserNameApp = ({ user_id }: props) => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<UsernameFormData>({
     resolver: zodResolver(usernameSchema),
   });
@@ -42,11 +42,15 @@ const InsertUserNameApp = ({ user_id }: props) => {
           className={styles.input}
         />
 
-        <button type="submit" className={styles.btn}>
+        <button
+          type="submit"
+          className={`${styles.btn} ${!isValid && styles.disabled}`}
+          disabled={!isValid}
+        >
           Submit
         </button>
         {errors.username && (
-          <p className={styles.error}>{errors.username.message}</p>
+          <p className={styles.account_error}>{errors.username.message}</p>
         )}
       </form>
     </div>
