@@ -1,49 +1,57 @@
 "use client";
 import { insertUsername } from "@/app/supabase_function/profile";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { usernameSchema } from "@/utils/zod";
 import styles from "./inserUserName.module.css";
 type props = {
   user_id: string;
 };
+type UsernameFormData = z.infer<typeof usernameSchema>;
 
 const InsertUserNameApp = ({ user_id }: props) => {
   const router = useRouter();
-  const [username, setUsername] = useState<string>("");
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const alphanumericRegex = /^[a-zA-Z0-9]+$/;
-    if (!alphanumericRegex.test(username)) {
-      alert("ユーザー名は英数字のみ使用できます");
-      return;
-    }
-    const { error } = await insertUsername(user_id, username);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<UsernameFormData>({
+    resolver: zodResolver(usernameSchema),
+  });
+  const onSubmit = async (data: UsernameFormData) => {
+    const { error } = await insertUsername(user_id, data.username);
     if (error) {
       alert(
         "そのユーザー名はすでに使用されています。別のユーザー名を選択してください。",
       );
       return;
     }
-
     router.push("/account");
   };
   return (
     <div>
-      <form onSubmit={(e) => handleSubmit(e)}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <label htmlFor="username">User Name:</label>
         <input
           type="text"
           id="username"
-          name="username"
-          required
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          {...register("username")}
           className={styles.input}
         />
-        <button type="submit" className={styles.btn}>
+
+        <button
+          type="submit"
+          className={`${styles.btn} ${!isValid && styles.disabled}`}
+          disabled={!isValid}
+        >
           Submit
         </button>
+        {errors.username && (
+          <p className={styles.error}>{errors.username.message}</p>
+        )}
       </form>
     </div>
   );
