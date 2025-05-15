@@ -23,7 +23,7 @@ const InsertUserName = async () => {
 
       <InsertUserNameApp user_id={user_id} />
       <p className={styles.attention}>
-        ※ユーザーネームは英数字のみ使用できます。
+        ※ユーザーネームは３文字以上で英数字のみ使用できます。
       </p>
     </div>
   );
