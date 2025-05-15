@@ -1,5 +1,6 @@
 import styles from "./category.module.css";
 import Link from "next/link";
+import { statusEnum } from "@/utils/enum/enum";
 
 type Props = {
   tag: string;
@@ -8,7 +9,7 @@ type Props = {
 };
 
 const StatusFilter = ({ tag, page, currentStatus }: Props) => {
-  const statuses = ["募集中", "対応中", "完了", "キャンセル", "期限切れ"];
+  const statuses = statusEnum;
 
   return (
     <div className={styles.filter_btns}>
