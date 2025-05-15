@@ -51,7 +51,7 @@ const categoryPage = async ({ params, searchParams }: PageProps) => {
     <div>
       <div className={styles.category_header}>
         <h3>カテゴリー：{tag}</h3>
-        <StatusFilter tag={tag} page={page} currentStatus={status} />
+        <StatusFilter tag={tag} currentStatus={status} />
         <h4>ページ：{page}</h4>
       </div>
       <CategoryList recruitmentList={recruitmentList} />

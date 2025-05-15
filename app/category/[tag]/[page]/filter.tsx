@@ -4,11 +4,10 @@ import { statusEnum } from "@/utils/enum/enum";
 
 type Props = {
   tag: string;
-  page: string;
   currentStatus: string | null;
 };
 
-const StatusFilter = ({ tag, page, currentStatus }: Props) => {
+const StatusFilter = ({ tag, currentStatus }: Props) => {
   const statuses = statusEnum;
 
   return (
@@ -16,8 +15,8 @@ const StatusFilter = ({ tag, page, currentStatus }: Props) => {
       {statuses.map((status) => {
         const isActive = currentStatus === status;
         const href = isActive
-          ? `/category/${tag}/${page}`
-          : `/category/${tag}/${page}?status=${encodeURIComponent(status)}`;
+          ? `/category/${tag}/1`
+          : `/category/${tag}/1?status=${encodeURIComponent(status)}`;
         return (
           <Link
             key={status}
