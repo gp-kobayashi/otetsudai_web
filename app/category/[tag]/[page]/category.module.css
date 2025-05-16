@@ -30,6 +30,14 @@
 .recruitment_info {
   display: flex;
 }
+.info_status {
+  width: fit-content;
+  margin: 5px 10px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  background-color: lightcoral;
+  color: white;
+}
 
 .info_item {
   margin: 0 10px;
@@ -52,6 +60,40 @@
   overflow: hidden;
   -webkit-line-clamp: 2;
   text-overflow: ellipsis;
+}
+.filter_btns {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.filter_btn {
+  padding: 4px 12px;
+  border: 1px solid gray;
+  border-radius: 4px;
+  text-decoration: none;
+  color: #333;
+}
+.filter_btn:hover {
+  background-color: #f0f0f0;
+}
+.active {
+  background-color: #0070f3;
+  color: white;
+  border-color: #0070f3;
+}
+
+.filter_text {
+  color: white;
+}
+.filter_marker {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  margin: 5px 5px;
+  background-color: white;
+}
+.filter_marker.active {
+  background-color: orangered;
 }
 .page_navigation {
   display: flex;
