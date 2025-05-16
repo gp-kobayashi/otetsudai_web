@@ -23,6 +23,7 @@ export const getRecruitmentList = async (): Promise<
   const RecruitmentData = data.map((recruitment) => {
     const avatarUrl = formatAvatarUrl(recruitment.profiles.avatar_url);
     const userName =formatUserName(recruitment.profiles.username);
+    const created_at = formatDatetime(recruitment.created_at);
     return {
       ...recruitment,
       avatar_url: avatarUrl,
@@ -53,6 +54,7 @@ export const getRecruitmentBytag = async (
   const RecruitmentData = data.map((recruitment) => {
     const avatarUrl = formatAvatarUrl(recruitment.profiles.avatar_url);
     const userName =formatUserName(recruitment.profiles.username);
+    const created_at = formatDatetime(recruitment.created_at);
     return {
       ...recruitment,
       avatar_url: avatarUrl,
@@ -92,6 +94,7 @@ export const getRecruitmentById = async (
   }
   const avatarUrl = formatAvatarUrl(data.profiles.avatar_url);
   const userName = formatUserName(data.profiles.username);
+  const created_at = formatDatetime(data.created_at);
   const recruitmentData = {
     ...data,
     avatar_url: avatarUrl,
