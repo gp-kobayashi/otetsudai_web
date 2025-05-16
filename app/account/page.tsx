@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import AccountForm from "./account-form";
 import { createClient } from "@/utils/supabase/server";
-import { fetchProfile } from "@/app/supabase_function/profile";
+import { fetchProfile } from "@/lib/supabase_function/profile";
 
 export default async function Account() {
   const supabase = await createClient();

@@ -3,10 +3,10 @@ import type {
   Recruitment,
   RecruitmentWithProfile,
   SupabaseResponse,
-} from "../type/types";
+} from "../../types/supabase/types";
 import { PostgrestError } from "@supabase/supabase-js";
 import { formatAvatarUrl, formatUserName } from "./profile";
-import{formatDatetime} from "@/app/utils/date";
+import{formatDatetime} from "@/utils/date";
 const supabase = createClient();
 
 export const getRecruitmentList = async (): Promise<

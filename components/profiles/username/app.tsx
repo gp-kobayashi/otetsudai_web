@@ -1,5 +1,5 @@
 "use client";
-import { insertUsername } from "@/app/supabase_function/profile";
+import { insertUsername } from "@/lib/supabase_function/profile";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
