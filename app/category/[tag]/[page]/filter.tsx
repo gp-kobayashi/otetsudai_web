@@ -1,6 +1,6 @@
 import styles from "./category.module.css";
 import Link from "next/link";
-import { STATUS_ENUM } from "@/utils/enum/enum";
+import { STATUS_VALUES } from "@/utils/enum/enum";
 
 type Props = {
   tag: string;
@@ -8,11 +8,9 @@ type Props = {
 };
 
 const StatusFilter = ({ tag, currentStatus }: Props) => {
-  const statuses = STATUS_ENUM;
-
   return (
     <div className={styles.filter_btns}>
-      {statuses.map((status) => {
+      {STATUS_VALUES.map((status) => {
         const isActive = currentStatus === status;
         const href = isActive
           ? `/category/${tag}/1`
