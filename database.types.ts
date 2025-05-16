@@ -1,3 +1,4 @@
+
 export type Json =
   | string
   | number
@@ -86,6 +87,7 @@ export type Database = {
           created_at: string | null
           explanation: string
           id: number
+          status: Database["public"]["Enums"]["status_enum"] | null
           tag: Database["public"]["Enums"]["tag_enum"]
           title: string
           updated_at: string | null
@@ -95,6 +97,7 @@ export type Database = {
           created_at?: string | null
           explanation: string
           id?: number
+          status?: Database["public"]["Enums"]["status_enum"] | null
           tag: Database["public"]["Enums"]["tag_enum"]
           title: string
           updated_at?: string | null
@@ -104,6 +107,7 @@ export type Database = {
           created_at?: string | null
           explanation?: string
           id?: number
+          status?: Database["public"]["Enums"]["status_enum"] | null
           tag?: Database["public"]["Enums"]["tag_enum"]
           title?: string
           updated_at?: string | null
@@ -127,6 +131,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      status_enum: "募集中" | "対応中" | "完了" | "キャンセル" | "期限切れ"
       tag_enum: "Video" | "Text" | "Audio" | "programming" | "design" | "other"
     }
     CompositeTypes: {
@@ -243,6 +248,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      status_enum: ["募集中", "対応中", "完了", "キャンセル", "期限切れ"],
       tag_enum: ["Video", "Text", "Audio", "programming", "design", "other"],
     },
   },

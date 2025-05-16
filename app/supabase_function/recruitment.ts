@@ -20,12 +20,11 @@ export const getRecruitmentList = async (): Promise<
   if (error) {
     return { data: null, error };
   }
-  const RecruitmentData = data.map((recruitmen) => {
-    const avatarUrl = formatAvatarUrl(recruitmen.profiles.avatar_url);
-    const userName =formatUserName(recruitmen.profiles.username);
-    const created_at = formatDatetime(recruitmen.created_at);
+  const RecruitmentData = data.map((recruitment) => {
+    const avatarUrl = formatAvatarUrl(recruitment.profiles.avatar_url);
+    const userName =formatUserName(recruitment.profiles.username);
     return {
-      ...recruitmen,
+      ...recruitment,
       avatar_url: avatarUrl,
       username: userName,
       created_at: created_at,
@@ -35,25 +34,27 @@ export const getRecruitmentList = async (): Promise<
 };
 
 export const getRecruitmentBytag = async (
-  tag: string, limit = 5, offset = 0
+  tag: string, limit = 5, offset = 0, status?: string | null,
 ): Promise<{data:RecruitmentWithProfile[]|null;count: number | null;
   error: PostgrestError | null}> => {
-  const { data,count, error } = await supabase
+    let query  = supabase
     .from("recruitments")
     .select("*,profiles(avatar_url,username)",{ count: "exact" })
     .eq("tag", tag)
     .range(offset, offset + limit - 1)
     .order("created_at", { ascending: false });
-
+  if (status) {
+      query = query.eq("status", status);
+    }
+  const { data, count, error } = await query;
   if (error) {
     return { data: null,count:null ,error };
   }
-  const RecruitmentData = data.map((recruitmen) => {
-    const avatarUrl = formatAvatarUrl(recruitmen.profiles.avatar_url);
-    const userName =formatUserName(recruitmen.profiles.username);
-    const created_at = formatDatetime(recruitmen.created_at);
+  const RecruitmentData = data.map((recruitment) => {
+    const avatarUrl = formatAvatarUrl(recruitment.profiles.avatar_url);
+    const userName =formatUserName(recruitment.profiles.username);
     return {
-      ...recruitmen,
+      ...recruitment,
       avatar_url: avatarUrl,
       username: userName,
       created_at: created_at,
@@ -74,7 +75,6 @@ export const getRecruitmentByUserList = async (
   if (error) {
     return { data: null, error };
   }
-
   return { data, error: null };
 };
 
@@ -90,17 +90,14 @@ export const getRecruitmentById = async (
   if (error) {
     return { data: null, error };
   }
-
   const avatarUrl = formatAvatarUrl(data.profiles.avatar_url);
   const userName = formatUserName(data.profiles.username);
-  const created_at = formatDatetime(data.created_at);
   const recruitmentData = {
     ...data,
     avatar_url: avatarUrl,
     username: userName,
     created_at: created_at,
   };
-
   return { data: recruitmentData, error: null };
 }
 
@@ -139,14 +136,13 @@ export const deleteRecruitment = async (
   return { data, error: null };
 };
 
-export const updateRecruitment = async (
+export const updateStatus = async (
   id: number,
-  title: string,
-  explanation: string,
+  status: string,
 ): Promise<SupabaseResponse<Recruitment>> => {
   const { data, error } = await supabase
     .from("recruitments")
-    .update({ title, explanation })
+    .update({ status: status })
     .eq("id", id);
 
   if (error) {
@@ -154,4 +150,4 @@ export const updateRecruitment = async (
   }
 
   return { data, error: null };
-};
+}

@@ -1,9 +1,9 @@
 import { getRecruitmentById } from "@/app/supabase_function/recruitment";
 import { fetchProfile } from "@/app/supabase_function/profile";
-import RecruitmentComponent from "./recruitment";
 import CommentApp from "@/app/components/comment/app";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
+import Recruitment from "./recruitment";
 
 interface Params {
   id: number;
@@ -33,7 +33,7 @@ const recruitment = async ({ params }: { params: Params }) => {
   }
   return (
     <div>
-      <RecruitmentComponent id={id} userId={userId} recruitmentData={data} />
+      <Recruitment data={data} userId={userId} id={id} />
 
       <CommentApp id={id} userId={userId} username={username} />
     </div>

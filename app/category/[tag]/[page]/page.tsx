@@ -3,14 +3,22 @@ import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import CategoryList from "./list";
 import styles from "./category.module.css";
+import StatusFilter from "./filter";
+import Pagination from "./pagination";
 
-interface Params {
-  tag: string;
-  page: string;
-}
+type PageProps = {
+  params: Promise<{
+    tag: string;
+    page: string;
+  }>;
+  searchParams: Promise<{
+    status?: string;
+  }>;
+};
 
-const categoryPage = async ({ params }: { params: Params }) => {
-  const { tag, page } = params;
+const categoryPage = async ({ params, searchParams }: PageProps) => {
+  const { tag, page } = await params;
+  const status = (await searchParams).status ?? null;
   const currentPage = Number(page);
   const itemsPerPage = 5;
   const offset = (currentPage - 1) * itemsPerPage;
@@ -21,10 +29,16 @@ const categoryPage = async ({ params }: { params: Params }) => {
   if (!user) {
     redirect("/login");
   }
-  const { data, count } = await getRecruitmentBytag(tag, itemsPerPage, offset);
+  const { data, count } = await getRecruitmentBytag(
+    tag,
+    itemsPerPage,
+    offset,
+    status,
+  );
   if (!data) {
     redirect("/");
   }
+  const filterQuery = status ? `?status=${encodeURIComponent(status)}` : "";
   const totalPages = count ? Math.ceil(count / itemsPerPage) : 1;
   const hasNextPage = currentPage < totalPages;
   const recruitmentList = data.map((recruitment) => {
@@ -38,13 +52,15 @@ const categoryPage = async ({ params }: { params: Params }) => {
     <div>
       <div className={styles.category_header}>
         <h3>カテゴリー：{tag}</h3>
+        <StatusFilter tag={tag} currentStatus={status} />
         <h4>ページ：{page}</h4>
       </div>
-      <CategoryList
-        recruitmentList={recruitmentList}
-        tag={tag}
+      <CategoryList recruitmentList={recruitmentList} />
+      <Pagination
+        filterQuery={filterQuery}
         currentPage={currentPage}
         hasNextPage={hasNextPage}
+        tag={tag}
       />
     </div>
   );
