@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { STATUS_ENUM } from "@/utils/enum/enum";
+import { STATUS_VALUES } from "@/utils/enum/enum";
 import type { statusEnumType } from "@/app/type/types";
 import styles from "./recruitment.module.css";
 import { updateStatus } from "@/app/supabase_function/recruitment";
@@ -13,7 +13,6 @@ type Props = {
 
 const RecruitmentStatus = (props: Props) => {
   const { id, onStatusChange, currentStatus } = props;
-  const statuses = STATUS_ENUM;
   const [status, setStatus] = useState(currentStatus ?? "募集中");
   const handleChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newStatus = e.target.value as StatusType;
@@ -25,7 +24,7 @@ const RecruitmentStatus = (props: Props) => {
     <div>
       <label className={styles.status_label}>ステータス変更</label>
       <select value={status} onChange={handleChange}>
-        {statuses.map((statusOption) => (
+        {STATUS_VALUES.map((statusOption) => (
           <option key={statusOption} value={statusOption}>
             {statusOption}
           </option>
