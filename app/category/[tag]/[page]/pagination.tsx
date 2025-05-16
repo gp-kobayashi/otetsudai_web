@@ -6,12 +6,11 @@ type Props = {
   currentPage: number;
   hasNextPage: boolean;
   tag: string;
-  filter: string | null;
+  filterQuery: string;
 };
 const Pagination = (props: Props) => {
-  const { currentPage, tag, hasNextPage, filter } = props;
-  const filterQuery =
-    filter && filter !== "all" ? `?status=${encodeURIComponent(filter)}` : "";
+  const { currentPage, tag, hasNextPage, filterQuery } = props;
+
   return (
     <div className={styles.page_navigation}>
       {currentPage > 1 && (
