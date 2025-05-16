@@ -1,5 +1,5 @@
 "use client";
-import { RecruitmentWithProfile } from "@/app/type/types";
+import { RecruitmentWithProfile } from "@/types/supabase/types";
 import { useEffect, useState } from "react";
 import styles from "./edit.module.css";
 type Props = {
