@@ -1,7 +1,3 @@
-export const statusEnum = [
-  "募集中",
-  "対応中",
-  "完了",
-  "キャンセル",
-  "期限切れ",
-];
+import { Constants } from "@/database.types";
+
+export const STATUS_ENUM = Constants.public.Enums.status_enum;
