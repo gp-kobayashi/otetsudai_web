@@ -1,4 +1,4 @@
-import type { Database } from "@/database.types";
+import type { Database } from "@/utils/supabase/database.types";
 
 export type Recruitment = Database["public"]["Tables"]["recruitments"]["Row"];
 

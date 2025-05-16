@@ -3,9 +3,9 @@ import styles from "./recruitment.module.css";
 import Image from "next/image";
 import { CiClock2 } from "react-icons/ci";
 import Link from "next/link";
-import DeleteButton from "./deleteButton";
+import DeleteButton from "../recruitmentBtn/delete/deleteButton";
 import RecruitmentStatus from "./status";
-import type { RecruitmentWithProfile } from "@/app/type/types";
+import type { RecruitmentWithProfile } from "@/types/supabase/types";
 import { useState } from "react";
 type Props = {
   data: RecruitmentWithProfile;

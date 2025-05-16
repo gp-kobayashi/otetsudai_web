@@ -1,9 +1,9 @@
 "use client";
 
-import type { Recruitment } from "@/app/type/types";
+import type { Recruitment } from "@/types/supabase/types";
 import styles from "./userProfile.module.css";
 import { useRouter } from "next/navigation";
-import { deleteRecruitment } from "@/app/supabase_function/recruitment";
+import { deleteRecruitment } from "@/lib/supabase_function/recruitment";
 
 type props = {
   recruitmentList: Recruitment[] | null;

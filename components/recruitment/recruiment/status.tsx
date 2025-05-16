@@ -1,9 +1,9 @@
 "use client";
 import { useState } from "react";
 import { STATUS_VALUES } from "@/utils/enum/enum";
-import type { statusEnumType } from "@/app/type/types";
+import type { statusEnumType } from "@/types/supabase/types";
 import styles from "./recruitment.module.css";
-import { updateStatus } from "@/app/supabase_function/recruitment";
+import { updateStatus } from "@/lib/supabase_function/recruitment";
 type StatusType = statusEnumType;
 type Props = {
   id: number;

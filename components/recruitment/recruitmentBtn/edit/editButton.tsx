@@ -1,7 +1,7 @@
 "use client";
 import EditModal from "@/app/components/recruitment/edit/editModal";
-import { updateRecruitment } from "@/app/supabase_function/recruitment";
-import { RecruitmentWithProfile } from "@/app/type/types";
+import { updateRecruitment } from "@/lib/supabase_function/recruitment";
+import { RecruitmentWithProfile } from "@/types/supabase/types";
 import { useState } from "react";
 type props = {
   recruitmentData: RecruitmentWithProfile;

@@ -2,11 +2,11 @@ import {
   fetchProfile,
   fetchProfileByUsername,
   formatAvatarUrl,
-} from "@/app/supabase_function/profile";
+} from "@/lib/supabase_function/profile";
 import styles from "./userProfile.module.css";
 import Image from "next/image";
-import UserRecruitmentList from "./list";
-import { getRecruitmentByUserList } from "@/app/supabase_function/recruitment";
+import UserRecruitmentList from "../../../components/profiles/user/list";
+import { getRecruitmentByUserList } from "@/lib/supabase_function/recruitment";
 import { createClient } from "@/utils/supabase/server";
 import { GoLink } from "react-icons/go";
 interface Params {

@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteRecruitment } from "@/app/supabase_function/recruitment";
+import { deleteRecruitment } from "@/lib/supabase_function/recruitment";
 import styles from "./delete.module.css";
 import { useRouter } from "next/navigation";
 type props = {

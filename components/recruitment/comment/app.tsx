@@ -4,10 +4,10 @@ import styles from "./comment.module.css";
 import {
   addComment,
   getCommentByRecruitment,
-} from "@/app/supabase_function/comment";
-import CommentList from "@/app/components/comment/list";
-import { CommentWithProfile } from "@/app/type/types";
-import { formatAvatarUrl, getusername } from "@/app/supabase_function/profile";
+} from "@/lib/supabase_function/comment";
+import CommentList from "@/components/recruitment/comment/list";
+import { CommentWithProfile } from "@/types/supabase/types";
+import { formatAvatarUrl, getusername } from "@/lib/supabase_function/profile";
 import Link from "next/link";
 type Props = {
   id: number;

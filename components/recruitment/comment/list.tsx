@@ -3,7 +3,7 @@
 import styles from "./comment.module.css";
 import Image from "next/image";
 import { CiClock2 } from "react-icons/ci";
-import { CommentWithProfile } from "@/app/type/types";
+import { CommentWithProfile } from "@/types/supabase/types";
 type Props = {
   commentList: CommentWithProfile[];
 };

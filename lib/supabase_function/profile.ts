@@ -1,5 +1,5 @@
 import { createClient } from "@/utils/supabase/client";
-import type { Profile, SupabaseResponse } from "../type/types";
+import type { Profile, SupabaseResponse } from "../../types/supabase/types";
 
 const supabase = createClient();
 export const DEFAULT_AVATAR_URL = "/default.png";

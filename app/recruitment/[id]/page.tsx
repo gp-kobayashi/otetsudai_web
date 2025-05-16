@@ -1,9 +1,9 @@
-import { getRecruitmentById } from "@/app/supabase_function/recruitment";
-import { fetchProfile } from "@/app/supabase_function/profile";
-import CommentApp from "@/app/components/comment/app";
+import { getRecruitmentById } from "@/lib/supabase_function/recruitment";
+import { fetchProfile } from "@/lib/supabase_function/profile";
+import CommentApp from "@/components/recruitment/comment/app";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
-import Recruitment from "./recruitment";
+import Recruitment from "../../../components/recruitment/recruiment/recruitment";
 
 interface Params {
   id: number;
