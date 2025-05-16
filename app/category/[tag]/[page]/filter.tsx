@@ -1,6 +1,6 @@
 import styles from "./category.module.css";
 import Link from "next/link";
-import { statusEnum } from "@/utils/enum/enum";
+import { STATUS_ENUM } from "@/utils/enum/enum";
 
 type Props = {
   tag: string;
@@ -8,7 +8,7 @@ type Props = {
 };
 
 const StatusFilter = ({ tag, currentStatus }: Props) => {
-  const statuses = statusEnum;
+  const statuses = STATUS_ENUM;
 
   return (
     <div className={styles.filter_btns}>
