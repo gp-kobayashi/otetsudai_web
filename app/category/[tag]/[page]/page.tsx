@@ -38,8 +38,7 @@ const categoryPage = async ({ params, searchParams }: PageProps) => {
   if (!data) {
     redirect("/");
   }
-  const filterQuery =
-    status && status !== "all" ? `?status=${encodeURIComponent(status)}` : "";
+  const filterQuery = status ? `?status=${encodeURIComponent(status)}` : "";
   const totalPages = count ? Math.ceil(count / itemsPerPage) : 1;
   const hasNextPage = currentPage < totalPages;
   const recruitmentList = data.map((recruitment) => {
