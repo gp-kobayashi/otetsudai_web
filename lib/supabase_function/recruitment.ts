@@ -154,3 +154,20 @@ export const updateStatus = async (
 
   return { data, error: null };
 }
+
+export const updateRecruitment = async (
+  id: number,
+  title: string,
+  explanation: string,
+): Promise<SupabaseResponse<Recruitment>> => {
+  const { data, error } = await supabase
+    .from("recruitments")
+    .update({ title: title, explanation: explanation })
+    .eq("id", id);
+
+  if (error) {
+    return { data: null, error };
+  }
+
+  return { data, error: null };
+};
