@@ -1,7 +1,7 @@
 "use client";
 
 import type { Recruitment } from "@/types/supabase/types";
-import styles from "./userProfile.module.css";
+import styles from "@/app/userProfile/[username]/userProfile.module.css";
 import { useRouter } from "next/navigation";
 import { deleteRecruitment } from "@/lib/supabase_function/recruitment";
 
