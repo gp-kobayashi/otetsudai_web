@@ -1,6 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
-import InsertUserNameApp from "./app";
+import InsertUserNameApp from "@/components/profiles/username/app";
 import styles from "./inserUserName.module.css";
 
 const InsertUserName = async () => {

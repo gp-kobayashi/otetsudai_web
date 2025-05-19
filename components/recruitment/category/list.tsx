@@ -1,6 +1,6 @@
 "use client";
 import { RecruitmentWithProfile } from "@/types/supabase/types";
-import styles from "./category.module.css";
+import styles from "@/app/category/[tag]/[page]/category.module.css";
 import { CiClock2 } from "react-icons/ci";
 import Image from "next/image";
 import { useRouter } from "next/navigation";

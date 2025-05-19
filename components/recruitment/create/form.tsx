@@ -1,7 +1,7 @@
 "use client";
 
-import styles from "./createRecruitment.module.css";
-import { addRecruitment } from "../../../lib/supabase_function/recruitment";
+import styles from "@/app/createRecruitment/createRecruitment.module.css";
+import { addRecruitment } from "@/lib/supabase_function/recruitment";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 type Props = {
