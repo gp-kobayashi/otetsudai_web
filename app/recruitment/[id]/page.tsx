@@ -5,11 +5,11 @@ import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import Recruitment from "@/components/recruitment/recruiment/recruitment";
 interface Params {
-  id: number;
+  params: Promise<{ id: number }>;
 }
 
-const recruitment = async ({ params }: { params: Params }) => {
-  const { id } = params;
+const recruitment = async ({ params }: Params) => {
+  const { id } = await params;
   const { data } = await getRecruitmentById(id);
   const supabase = await createClient();
 

@@ -10,11 +10,11 @@ import { getRecruitmentByUserList } from "@/lib/supabase_function/recruitment";
 import { createClient } from "@/utils/supabase/server";
 import { GoLink } from "react-icons/go";
 interface Params {
-  username: string;
+  params: Promise<{ username: string }>;
 }
 
-const UserProfile = async ({ params }: { params: Params }) => {
-  const username = params;
+const UserProfile = async ({ params }: Params) => {
+  const username = (await params).username;
   const supabase = await createClient();
   const {
     data: { user },
@@ -23,10 +23,10 @@ const UserProfile = async ({ params }: { params: Params }) => {
   let checkUsername = false;
   if (user) {
     const { data: profile } = await fetchProfile(user.id);
-    checkUsername = profile?.username === username.username;
+    checkUsername = profile?.username === username;
   }
 
-  const profileData = (await fetchProfileByUsername(username.username)).data;
+  const profileData = (await fetchProfileByUsername(username)).data;
   const avatar_url = formatAvatarUrl(profileData?.avatar_url);
 
   if (!profileData) {
