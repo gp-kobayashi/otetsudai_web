@@ -1,7 +1,7 @@
 "use client";
 
 import type { Recruitment } from "@/types/supabase/types";
-import styles from "@/app/userProfile/[username]/userProfile.module.css";
+import styles from "@/components/profiles/user/user.module.css";
 import { useRouter } from "next/navigation";
 import { deleteRecruitment } from "@/lib/supabase_function/recruitment";
 
@@ -30,7 +30,6 @@ const UserRecruitmentList = (props: props) => {
 
   return (
     <div>
-      <h2 className={styles.recruitment_title}>募集一覧</h2>
       <ul>
         {recruitmentList.map((recruitment) => (
           <li

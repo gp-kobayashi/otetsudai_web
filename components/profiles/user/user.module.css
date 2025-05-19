@@ -1,0 +1,55 @@
+.recruitment_info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.info_status {
+  width: fit-content;
+  padding: 5px 10px;
+  border-radius: 5px;
+  background-color: lightcoral;
+  color: white;
+}
+.recruitment_item {
+  width: 80%;
+  margin: 10px auto;
+  padding: 15px;
+  list-style-type: none;
+  border: 1px solid #ccc;
+  background-color: ivory;
+}
+.recruitment_item:hover {
+  background-color: wheat;
+}
+.list_title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  border-bottom: 3px solid #ccc;
+}
+.list_item {
+  display: flex;
+  justify-content: space-between;
+}
+.list_tag {
+  width: fit-content;
+  border-radius: 5px;
+  background-color: steelblue;
+  color: white;
+  padding: 5px;
+}
+.delete_button {
+  z-index: 100;
+  width: fit-content;
+  margin-left: auto;
+  border-radius: 5px;
+  background-color: crimson;
+  color: white;
+  font-size: 15px;
+  padding: 5px;
+  text-decoration: none;
+}
+.delete_button:hover {
+  background-color: #c72b2b;
+}

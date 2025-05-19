@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import styles from "./category.module.css";
 import StatusFilter from "@/components/recruitment/category/filter";
 import Pagination from "@/components/recruitment/category/pagination";
-import RecruitmentCard from "@/components/recruitment/recruitment/card/card";
+import RecruitmentCard from "@/components/recruitment/card/card";
 
 type PageProps = {
   params: Promise<{

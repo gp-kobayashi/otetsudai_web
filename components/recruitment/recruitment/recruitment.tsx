@@ -1,5 +1,5 @@
 "use client";
-import styles from "@/app/recruitment/[id]/recruitment.module.css";
+import styles from "@/components/recruitment/recruitment/recruitment.module.css";
 import Image from "next/image";
 import { CiClock2 } from "react-icons/ci";
 import Link from "next/link";
