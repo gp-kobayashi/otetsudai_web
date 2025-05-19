@@ -1,10 +1,10 @@
 import { getRecruitmentBytag } from "@/lib/supabase_function/recruitment";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
-import CategoryList from "@/components/recruitment/category/list";
 import styles from "./category.module.css";
 import StatusFilter from "@/components/recruitment/category/filter";
 import Pagination from "@/components/recruitment/category/pagination";
+import RecruitmentCard from "@/components/recruitment/recruitment/card/card";
 
 type PageProps = {
   params: Promise<{
@@ -55,7 +55,7 @@ const categoryPage = async ({ params, searchParams }: PageProps) => {
         <StatusFilter tag={tag} currentStatus={status} />
         <h4>ページ：{page}</h4>
       </div>
-      <CategoryList recruitmentList={recruitmentList} />
+      <RecruitmentCard recruitmentList={recruitmentList} />
       <Pagination
         filterQuery={filterQuery}
         currentPage={currentPage}

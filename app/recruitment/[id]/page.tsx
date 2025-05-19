@@ -3,7 +3,7 @@ import { fetchProfile } from "@/lib/supabase_function/profile";
 import CommentApp from "@/components/recruitment/comment/app";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
-import Recruitment from "@/components/recruitment/recruiment/recruitment";
+import Recruitment from "@/components/recruitment/recruitment/recruitment";
 interface Params {
   params: Promise<{ id: number }>;
 }

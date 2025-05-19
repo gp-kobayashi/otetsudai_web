@@ -1,0 +1,50 @@
+.recruitment_list_container {
+  width: 90%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+.recruitment_list {
+  list-style: none;
+  border: 2px solid khaki;
+  border-radius: 5px;
+  background-color: lemonchiffon;
+  padding: 5px;
+  margin: 10px 0;
+}
+.recruitment_list:hover {
+  background-color: wheat;
+}
+.recruitment_info {
+  display: flex;
+}
+
+.info_item {
+  margin: 0 10px;
+  padding: 5px 10px;
+}
+
+.info_tag {
+  border-radius: 5px;
+  background-color: steelblue;
+  color: white;
+  padding: 5px 10px;
+  margin: 0 10px;
+}
+.list_text {
+  font-size: 14px;
+  color: dimgray;
+  margin-top: 5px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  text-overflow: ellipsis;
+}
+.info_status {
+  width: fit-content;
+  margin: 5px 10px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  background-color: lightcoral;
+  color: white;
+}
