@@ -57,6 +57,7 @@ const UserProfile = async ({ params }: Params) => {
           <p className={styles.bio}>{profileData.bio}</p>
         </div>
       </div>
+      <h2 className={styles.recruitment_title}>募集一覧</h2>
       <UserRecruitmentList
         recruitmentList={data}
         checkUsername={checkUsername}

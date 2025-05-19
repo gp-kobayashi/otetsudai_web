@@ -1,4 +1,4 @@
-import styles from "@/app/category/[tag]/[page]/category.module.css";
+import styles from "@/components/recruitment/category/category.module.css";
 import Link from "next/link";
 import { GrLinkNext, GrLinkPrevious } from "react-icons/gr";
 

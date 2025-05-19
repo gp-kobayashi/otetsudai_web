@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { STATUS_VALUES } from "@/utils/enum/enum";
 import type { statusEnumType } from "@/types/supabase/types";
-import styles from "@/app/recruitment/[id]/recruitment.module.css";
+import styles from "@/components/recruitment/recruitment/recruitment.module.css";
 import { updateStatus } from "@/lib/supabase_function/recruitment";
 type StatusType = statusEnumType;
 type Props = {
