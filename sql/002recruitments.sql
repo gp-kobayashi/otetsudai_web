@@ -30,10 +30,10 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER trigger_update_groups
+CREATE TRIGGER trigger_update_recruitments
 BEFORE UPDATE ON recruitments
 FOR EACH ROW EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER trigger_update_chats
+CREATE TRIGGER trigger_update_comments
 BEFORE UPDATE ON comments
 FOR EACH ROW EXECUTE FUNCTION update_timestamp();
