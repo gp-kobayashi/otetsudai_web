@@ -3,7 +3,7 @@ import type {
   Recruitment,
   RecruitmentWithProfile,
   SupabaseResponse,
-} from "../../types/supabase/types";
+} from "@/types/supabase/types";
 import { PostgrestError } from "@supabase/supabase-js";
 import { formatAvatarUrl, formatUserName } from "./profile";
 import{formatDatetime} from "@/utils/date";
