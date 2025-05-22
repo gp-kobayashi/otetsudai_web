@@ -7,7 +7,10 @@ import {
 } from "@/lib/supabase_function/comment";
 import CommentList from "@/components/recruitment/comment/list";
 import { CommentWithProfile } from "@/types/supabase/types";
-import { formatAvatarUrl, getusername } from "@/lib/supabase_function/profile";
+import {
+  getAvatarUrlByUserId,
+  getusername,
+} from "@/lib/supabase_function/profile";
 import Link from "next/link";
 type Props = {
   id: number;
@@ -37,7 +40,7 @@ const CommentApp = (props: Props) => {
     if (!data) return;
     const updatedComment = {
       ...data,
-      avatar_url: formatAvatarUrl(user_id),
+      avatar_url: await getAvatarUrlByUserId(user_id),
       username: await getusername(user_id),
     };
     setCommentList((prev) => [...prev, updatedComment]);
