@@ -54,6 +54,10 @@ export const getAvatarUrl = (avatarUrl: string) => {
   const { data } = supabase.storage.from("avatars").getPublicUrl(avatarUrl);
   return data.publicUrl;
 };
+export const getAvatarUrlByUserId = async (user_id: string) => {
+  const { data } = await fetchProfile(user_id);
+  return formatAvatarUrl(data?.avatar_url);
+}
 
 export const formatAvatarUrl = (avatarUrl: string | null | undefined) => {
   return avatarUrl ? getAvatarUrl(avatarUrl) : DEFAULT_AVATAR_URL;
