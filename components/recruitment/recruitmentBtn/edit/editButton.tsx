@@ -1,5 +1,5 @@
 "use client";
-import EditModal from "@/components/recruitment/recruitmentBtn/edit/editModal";
+import EditModal from "./editModal";
 import { updateRecruitment } from "@/lib/supabase_function/recruitment";
 import { RecruitmentWithProfile } from "@/types/supabase/types";
 import { useState } from "react";

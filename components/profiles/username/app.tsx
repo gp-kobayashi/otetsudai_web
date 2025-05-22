@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { usernameSchema } from "@/utils/zod";
-import styles from "@/components/profiles/username/username.module.css";
+import styles from "./username.module.css";
 type props = {
   user_id: string;
 };
