@@ -2,7 +2,7 @@ import styles from "./createRecruitment.module.css";
 import { createClient } from "@/utils/supabase/server";
 import { fetchProfile } from "@/lib/supabase_function/profile";
 import { redirect } from "next/navigation";
-import RecruitmentForm from "@/components/recruitment/create/form";
+import RecruitmentForm from "../../components/recruitment/create/form";
 
 const createRecruitment = async () => {
   const supabase = await createClient();

@@ -1,4 +1,4 @@
-import styles from "@/components/recruitment/category/category.module.css";
+import styles from "./category.module.css";
 import Link from "next/link";
 import { STATUS_VALUES } from "@/utils/enum/enum";
 
