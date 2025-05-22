@@ -1,6 +1,6 @@
 import { createClient } from "@/utils/supabase/client";
 import { formatAvatarUrl, formatUserName } from "./profile";
-import type { Comment, CommentWithProfile, SupabaseResponse } from "../../types/supabase/types";
+import type { Comment, CommentWithProfile, SupabaseResponse } from "@/types/supabase/types";
 import { formatDatetime } from "@/utils/date";
 
 const supabase = createClient();
