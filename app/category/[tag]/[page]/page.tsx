@@ -55,7 +55,11 @@ const categoryPage = async ({ params, searchParams }: PageProps) => {
         <StatusFilter tag={tag} currentStatus={status} />
         <h4>ページ：{page}</h4>
       </div>
-      <RecruitmentCard recruitmentList={recruitmentList} />
+      <ul className={styles.recruitment_list_container}>
+        {recruitmentList?.map((recruitment) => (
+          <RecruitmentCard key={recruitment.id} recruitment={recruitment} />
+        ))}
+      </ul>
       <Pagination
         filterQuery={filterQuery}
         currentPage={currentPage}
