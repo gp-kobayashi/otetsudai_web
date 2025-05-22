@@ -25,7 +25,11 @@ const MainPageList = () => {
   return (
     <div>
       <h1 className={styles.title}>最新募集一覧</h1>
-      <RecruitmentCard recruitmentList={recruitmentList} />
+      <ul className={styles.recruitment_list_container}>
+        {recruitmentList?.map((recruitment) => (
+          <RecruitmentCard key={recruitment.id} recruitment={recruitment} />
+        ))}
+      </ul>
     </div>
   );
 };

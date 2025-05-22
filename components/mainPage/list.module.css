@@ -4,3 +4,8 @@
   text-align: left;
   margin: 0 auto;
 }
+.recruitment_list_container {
+  width: 90%;
+  max-width: 800px;
+  margin: 0 auto;
+}
