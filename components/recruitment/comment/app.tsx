@@ -39,18 +39,14 @@ const CommentApp = (props: Props) => {
     e.preventDefault();
     if (!text || !user_id) return;
     const { data, error } = await addComment(user_id, recruitment_id, text);
-    if (error) {
-      alert("コメントの投稿に失敗しました。");
-    }
-    if (data) {
-      const updatedComment = {
-        ...data,
-        avatar_url: formatAvatarUrl(avatarUrl),
-        username: formatUserName(username),
-      };
-      setCommentList((prev) => [...prev, updatedComment]);
-      setText("");
-    }
+    if (error) return alert("コメントの投稿に失敗しました。");
+    const updatedComment = {
+      ...data,
+      avatar_url: formatAvatarUrl(avatarUrl),
+      username: formatUserName(username),
+    } as CommentWithProfile;
+    setCommentList((prev) => [...prev, updatedComment]);
+    setText("");
   };
 
   return (
