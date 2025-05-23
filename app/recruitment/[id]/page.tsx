@@ -22,8 +22,11 @@ const recruitment = async ({ params }: Params) => {
   let avatarUrl = null;
   if (user) {
     userId = user.id;
-    username = (await fetchProfile(userId)).data?.username;
-    avatarUrl = (await fetchProfile(userId)).data?.avatar_url;
+    const { data: profile } = await fetchProfile(userId);
+    if (profile) {
+      username = profile.username;
+      avatarUrl = profile.avatar_url;
+    }
   }
   if (!username) {
     redirect("/insertUserName");
