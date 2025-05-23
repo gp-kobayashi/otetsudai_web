@@ -17,10 +17,11 @@ type Props = {
   id: number;
   userId: string | null;
   username: string | null | undefined;
+  avatarUrl: string | null | undefined;
 };
 
 const CommentApp = (props: Props) => {
-  const { id: recruitment_id, userId: user_id, username } = props;
+  const { id: recruitment_id, userId: user_id, username, avatarUrl } = props;
 
   const [commentList, setCommentList] = useState<CommentWithProfile[]>([]);
   const [text, setText] = useState<string>("");
@@ -41,15 +42,15 @@ const CommentApp = (props: Props) => {
     if (error) {
       alert("コメントの投稿に失敗しました。");
     }
-    if (!data) return;
-    const { data: profiles } = await fetchProfile(user_id);
-    const updatedComment = {
-      ...data,
-      avatar_url: formatAvatarUrl(profiles?.avatar_url),
-      username: formatUserName(profiles?.username),
-    };
-    setCommentList((prev) => [...prev, updatedComment]);
-    setText("");
+    if (data) {
+      const updatedComment = {
+        ...data,
+        avatar_url: formatAvatarUrl(avatarUrl),
+        username: formatUserName(username),
+      };
+      setCommentList((prev) => [...prev, updatedComment]);
+      setText("");
+    }
   };
 
   return (
