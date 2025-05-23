@@ -36,7 +36,10 @@ const CommentApp = (props: Props) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!text || !user_id) return;
-    const { data } = await addComment(user_id, recruitment_id, text);
+    const { data, error } = await addComment(user_id, recruitment_id, text);
+    if (error) {
+      alert("コメントの投稿に失敗しました。");
+    }
     if (!data) return;
     const updatedComment = {
       ...data,
