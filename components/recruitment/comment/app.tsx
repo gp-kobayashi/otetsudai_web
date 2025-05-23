@@ -8,7 +8,6 @@ import {
 import CommentList from "@/components/recruitment/comment/list";
 import { CommentWithProfile } from "@/types/supabase/types";
 import {
-  fetchProfile,
   formatAvatarUrl,
   formatUserName,
 } from "@/lib/supabase_function/profile";
