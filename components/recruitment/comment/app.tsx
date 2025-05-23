@@ -8,8 +8,9 @@ import {
 import CommentList from "@/components/recruitment/comment/list";
 import { CommentWithProfile } from "@/types/supabase/types";
 import {
-  getAvatarUrlByUserId,
-  getusername,
+  fetchProfile,
+  formatAvatarUrl,
+  formatUserName,
 } from "@/lib/supabase_function/profile";
 import Link from "next/link";
 type Props = {
@@ -41,10 +42,11 @@ const CommentApp = (props: Props) => {
       alert("コメントの投稿に失敗しました。");
     }
     if (!data) return;
+    const { data: profiles } = await fetchProfile(user_id);
     const updatedComment = {
       ...data,
-      avatar_url: await getAvatarUrlByUserId(user_id),
-      username: await getusername(user_id),
+      avatar_url: formatAvatarUrl(profiles?.avatar_url),
+      username: formatUserName(profiles?.username),
     };
     setCommentList((prev) => [...prev, updatedComment]);
     setText("");
