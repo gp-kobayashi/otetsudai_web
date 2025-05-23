@@ -19,10 +19,11 @@ const recruitment = async ({ params }: Params) => {
 
   let userId = null;
   let username = null;
-
+  let avatarUrl = null;
   if (user) {
     userId = user.id;
     username = (await fetchProfile(userId)).data?.username;
+    avatarUrl = (await fetchProfile(userId)).data?.avatar_url;
   }
   if (!username) {
     redirect("/insertUserName");
@@ -35,7 +36,12 @@ const recruitment = async ({ params }: Params) => {
     <div>
       <Recruitment data={data} userId={userId} id={id} />
 
-      <CommentApp id={id} userId={userId} username={username} />
+      <CommentApp
+        id={id}
+        userId={userId}
+        username={username}
+        avatarUrl={avatarUrl}
+      />
     </div>
   );
 };
