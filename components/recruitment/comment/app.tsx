@@ -7,16 +7,20 @@ import {
 } from "@/lib/supabase_function/comment";
 import CommentList from "@/components/recruitment/comment/list";
 import { CommentWithProfile } from "@/types/supabase/types";
-import { formatAvatarUrl, getusername } from "@/lib/supabase_function/profile";
+import {
+  formatAvatarUrl,
+  formatUserName,
+} from "@/lib/supabase_function/profile";
 import Link from "next/link";
 type Props = {
   id: number;
   userId: string | null;
   username: string | null | undefined;
+  avatarUrl: string | null | undefined;
 };
 
 const CommentApp = (props: Props) => {
-  const { id: recruitment_id, userId: user_id, username } = props;
+  const { id: recruitment_id, userId: user_id, username, avatarUrl } = props;
 
   const [commentList, setCommentList] = useState<CommentWithProfile[]>([]);
   const [text, setText] = useState<string>("");
@@ -33,13 +37,13 @@ const CommentApp = (props: Props) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!text || !user_id) return;
-    const { data } = await addComment(user_id, recruitment_id, text);
-    if (!data) return;
+    const { data, error } = await addComment(user_id, recruitment_id, text);
+    if (error) return alert("コメントの投稿に失敗しました。");
     const updatedComment = {
       ...data,
-      avatar_url: formatAvatarUrl(user_id),
-      username: await getusername(user_id),
-    };
+      avatar_url: formatAvatarUrl(avatarUrl),
+      username: formatUserName(username),
+    } as CommentWithProfile;
     setCommentList((prev) => [...prev, updatedComment]);
     setText("");
   };

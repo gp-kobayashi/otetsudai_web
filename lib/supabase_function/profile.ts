@@ -49,7 +49,6 @@ export const insertUsername = async (user_id: string, username: string) => {
   return { data, error: null };
 }
 
-
 export const getAvatarUrl = (avatarUrl: string) => {
   const { data } = supabase.storage.from("avatars").getPublicUrl(avatarUrl);
   return data.publicUrl;
@@ -61,10 +60,4 @@ export const formatAvatarUrl = (avatarUrl: string | null | undefined) => {
 
 export const formatUserName = (username: string | null | undefined) => {
   return username ? username : "名無し";
-}
-
-export const getusername = async (user_id: string) => {
-  const { data } = await fetchProfile(user_id);
-  if (!data) return null;
-  return formatUserName(data.username);
 }
