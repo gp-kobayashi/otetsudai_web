@@ -6,5 +6,7 @@ describe(Home, () => {
   test("初期レンダリングが行われる", () => {
     render(<Home />);
     expect(screen.getByText("お手伝いをしましょう")).toBeInTheDocument();
+
+    expect(screen.getByText("最新募集一覧")).toBeInTheDocument();
   });
 });
