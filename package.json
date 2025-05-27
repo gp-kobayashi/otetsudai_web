@@ -37,6 +37,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.1.2",
     "happy-dom": "^17.4.7",
+    "msw": "^2.8.4",
     "prettier": "^3.5.3",
     "typescript": "^5",
     "vite-tsconfig-paths": "^5.1.4",
