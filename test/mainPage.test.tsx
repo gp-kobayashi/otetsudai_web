@@ -1,9 +1,8 @@
 import { describe, expect, test } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import Home from "../app/page";
 import List from "../components/mainPage/list";
-import RecruitmentCard from "@/components/recruitment/card/card";
-import { getRecruitmentList } from "@/lib/supabase_function/recruitment";
+import { mockRecruitments } from "./mocks/mockData";
 
 describe(Home, () => {
   test("初期レンダリングが行われる", () => {
@@ -22,11 +21,14 @@ describe(Home, () => {
 
 describe(List, () => {
   test("各募集のタイトル、説明が表示される", async () => {
-    const mockRecruitments = await getRecruitmentList();
     render(<List />);
-    mockRecruitments.data?.slice(0, 10).forEach((recruitment) => {
-      expect(screen.getByText(recruitment.title)).toBeInTheDocument();
-      expect(screen.getByText(recruitment.explanation)).toBeInTheDocument();
+    
+    // MSWでモックされたデータが表示されることを確認
+    await waitFor(() => {
+      mockRecruitments.slice(0, 10).forEach((recruitment) => {
+        expect(screen.getByText(recruitment.title)).toBeInTheDocument();
+        expect(screen.getByText(recruitment.explanation)).toBeInTheDocument();
+      });
     });
   });
 });

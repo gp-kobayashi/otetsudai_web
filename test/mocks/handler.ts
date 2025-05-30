@@ -1,19 +1,41 @@
 import { http, HttpResponse } from 'msw'
-
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://localhost:54321'
+import { mockRecruitments, mockRecruitmentsWithProfiles } from './mockData'
 
 export const handlers = [
-  http.get(`${SUPABASE_URL}/rest/v1/otetsudai_web`, ({ request }) => {
+  // OPTIONSリクエストをモック（CORSプリフライト）
+  http.options(/.*\/rest\/v1\/recruitments.*/, () => {
+    return new HttpResponse(null, {
+      status: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization, apikey, prefer',
+      },
+    })
+  }),
+
+  // recruitments テーブルの select クエリをモック（パターンマッチングを使用）
+  http.get(/.*\/rest\/v1\/recruitments.*/, ({ request }) => {
     const url = new URL(request.url)
-    const userId = url.searchParams.get('user_id')
+    const select = url.searchParams.get('select')
     
-    return HttpResponse.json([
-      { id: 1, user_id: userId, title: '動画test', explanation: '動画の編集をお願いしたいです', tag: 'Video', status: '募集中', created_at: '2025-05-27T12:00:00Z', updated_at: '2025-05-27T12:00:00Z' },
-      { id: 2, user_id: userId, title: '絵test', explanation: '動画に使う絵を描いてほしいです', tag: 'design', status: '対応中', created_at: '2025-05-27T13:00:00Z', updated_at: '2025-05-27T13:00:00Z' },
-    ], {
+    // profiles付きのselect クエリの場合
+    if (select && select.includes('profiles')) {
+      return HttpResponse.json(mockRecruitmentsWithProfiles, {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+      })
+    }
+    
+    // 通常のselect クエリの場合（profilesなし）
+    return HttpResponse.json(mockRecruitments, {
       status: 200,
       headers: {
         'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
       },
     })
   }),
