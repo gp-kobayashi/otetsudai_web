@@ -52,4 +52,21 @@ describe("Pagination", () => {
     );
     expect(screen.queryByTestId("icon-next")).not.toBeInTheDocument();
   });
+  test("cssクラスが適用されている", () => {
+    render(
+      <Pagination
+        currentPage={1}
+        hasNextPage={true}
+        tag={"Video"}
+        filterQuery={""}
+      />,
+    );
+    const paginationDiv = screen.getByText("1").closest("div");
+    expect(paginationDiv?.className).toEqual(
+      expect.stringContaining("page_navigation"),
+    );
+    expect(screen.getByText("1").className).toEqual(
+      expect.stringContaining("current_page"),
+    );
+  });
 });
