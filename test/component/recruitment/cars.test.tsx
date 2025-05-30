@@ -1,7 +1,14 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import RecruitmentCard from "@/components/recruitment/card/card";
 import { RecruitmentWithProfile } from "@/types/supabase/types";
+
+const mockPush = vi.fn();
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({
+    push: mockPush,
+  }),
+}));
 
 describe("RecruitmentCard", () => {
   const mockRecruitment: RecruitmentWithProfile = {
@@ -23,5 +30,33 @@ describe("RecruitmentCard", () => {
     expect(screen.getByText("募集のテスト説明です。")).toBeInTheDocument();
     expect(screen.getByText("募集中")).toBeInTheDocument();
     expect(screen.getByText("programming")).toBeInTheDocument();
+    expect(screen.getByText("testuser")).toBeInTheDocument();
+    const avatar = screen.getByAltText("avatar");
+    expect(avatar).toBeInTheDocument();
+  });
+  test("クリックで詳細ページに遷移する", async () => {
+    render(<RecruitmentCard recruitment={mockRecruitment} />);
+    const listItem = screen.getByText("募集のテストをします").closest("li");
+    expect(listItem).toBeInTheDocument();
+    listItem?.click();
+    await waitFor(() => {
+      expect(mockPush).toHaveBeenCalledWith("/recruitment/1");
+    });
+  });
+  test("cssクラスが適用されている", () => {
+    render(<RecruitmentCard recruitment={mockRecruitment} />);
+    const listItem = screen.getByText("募集のテストをします").closest("li");
+    expect(listItem?.className).toEqual(
+      expect.stringContaining("recruitment_list"),
+    );
+    expect(screen.getByText("募集中").className).toEqual(
+      expect.stringContaining("info_status"),
+    );
+    expect(screen.getByText("programming").className).toEqual(
+      expect.stringContaining("info_tag"),
+    );
+    expect(screen.getByText("testuser").className).toEqual(
+      expect.stringContaining("info_item"),
+    );
   });
 });
