@@ -15,13 +15,16 @@ const Pagination = (props: Props) => {
     <div className={styles.page_navigation}>
       {currentPage > 1 && (
         <Link href={`/category/${tag}/${currentPage - 1}${filterQuery}`}>
-          <GrLinkPrevious className={styles.page_link} />
+          <GrLinkPrevious
+            className={styles.page_link}
+            data-testid="icon-previous"
+          />
         </Link>
       )}
       <span className={styles.current_page}> {currentPage} </span>
       {hasNextPage && (
         <Link href={`/category/${tag}/${currentPage + 1}${filterQuery}`}>
-          <GrLinkNext className={styles.page_link} />
+          <GrLinkNext className={styles.page_link} data-testid="icon-next" />
         </Link>
       )}
     </div>
