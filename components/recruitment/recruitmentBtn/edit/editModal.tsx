@@ -35,15 +35,21 @@ const EditModal = (props: Props) => {
             ×
           </button>
           <form onSubmit={handleSubmit}>
-            <label className={styles.label}>タイトル</label>
+            <label htmlFor="title" className={styles.label}>
+              タイトル
+            </label>
             <input
+              id="title"
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className={styles.input}
             />
-            <label className={styles.label}>内容</label>
+            <label htmlFor="explanation" className={styles.label}>
+              内容
+            </label>
             <textarea
+              id="explanation"
               value={explanation}
               onChange={(e) => setExplanation(e.target.value)}
               className={styles.textarea}
