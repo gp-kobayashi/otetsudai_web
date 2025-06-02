@@ -17,6 +17,10 @@ const RecruitmentForm = ({ user_id }: Props) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!title.trim() || !explanation.trim()) {
+      alert("タイトルと内容は必須です");
+      return;
+    }
     await addRecruitment(title, explanation, user_id, tag);
     setTitle("");
     setExplanation("");
