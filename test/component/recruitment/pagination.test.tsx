@@ -1,5 +1,5 @@
-import { describe, expect, test, vi } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { describe, expect, test } from "vitest";
+import { render, screen } from "@testing-library/react";
 import Pagination from "@/components/recruitment/category/pagination";
 
 describe("Pagination", () => {
