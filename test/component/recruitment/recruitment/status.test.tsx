@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import RecruitmentStatus from "@/components/recruitment/recruitment/status";
 import { STATUS_VALUES } from "@/utils/enum/enum";
 import userEvent from "@testing-library/user-event";
@@ -37,4 +37,13 @@ test("ステータス変更時にonStatusChangeが呼ばれる", async () => {
   await user.selectOptions(selectElement, "キャンセル");
 
   expect(mockOnStatusChange).toHaveBeenCalledWith("キャンセル");
+});
+test("存在しないステータスが選択された場合、何も起きないかエラーになる", () => {
+  const mockOnStatusChange = vi.fn();
+  render(
+    <RecruitmentStatus {...mockProps} onStatusChange={mockOnStatusChange} />,
+  );
+  const select = screen.getByRole("combobox");
+  fireEvent.change(select, { target: { value: "不正なステータス" } });
+  expect(mockOnStatusChange).not.toHaveBeenCalled();
 });
