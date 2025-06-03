@@ -71,7 +71,7 @@ describe("RecruitmentCard", () => {
       expect.stringContaining("info_item"),
     );
   });
-  test("データがnullの場合、適切にレンダリングされる", () => {
+  test("データが空の場合、要素が表示されない", () => {
     render(
       <RecruitmentCard
         recruitment={mockNoRecruitment as unknown as RecruitmentWithProfile}
