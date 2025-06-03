@@ -23,6 +23,10 @@ const EditModal = (props: Props) => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!title.trim() || !explanation.trim()) {
+      alert("タイトルと内容は必須です");
+      return;
+    }
     onSave({ title, explanation });
     onClose();
   };
