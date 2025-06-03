@@ -23,6 +23,18 @@ describe("RecruitmentCard", () => {
     updated_at: "2025-10-05T00:00:00Z",
     user_id: "user_123",
   };
+  const mockNoRecruitment = {
+    id: 0,
+    title: "",
+    explanation: "",
+    status: "",
+    tag: "",
+    username: "",
+    avatar_url: "",
+    created_at: "",
+    updated_at: "",
+    user_id: "",
+  };
 
   test("初期レンダリングが行われる", () => {
     render(<RecruitmentCard recruitment={mockRecruitment} />);
@@ -58,5 +70,19 @@ describe("RecruitmentCard", () => {
     expect(screen.getByText("testuser").className).toEqual(
       expect.stringContaining("info_item"),
     );
+  });
+  test("データがnullの場合、適切にレンダリングされる", () => {
+    render(
+      <RecruitmentCard
+        recruitment={mockNoRecruitment as unknown as RecruitmentWithProfile}
+      />,
+    );
+    expect(screen.queryByText("募集のテストをします")).not.toBeInTheDocument();
+    expect(
+      screen.queryByText("募集のテスト説明です。"),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText("募集中")).not.toBeInTheDocument();
+    expect(screen.queryByText("programming")).not.toBeInTheDocument();
+    expect(screen.queryByText("testuser")).not.toBeInTheDocument();
   });
 });

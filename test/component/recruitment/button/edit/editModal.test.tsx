@@ -15,6 +15,18 @@ const mockRecruitmentData: RecruitmentWithProfile = {
   created_at: "2025-10-01T00:00:00Z",
   updated_at: "2025-10-01T00:00:00Z",
 };
+const mockNoRecruitmentData = {
+  id: 0,
+  title: "",
+  explanation: "",
+  tag: "",
+  status: "",
+  user_id: "",
+  username: "",
+  avatar_url: "",
+  created_at: "",
+  updated_at: "",
+};
 const mockOnClose = vi.fn();
 const mockOnSave = vi.fn();
 
@@ -65,5 +77,19 @@ describe("EditModal Component", () => {
       title: mockRecruitmentData.title,
       explanation: mockRecruitmentData.explanation,
     });
+  });
+  test("データがない場合、アラートが表示される", () => {
+    render(
+      <EditModal
+        recruitmentData={mockNoRecruitmentData as RecruitmentWithProfile}
+        isEditOpen={true}
+        onClose={mockOnClose}
+        onSave={mockOnSave}
+      />,
+    );
+    window.alert = vi.fn();
+    const saveButton = screen.getByRole("button", { name: "保存" });
+    saveButton.click();
+    expect(window.alert).toHaveBeenCalledWith("タイトルと内容は必須です");
   });
 });

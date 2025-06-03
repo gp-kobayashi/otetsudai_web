@@ -69,4 +69,17 @@ describe("Pagination", () => {
       expect.stringContaining("current_page"),
     );
   });
+  test("データがnullの場合、適切にレンダリングされる", () => {
+    render(
+      <Pagination
+        currentPage={0}
+        hasNextPage={false}
+        tag={""}
+        filterQuery={""}
+      />,
+    );
+    expect(screen.queryByText("1")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("icon-next")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("icon-previous")).not.toBeInTheDocument();
+  });
 });
