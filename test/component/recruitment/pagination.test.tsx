@@ -69,7 +69,7 @@ describe("Pagination", () => {
       expect.stringContaining("current_page"),
     );
   });
-  test("データがnullの場合、適切にレンダリングされる", () => {
+  test("データが空の場合、要素が表示されない", () => {
     render(
       <Pagination
         currentPage={0}
