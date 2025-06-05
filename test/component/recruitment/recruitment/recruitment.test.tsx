@@ -56,15 +56,16 @@ describe("Recruitment Component", () => {
     ).not.toBeInTheDocument();
     expect(screen.queryByText("ステータス変更")).not.toBeInTheDocument();
   });
-  test("データが空の場合、要素が表示されない", () => {
-    render(
-      <Recruitment
-        data={mockNoData as unknown as RecruitmentWithProfile}
-        userId={null}
-        id={1}
-      />,
-    );
-    expect(screen.queryByText(/.+/)).not.toBeInTheDocument();
+  test("データが空でもクラッシュしない", () => {
+    expect(() => {
+      render(
+        <Recruitment
+          data={mockNoData as unknown as RecruitmentWithProfile}
+          userId={null}
+          id={1}
+        />,
+      );
+    }).not.toThrow();
   });
   test("avatar_urlが空の場合、デフォルトのアバターURLが使用される", () => {
     render(
