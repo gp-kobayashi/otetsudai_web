@@ -69,7 +69,7 @@ describe("Pagination", () => {
       expect.stringContaining("current_page"),
     );
   });
-  test("データが空の場合、要素が表示されない", () => {
+  test("currentPageが0の場合、0と表示される", () => {
     render(
       <Pagination
         currentPage={0}
@@ -78,7 +78,7 @@ describe("Pagination", () => {
         filterQuery={""}
       />,
     );
-    expect(screen.queryByText("1")).not.toBeInTheDocument();
+    expect(screen.queryByText("0")).toBeInTheDocument();
     expect(screen.queryByTestId("icon-next")).not.toBeInTheDocument();
     expect(screen.queryByTestId("icon-previous")).not.toBeInTheDocument();
   });
