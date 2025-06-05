@@ -56,7 +56,7 @@ describe("Recruitment Component", () => {
     ).not.toBeInTheDocument();
     expect(screen.queryByText("ステータス変更")).not.toBeInTheDocument();
   });
-  test("データがnullの場合、適切にレンダリングされる", () => {
+  test("データが空の場合、要素が表示されない", () => {
     render(
       <Recruitment
         data={mockNoData as unknown as RecruitmentWithProfile}
@@ -64,10 +64,17 @@ describe("Recruitment Component", () => {
         id={1}
       />,
     );
-    expect(screen.queryByText("テスト募集")).not.toBeInTheDocument();
-    expect(screen.queryByText("テスト内容")).not.toBeInTheDocument();
-    expect(screen.queryByText("募集中")).not.toBeInTheDocument();
-    expect(screen.queryByText("Video")).not.toBeInTheDocument();
-    expect(screen.queryByText("testuser")).not.toBeInTheDocument();
+    expect(screen.queryByText(/.+/)).not.toBeInTheDocument();
+  });
+  test("avatar_urlが空の場合、デフォルトのアバターURLが使用される", () => {
+    render(
+      <Recruitment
+        data={mockNoData as unknown as RecruitmentWithProfile}
+        userId={null}
+        id={1}
+      />,
+    );
+    const avatar = screen.getByAltText("avatar");
+    expect(avatar?.getAttribute("src")).toContain("default.png");
   });
 });
