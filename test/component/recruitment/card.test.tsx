@@ -2,7 +2,6 @@ import { describe, expect, test, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import RecruitmentCard from "@/components/recruitment/card/card";
 import { RecruitmentWithProfile } from "@/types/supabase/types";
-
 const mockPush = vi.fn();
 vi.mock("next/navigation", () => ({
   useRouter: () => ({
@@ -77,12 +76,15 @@ describe("RecruitmentCard", () => {
         recruitment={mockNoRecruitment as unknown as RecruitmentWithProfile}
       />,
     );
-    expect(screen.queryByText("募集のテストをします")).not.toBeInTheDocument();
-    expect(
-      screen.queryByText("募集のテスト説明です。"),
-    ).not.toBeInTheDocument();
-    expect(screen.queryByText("募集中")).not.toBeInTheDocument();
-    expect(screen.queryByText("programming")).not.toBeInTheDocument();
-    expect(screen.queryByText("testuser")).not.toBeInTheDocument();
+    expect(screen.queryByText(/.+/)).not.toBeInTheDocument();
+  });
+  test("avatar_urlが空の場合、デフォルトのアバターURLが使用される", () => {
+    render(
+      <RecruitmentCard
+        recruitment={mockNoRecruitment as unknown as RecruitmentWithProfile}
+      />,
+    );
+    const avatar = screen.getByAltText("avatar");
+    expect(avatar?.getAttribute("src")).toContain("default.png");
   });
 });
