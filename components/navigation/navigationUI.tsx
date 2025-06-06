@@ -13,13 +13,13 @@ const NavigationUI = (props: Props) => {
   return (
     <div className={styles.navigation_container}>
       <Link href="/" className={styles.logo}>
-        <h1>otetsudai</h1>
+        otetsudai
       </Link>
       <div className={styles.navigation_link}>
         <Link href="/createRecruitment" className={styles.recruitment_link}>
           募集する
         </Link>
-        <Link href="/help " className={styles.help_link}>
+        <Link href="/help" className={styles.help_link}>
           help
         </Link>
         {user ? (
