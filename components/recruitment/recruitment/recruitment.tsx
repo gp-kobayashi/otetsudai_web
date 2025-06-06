@@ -8,6 +8,8 @@ import RecruitmentStatus from "./status";
 import type { RecruitmentWithProfile } from "@/types/supabase/types";
 import { useState } from "react";
 import EditButton from "../recruitmentBtn/edit/editButton";
+import { DEFAULT_AVATAR_URL } from "@/lib/supabase_function/profile";
+
 type Props = {
   data: RecruitmentWithProfile;
   userId: string | null;
@@ -43,7 +45,7 @@ const Recruitment = (props: Props) => {
       <div className={styles.recruitment_user}>
         <p className={styles.tag}>{data.tag}</p>
         <Image
-          src={data.avatar_url}
+          src={data.avatar_url ? data.avatar_url : DEFAULT_AVATAR_URL}
           className={styles.item}
           alt="avatar"
           width={40}

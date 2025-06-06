@@ -1,7 +1,8 @@
+import { TAG_VALUES } from "@/utils/enum/enum";
 import styles from "./page.module.css";
 import List from "@/components/mainPage/list";
 export default function Home() {
-  const tags = ["Video", "Text", "Audio", "programming", "design", "other"];
+  const tags = TAG_VALUES;
   return (
     <div>
       <div className={styles.main_container}>

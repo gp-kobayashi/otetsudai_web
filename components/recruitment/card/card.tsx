@@ -4,6 +4,7 @@ import styles from "./card.module.css";
 import Image from "next/image";
 import { CiClock2 } from "react-icons/ci";
 import { RecruitmentWithProfile } from "@/types/supabase/types";
+import { DEFAULT_AVATAR_URL } from "@/lib/supabase_function/profile";
 type Props = {
   recruitment: RecruitmentWithProfile;
 };
@@ -27,7 +28,9 @@ const RecruitmentCard = ({ recruitment }: Props) => {
       <div className={styles.recruitment_info}>
         <p className={styles.info_tag}>{recruitment.tag}</p>
         <Image
-          src={recruitment.avatar_url}
+          src={
+            recruitment.avatar_url ? recruitment.avatar_url : DEFAULT_AVATAR_URL
+          }
           alt="avatar"
           width={20}
           height={20}

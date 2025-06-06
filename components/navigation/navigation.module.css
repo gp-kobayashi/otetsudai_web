@@ -8,6 +8,8 @@
 .logo {
   text-decoration: none;
   color: gray;
+  font-weight: bold;
+  font-size: 30px;
 }
 
 .navigation_link {

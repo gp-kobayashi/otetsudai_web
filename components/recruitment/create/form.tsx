@@ -17,6 +17,10 @@ const RecruitmentForm = ({ user_id }: Props) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!title.trim() || !explanation.trim()) {
+      alert("タイトルと内容は必須です");
+      return;
+    }
     await addRecruitment(title, explanation, user_id, tag);
     setTitle("");
     setExplanation("");
@@ -26,8 +30,11 @@ const RecruitmentForm = ({ user_id }: Props) => {
   return (
     <form className={styles.form_container} onSubmit={handleSubmit}>
       <div className={styles.form_item}>
-        <label className={styles.form_label}>タイトル:</label>
+        <label htmlFor="title" className={styles.form_label}>
+          タイトル:
+        </label>
         <input
+          id="title"
           className={styles.from_input}
           type="text"
           value={title}
@@ -35,16 +42,25 @@ const RecruitmentForm = ({ user_id }: Props) => {
         />
       </div>
       <div className={styles.form_item}>
-        <label className={styles.form_label}>内容:</label>
+        <label htmlFor="explanation" className={styles.form_label}>
+          内容:
+        </label>
         <textarea
+          id="explanation"
           className={styles.from_textarea}
           value={explanation}
           onChange={(e) => setExplanation(e.target.value)}
         />
       </div>
       <div className={styles.form_item}>
-        <label className={styles.form_label}>カテゴリー:</label>
-        <select value={tag} onChange={(e) => setTag(e.target.value)}>
+        <label htmlFor="category" className={styles.form_label}>
+          カテゴリー:
+        </label>
+        <select
+          id="category"
+          value={tag}
+          onChange={(e) => setTag(e.target.value)}
+        >
           {tags.map((tagOption) => (
             <option key={tagOption} value={tagOption}>
               {tagOption}
