@@ -24,7 +24,7 @@ const NavigationUI = (props: Props) => {
         </Link>
         {user ? (
           <Link
-            href={`/userProfile/${username}`}
+            href={username ? `/userProfile/${username}` : `/insertUserName}`}
             className={styles.account_link}
           >
             profile
