@@ -56,21 +56,20 @@ describe("NavigationUI Component", () => {
   });
   test("リンクが正しく機能することの確認", () => {
     const { rerender } = render(<NavigationUI {...authedProps} />);
-
     const profileLink = screen.getByText("profile");
     expect(profileLink).toHaveAttribute("href", "/userProfile/testuser");
-
     const recruitmentLink = screen.getByText("募集する");
     expect(recruitmentLink).toHaveAttribute("href", "/createRecruitment");
-
     const helpLink = screen.getByText("help");
     expect(helpLink).toHaveAttribute("href", "/help");
-
     const logoLink = screen.getByText("otetsudai");
     expect(logoLink).toHaveAttribute("href", "/");
+
     rerender(<NavigationUI {...noAuthedUserProps} />);
     const loginLink = screen.getByText("ログイン");
     expect(loginLink).toHaveAttribute("href", "/login");
+    const noProfileLink = screen.queryByText("profile");
+    expect(noProfileLink).not.toBeInTheDocument();
   });
   test("CSSクラスが正しく適用されていることの確認", () => {
     render(<NavigationUI {...authedProps} />);
