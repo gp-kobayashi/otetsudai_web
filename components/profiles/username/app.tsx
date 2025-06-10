@@ -20,6 +20,7 @@ const InsertUserNameApp = ({ user_id }: props) => {
     formState: { errors, isValid },
   } = useForm<UsernameFormData>({
     resolver: zodResolver(usernameSchema),
+    mode: "onChange",
   });
   const onSubmit = async (data: UsernameFormData) => {
     const { error } = await insertUsername(user_id, data.username);
