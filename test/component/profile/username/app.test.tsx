@@ -121,4 +121,34 @@ describe("InsertUserNameApp Component", () => {
     const errorMessage = screen.getByText("ユーザー名は英数字のみ使用できます");
     expect(errorMessage).toBeInTheDocument();
   });
+  test("空文字を入力するとsubmitボタンが無効になり、エラーメッセージが表示される", async () => {
+    render(<InsertUserNameApp user_id="test_user_id" />);
+
+    const input = screen.getByLabelText("User Name:");
+    const button = screen.getByRole("button", { name: "Submit" });
+    expect(button).toBeDisabled();
+
+    await userEvent.type(input, "abc");
+    await userEvent.clear(input);
+
+    await waitFor(() => {
+      expect(button).toBeDisabled();
+      expect(
+        screen.getByText("ユーザー名は3文字以上で入力してください"),
+      ).toBeInTheDocument();
+    });
+  });
+  test("spaceのみの入力時にsubmitボタンが無効になる", async () => {
+    render(<InsertUserNameApp user_id="test_user_id" />);
+
+    const input = screen.getByLabelText("User Name:");
+    const button = screen.getByRole("button", { name: "Submit" });
+    expect(button).toBeDisabled();
+
+    await userEvent.type(input, "   ");
+
+    await waitFor(() => {
+      expect(button).toBeDisabled();
+    });
+  });
 });
