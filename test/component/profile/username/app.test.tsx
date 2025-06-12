@@ -40,7 +40,6 @@ describe("InsertUserNameApp Component", () => {
 
   test("有効なユーザー名を入力するとsubmitボタンが有効になる", async () => {
     render(<InsertUserNameApp user_id="test_user_id" />);
-
     const input = screen.getByLabelText("User Name:");
     const button = screen.getByRole("button", { name: "Submit" });
     expect(button).toBeDisabled();
@@ -193,28 +192,53 @@ describe("InsertUserNameApp Component", () => {
 
     // insertUsername関数が成功レスポンスを返すように設定
     mockInsertUsername.mockResolvedValue({ data: null, error: null });
-    
+
     // ユーザーイベント操作用のセットアップ
     const user = userEvent.setup();
+    render(<InsertUserNameApp user_id="test_user_id" />);
+    const input = screen.getByLabelText("User Name:");
+    const button = screen.getByRole("button", { name: "Submit" });
+    await user.type(input, "validuser");
+    await user.click(button);
 
+    await waitFor(() => {
+      expect(mockInsertUsername).toHaveBeenCalledWith(
+        "test_user_id",
+        "validuser",
+      );
+      expect(mockPush).toHaveBeenCalledWith("/account");
+    });
+  });
+});
+
+test("重複ユーザー名エラー時にアラートが表示される", async () => {
+  // insertUsername関数のモックを初期化
+  const { insertUsername } = await import("@/lib/supabase_function/profile");
+  mockInsertUsername = vi.mocked(insertUsername);
+
+  // window.alertを監視用の偽物に置換
+  const alertSpy = vi.spyOn(window, "alert").mockImplementation(() => {});
+
+  // insertUsername関数がエラーレスポンスを返すように設定
+  mockInsertUsername.mockResolvedValue({
+    data: null,
+    error: { message: "duplicate key value violates unique constraint" },
   });
 
-  test("重複ユーザー名エラー時にアラートが表示される", async () => {
-    // insertUsername関数のモックを初期化
-    const { insertUsername } = await import("@/lib/supabase_function/profile");
-    mockInsertUsername = vi.mocked(insertUsername);
-
-    // window.alertを監視用の偽物に置換
-    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
-    
-    // insertUsername関数がエラーレスポンスを返すように設定
-    mockInsertUsername.mockResolvedValue({ 
-      data: null, 
-      error: { message: "duplicate key value violates unique constraint" }
-    });
-
-    // ユーザーイベント操作用のセットアップ
-    const user = userEvent.setup();
-    
+  // ユーザーイベント操作用のセットアップ
+  const user = userEvent.setup();
+  render(<InsertUserNameApp user_id="test_user_id" />);
+  const input = screen.getByLabelText("User Name:");
+  const button = screen.getByRole("button", { name: "Submit" });
+  await user.type(input, "validuser");
+  await user.click(button);
+  await waitFor(() => {
+    expect(mockInsertUsername).toHaveBeenCalledWith(
+      "test_user_id",
+      "validuser",
+    );
+    expect(alertSpy).toHaveBeenCalledWith(
+      "そのユーザー名はすでに使用されています。別のユーザー名を選択してください。",
+    );
   });
 });
