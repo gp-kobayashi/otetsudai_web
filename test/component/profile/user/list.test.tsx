@@ -1,15 +1,27 @@
-import { describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import UserRecruitmentList from "@/components/profiles/user/list";
 import type { Recruitment } from "@/types/supabase/types";
+import userEvent from "@testing-library/user-event";
 
 const mockPush = vi.fn();
+const mockRefresh = vi.fn();
 vi.mock("next/navigation", () => ({
   useRouter: () => ({
     push: mockPush,
-    refresh: vi.fn(),
+    refresh: mockRefresh,
   }),
 }));
+
+vi.mock("@/lib/supabase_function/recruitment", () => ({
+  deleteRecruitment: vi.fn(),
+}));
+let mockDeleteRecruitmen: ReturnType<typeof vi.fn>;
+
+beforeEach(() => {
+  vi.clearAllMocks();
+});
+
 const mockRecruitment: Recruitment[] = [
   {
     id: 1,
@@ -104,18 +116,24 @@ describe("UserRecruitmentList Component", () => {
     expect(mockPush).toHaveBeenCalledWith("/recruitment/2");
   });
   test("削除ボタンをクリック時に確認ダイアログが表示されOKを押すと削除される", async () => {
+    const { deleteRecruitment } = await import(
+      "@/lib/supabase_function/recruitment"
+    );
+    mockDeleteRecruitmen = vi.mocked(deleteRecruitment);
+    const user = userEvent.setup();
     const mockProps = {
       recruitmentList: mockRecruitment,
       checkUsername: true,
     };
     render(<UserRecruitmentList {...mockProps} />);
-
-    const deleteButton = screen.getAllByText("削除")[0];
     window.confirm = vi.fn(() => true);
-    deleteButton.click();
-
+    const deleteButton = screen.getAllByRole("button", { name: "削除" })[0];
+    await userEvent.click(deleteButton);
     expect(window.confirm).toHaveBeenCalledWith("本当に削除しますか？");
-    expect(mockPush).toHaveBeenCalled();
+
+    expect(deleteRecruitment).toHaveBeenCalledWith(mockRecruitment[0].id);
+
+    expect(mockRefresh).toHaveBeenCalled();
   });
   test("削除ボタンをクリック時に確認ダイアログが表示されキャンセルを押すと削除されない", async () => {
     const mockProps = {
