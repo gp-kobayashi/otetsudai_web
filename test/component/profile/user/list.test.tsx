@@ -16,7 +16,6 @@ vi.mock("next/navigation", () => ({
 vi.mock("@/lib/supabase_function/recruitment", () => ({
   deleteRecruitment: vi.fn(),
 }));
-let mockDeleteRecruitmen: ReturnType<typeof vi.fn>;
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -119,8 +118,7 @@ describe("UserRecruitmentList Component", () => {
     const { deleteRecruitment } = await import(
       "@/lib/supabase_function/recruitment"
     );
-    mockDeleteRecruitmen = vi.mocked(deleteRecruitment);
-    const user = userEvent.setup();
+
     const mockProps = {
       recruitmentList: mockRecruitment,
       checkUsername: true,
