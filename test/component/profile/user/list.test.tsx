@@ -75,8 +75,8 @@ describe("UserRecruitmentList Component", () => {
       checkUsername: true,
     };
     render(<UserRecruitmentList {...mockProps} />);
-    const deleteButton = screen.getAllByText("削除");
-    expect(deleteButton.length).toBe(2);
+    const deleteButtons = screen.getAllByRole("button", { name: "削除" });
+    expect(deleteButtons).toHaveLength(2);
   });
   test("usernameが一致しない場合、削除ボタンが表示されない", () => {
     const mockUsenameFalseProps = {
