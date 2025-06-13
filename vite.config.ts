@@ -12,5 +12,12 @@ export default defineConfig({
         globals: true,
         environment: "happy-dom",
         setupFiles: ["./vitest.setup.ts"],
+        coverage: {
+      provider: 'v8',
+      reportsDirectory: './coverage',
+      reporter: ['text', 'html'],
+      all: true,
+      exclude: ['node_modules/', 'test/'],
+    }
     }
 })
