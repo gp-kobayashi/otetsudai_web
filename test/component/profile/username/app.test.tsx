@@ -230,15 +230,16 @@ test("重複ユーザー名エラー時にアラートが表示される", async
   render(<InsertUserNameApp user_id="test_user_id" />);
   const input = screen.getByLabelText("User Name:");
   const button = screen.getByRole("button", { name: "Submit" });
-  await user.type(input, "validuser");
+  await user.type(input, "duplicateUser");
   await user.click(button);
   await waitFor(() => {
     expect(mockInsertUsername).toHaveBeenCalledWith(
       "test_user_id",
-      "validuser",
+      "duplicateUser",
     );
     expect(alertSpy).toHaveBeenCalledWith(
       "そのユーザー名はすでに使用されています。別のユーザー名を選択してください。",
     );
+    expect(mockPush).not.toHaveBeenCalled();
   });
 });
