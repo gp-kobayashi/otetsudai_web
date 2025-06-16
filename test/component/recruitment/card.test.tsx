@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
-import RecruitmentCard from "@/components/recruitment/card/card";
+import RecruitmentCard from "@/components/recruitment/card/RecruitmentCard";
 import { RecruitmentWithProfile } from "@/types/supabase/types";
 const mockPush = vi.fn();
 vi.mock("next/navigation", () => ({

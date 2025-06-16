@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import Home from "../app/page";
-import List from "../components/mainPage/list";
+import List from "../components/mainPage/MainPageList";
 import { mockRecruitments } from "./mocks/mockData";
 
 describe(Home, () => {
@@ -22,7 +22,7 @@ describe(Home, () => {
 describe(List, () => {
   test("各募集のタイトル、説明が表示される", async () => {
     render(<List />);
-    
+
     // MSWでモックされたデータが表示されることを確認
     await waitFor(() => {
       mockRecruitments.slice(0, 10).forEach((recruitment) => {

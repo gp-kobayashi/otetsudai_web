@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
-import CommentApp from "@/components/recruitment/comment/app";
+import CommentApp from "@/components/recruitment/comment/CommentApp";
 
 const mockProps = {
   id: 1,

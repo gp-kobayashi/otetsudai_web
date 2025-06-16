@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { render, screen } from "@testing-library/react";
-import CommentList from "@/components/recruitment/comment/list";
+import CommentList from "@/components/recruitment/comment/CommentList";
 import type { CommentWithProfile } from "@/types/supabase/types";
 
 const mockCommentList: CommentWithProfile[] = [

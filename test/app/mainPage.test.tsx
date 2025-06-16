@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import Home from "../../app/page";
-import List from "../../components/mainPage/list";
+import List from "../../components/mainPage/MainPageList";
 import { mockRecruitments } from "../mocks/mockData";
 
 describe(Home, () => {

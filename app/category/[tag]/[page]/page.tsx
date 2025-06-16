@@ -2,9 +2,9 @@ import { getRecruitmentBytag } from "@/lib/supabase_function/recruitment";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import styles from "./category.module.css";
-import StatusFilter from "@/components/recruitment/category/filter";
-import Pagination from "@/components/recruitment/category/pagination";
-import RecruitmentCard from "@/components/recruitment/card/card";
+import StatusFilter from "@/components/recruitment/category/StatusFilter";
+import Pagination from "@/components/recruitment/category/Pagination";
+import RecruitmentCard from "@/components/recruitment/card/RecruitmentCard";
 
 type PageProps = {
   params: Promise<{

@@ -1,6 +1,6 @@
 import { TAG_VALUES } from "@/utils/enum/enum";
 import styles from "./page.module.css";
-import List from "@/components/mainPage/list";
+import List from "@/components/mainPage/MainPageList";
 export default function Home() {
   const tags = TAG_VALUES;
   return (

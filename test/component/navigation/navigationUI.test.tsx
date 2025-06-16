@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { render, screen } from "@testing-library/react";
-import NavigationUI from "@/components/navigation/navigationUI";
+import NavigationUI from "@/components/navigation/NavigationUI";
 import styles from "@/components/navigation/navigation.module.css";
 
 const noAuthedUserProps = {

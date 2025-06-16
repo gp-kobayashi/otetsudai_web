@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { render, screen } from "@testing-library/react";
-import Pagination from "@/components/recruitment/category/pagination";
+import Pagination from "@/components/recruitment/category/Pagination";
 
 describe("Pagination", () => {
   test("初期レンダリングが行われる", () => {

@@ -1,7 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 
 import { fetchProfile } from "@/lib/supabase_function/profile";
-import NavigationUI from "./navigationUI";
+import NavigationUI from "./NavigationUI";
 
 const Navigation = async () => {
   const supabase = await createClient();

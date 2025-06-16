@@ -2,9 +2,9 @@
 import { getRecruitmentList } from "@/lib/supabase_function/recruitment";
 import { useEffect, useState } from "react";
 import type { RecruitmentWithProfile } from "@/types/supabase/types";
-import styles from "./list.module.css";
+import styles from "./mainpageList.module.css";
 
-import RecruitmentCard from "@/components/recruitment/card/card";
+import RecruitmentCard from "@/components/recruitment/card/RecruitmentCard";
 
 const MainPageList = () => {
   const [recruitmentList, setRecruitmentList] = useState<
