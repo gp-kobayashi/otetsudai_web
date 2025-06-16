@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { render, screen } from "@testing-library/react";
-import Recruitment from "@/components/recruitment/recruitment/recruitment";
+import Recruitment from "@/components/recruitment/recruitment/Recruitment";
 import { RecruitmentWithProfile } from "@/types/supabase/types";
 
 const mockData: RecruitmentWithProfile = {

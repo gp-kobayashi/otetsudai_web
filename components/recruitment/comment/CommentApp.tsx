@@ -5,7 +5,7 @@ import {
   addComment,
   getCommentByRecruitment,
 } from "@/lib/supabase_function/comment";
-import CommentList from "@/components/recruitment/comment/list";
+import CommentList from "@/components/recruitment/comment/CommentList";
 import { CommentWithProfile } from "@/types/supabase/types";
 import {
   formatAvatarUrl,

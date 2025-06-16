@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
-import RecruitmentStatus from "@/components/recruitment/recruitment/status";
+import RecruitmentStatus from "@/components/recruitment/recruitment/RecruitmentStatus";
 import { STATUS_VALUES } from "@/utils/enum/enum";
 import userEvent from "@testing-library/user-event";
 

@@ -3,11 +3,11 @@ import styles from "./recruitment.module.css";
 import Image from "next/image";
 import { CiClock2 } from "react-icons/ci";
 import Link from "next/link";
-import DeleteButton from "../recruitmentBtn/delete/deleteButton";
-import RecruitmentStatus from "./status";
+import DeleteButton from "../recruitmentBtn/delete/DeleteButton";
+import RecruitmentStatus from "./RecruitmentStatus";
 import type { RecruitmentWithProfile } from "@/types/supabase/types";
 import { useState } from "react";
-import EditButton from "../recruitmentBtn/edit/editButton";
+import EditButton from "../recruitmentBtn/edit/EditButton";
 import { DEFAULT_AVATAR_URL } from "@/lib/supabase_function/profile";
 
 type Props = {

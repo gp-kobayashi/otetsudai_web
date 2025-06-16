@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import styles from "./card.module.css";
+import styles from "./recruitmentCard.module.css";
 import Image from "next/image";
 import { CiClock2 } from "react-icons/ci";
 import { RecruitmentWithProfile } from "@/types/supabase/types";

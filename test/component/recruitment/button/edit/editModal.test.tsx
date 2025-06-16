@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
-import EditModal from "@/components/recruitment/recruitmentBtn/edit/editModal";
+import EditModal from "@/components/recruitment/recruitmentBtn/edit/EditModal";
 import { RecruitmentWithProfile } from "@/types/supabase/types";
 
 const mockRecruitmentData: RecruitmentWithProfile = {

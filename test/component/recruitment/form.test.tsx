@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
-import RecruitmentForm from "@/components/recruitment/create/form";
+import RecruitmentForm from "@/components/recruitment/create/RecruitmentForm";
 
 const mockProps = {
   user_id: "user12345",

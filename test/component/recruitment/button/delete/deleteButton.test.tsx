@@ -1,7 +1,7 @@
 import { describe, expect, test, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 
-import DeleteButton from "@/components/recruitment/recruitmentBtn/delete/deleteButton";
+import DeleteButton from "@/components/recruitment/recruitmentBtn/delete/DeleteButton";
 import userEvent from "@testing-library/user-event";
 
 describe("DeleteButton Component", () => {

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
-import UserRecruitmentList from "@/components/profiles/user/list";
+import UserRecruitmentList from "@/components/profiles/user/UserRecruitmentList";
 import type { Recruitment } from "@/types/supabase/types";
 import userEvent from "@testing-library/user-event";
 
