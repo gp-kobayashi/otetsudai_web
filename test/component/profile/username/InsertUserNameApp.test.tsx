@@ -1,6 +1,6 @@
 import { describe, expect, test, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
-import InsertUserNameApp from "@/components/profiles/username/";
+import InsertUserNameApp from "@/components/profiles/username/InsertUserNameApp";
 import userEvent from "@testing-library/user-event";
 
 // router.push()の呼び出しを検証するためのモック関数
