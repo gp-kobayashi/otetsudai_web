@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { render, screen } from "@testing-library/react";
-import StatusFilter from "@/components/recruitment/category/filter";
+import StatusFilter from "@/components/recruitment/category/StatusFilter";
 import { STATUS_VALUES } from "@/utils/enum/enum";
 
 describe("StatusFilter", () => {
