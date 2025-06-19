@@ -13,8 +13,12 @@ const Navigation = async () => {
   let username = null;
 
   if (user) {
-    const { data } = await fetchProfile(user.id);
-    username = data?.username || null;
+    try {
+      const { data } = await fetchProfile(user.id);
+      username = data?.username || null;
+    } catch (error) {
+      console.error("Failed to fetch profile:", error);
+    }
   }
 
   return <NavigationUI user={user} username={username} />;
