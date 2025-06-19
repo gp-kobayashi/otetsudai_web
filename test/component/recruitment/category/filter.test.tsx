@@ -76,14 +76,15 @@ describe("StatusFilter", () => {
     const activeLink = screen.getByRole("link", { name: currentStatus });
     expect(activeLink).toHaveAttribute("href", `/category/${invalidTag}/1`);
 
-    const inactiveStatus = "募集中";
-    const inactiveLink = screen.getByRole("link", { name: inactiveStatus });
-    const expectedHref = `/category/${invalidTag}/1?status=${encodeURIComponent(
-      inactiveStatus,
-    )}`;
-    expect(inactiveLink).toHaveAttribute("href", expectedHref);
+    STATUS_VALUES.filter((status) => status !== currentStatus).forEach(
+      (status) => {
+        const link = screen.getByRole("link", { name: status });
+        const expectedHref = `/category/${invalidTag}/1?status=${encodeURIComponent(status)}`;
+        expect(link).toHaveAttribute("href", expectedHref);
+        expect(link.className).not.toContain("active");
+      },
+    );
   });
-
   test("不正な currentStatus が渡されてもクラッシュせず、どのボタンもアクティブにならない", () => {
     const tag = "Video";
     const invalidStatus = "存在しないステータス";
