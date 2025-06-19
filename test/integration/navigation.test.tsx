@@ -7,7 +7,7 @@ vi.mock("@/lib/supabase_function/profile", () => ({
 
 import { beforeEach, describe, expect, type Mock, test, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
-import Navigation from "@/components/navigation/navigation";
+import Navigation from "@/components/navigation/Navigation";
 import { createClient } from "@/utils/supabase/server";
 import { fetchProfile } from "@/lib/supabase_function/profile";
 
