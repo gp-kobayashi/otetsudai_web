@@ -5,15 +5,22 @@ vi.mock("@/lib/supabase_function/profile", () => ({
   fetchProfile: vi.fn(),
 }));
 
-import { describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, type Mock, test, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import Navigation from "@/components/navigation/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { fetchProfile } from "@/lib/supabase_function/profile";
 
+const mockedCreateClient = createClient as Mock;
+const mockedFetchProfile = fetchProfile as Mock;
+
 describe("navigation", () => {
+  beforeEach(() => {
+    mockedCreateClient.mockClear();
+    mockedFetchProfile.mockClear();
+  });
   test("ユーザー未ログイン状態の確認", async () => {
-    (createClient as any).mockResolvedValue({
+    mockedCreateClient.mockReturnValue({
       auth: {
         getUser: vi.fn().mockResolvedValue({ data: { user: null } }),
       },
@@ -23,14 +30,14 @@ describe("navigation", () => {
     await findByText("ログイン");
   });
   test("ログイン状態の確認", async () => {
-    (createClient as any).mockResolvedValue({
+    mockedCreateClient.mockReturnValue({
       auth: {
         getUser: vi
           .fn()
           .mockResolvedValue({ data: { user: { id: "user123" } } }),
       },
     });
-    (fetchProfile as any).mockResolvedValue({
+    mockedFetchProfile.mockResolvedValue({
       data: { username: "testuser" },
     });
 
@@ -39,14 +46,14 @@ describe("navigation", () => {
     expect(screen.getByText("profile")).toBeInTheDocument();
   });
   test("ログイン済みだが、ユーザー名がない場合、ユーザー名登録ページへのリンクが表示される", async () => {
-    (createClient as any).mockReturnValue({
+    mockedCreateClient.mockReturnValue({
       auth: {
         getUser: vi
           .fn()
           .mockResolvedValue({ data: { user: { id: "user123" } } }),
       },
     });
-    (fetchProfile as any).mockResolvedValue({
+    mockedFetchProfile.mockResolvedValue({
       data: { username: null },
     });
 
@@ -57,14 +64,14 @@ describe("navigation", () => {
     expect(profileLink).toHaveAttribute("href", "/insertUserName");
   });
   test("ログイン済みでユーザー名がある場合、正しいプロフィールページへのリンクが表示される", async () => {
-    (createClient as any).mockReturnValue({
+    mockedCreateClient.mockReturnValue({
       auth: {
         getUser: vi
           .fn()
           .mockResolvedValue({ data: { user: { id: "user123" } } }),
       },
     });
-    (fetchProfile as any).mockResolvedValue({
+    mockedFetchProfile.mockResolvedValue({
       data: { username: "testuser" },
     });
 
@@ -76,7 +83,7 @@ describe("navigation", () => {
   });
 
   test("プロフィールの取得に失敗した場合も各ページへのリンクが表示される", async () => {
-    (createClient as any).mockReturnValue({
+    mockedCreateClient.mockReturnValue({
       auth: {
         getUser: vi
           .fn()
@@ -84,7 +91,7 @@ describe("navigation", () => {
       },
     });
 
-    (fetchProfile as any).mockRejectedValue(new Error("Failed to fetch"));
+    mockedFetchProfile.mockRejectedValue(new Error("Failed to fetch"));
 
     render(await Navigation());
 
