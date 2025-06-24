@@ -40,23 +40,27 @@ const Recruitment = (props: Props) => {
           <EditButton recruitmentData={recruitmentData} onUpdate={onUpdate} />
         </div>
       )}
-      <h3 className={styles.title}>{data.title}</h3>
-      <p className={styles.text}>{data.explanation}</p>
+      <h3 className={styles.title}>{recruitmentData.title}</h3>
+      <p className={styles.text}>{recruitmentData.explanation}</p>
       <div className={styles.recruitment_user}>
-        <p className={styles.tag}>{data.tag}</p>
+        <p className={styles.tag}>{recruitmentData.tag}</p>
         <Image
-          src={data.avatar_url ? data.avatar_url : DEFAULT_AVATAR_URL}
+          src={
+            recruitmentData.avatar_url
+              ? recruitmentData.avatar_url
+              : DEFAULT_AVATAR_URL
+          }
           className={styles.item}
           alt="avatar"
           width={40}
           height={40}
         />
-        <Link href={`/userProfile/${data.username}`}>
-          <p className={styles.item}>{data.username}</p>
+        <Link href={`/userProfile/${recruitmentData.username}`}>
+          <p className={styles.item}>{recruitmentData.username}</p>
         </Link>
         <CiClock2 className={styles.info_icon} />
-        <p className={styles.item}>{data.created_at}</p>
-        {userId === data.user_id && <DeleteButton id={id} />}
+        <p className={styles.item}>{recruitmentData.created_at}</p>
+        {userId === recruitmentData.user_id && <DeleteButton id={id} />}
       </div>
     </div>
   );
