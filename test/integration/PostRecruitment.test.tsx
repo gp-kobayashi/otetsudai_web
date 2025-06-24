@@ -63,4 +63,13 @@ describe("PostRecruitment", () => {
       expect(screen.getByText("テスト内容")).toBeInTheDocument();
     });
   });
+  test("タイトルまたは内容が空のとき投稿できず、アラートが出る", () => {
+    window.alert = vi.fn();
+
+    render(<RecruitmentForm user_id="user123" />);
+
+    fireEvent.click(screen.getByRole("button", { name: "募集する" }));
+
+    expect(window.alert).toHaveBeenCalledWith("タイトルと内容は必須です");
+  });
 });
