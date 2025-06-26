@@ -55,6 +55,23 @@ describe("EditButton Component", () => {
       expect(screen.getByRole("button", { name: "×" })).toBeInTheDocument();
     });
   });
+  test("× ボタンでモーダルを閉じられる", () => {
+    render(
+      <EditButton
+        recruitmentData={mockRecruitmentData}
+        onUpdate={mockOnUpdate}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "内容を編集する" }));
+
+    const closeButton = screen.getByRole("button", { name: "×" });
+    fireEvent.click(closeButton);
+
+    expect(screen.queryByLabelText("タイトル")).not.toBeInTheDocument();
+    expect(updateRecruitment).not.toHaveBeenCalled();
+  });
+
   test("モーダルを閉じると非表示になる", () => {
     render(
       <EditButton
@@ -125,6 +142,183 @@ describe("EditButton Component", () => {
         title: newTitle,
         explanation: newExplanation,
       });
+    });
+  });
+  test("タイトル・内容が空だと保存できずモーダルも閉じない", async () => {
+    render(
+      <EditButton
+        recruitmentData={mockRecruitmentData}
+        onUpdate={mockOnUpdate}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "内容を編集する" }));
+
+    const titleInput = screen.getByLabelText("タイトル");
+    const explanationTextarea = screen.getByLabelText("内容");
+
+    await userEvent.clear(titleInput);
+    await userEvent.clear(explanationTextarea);
+
+    // alertをモック
+    const alertMock = vi.spyOn(window, "alert").mockImplementation(() => {});
+
+    fireEvent.click(screen.getByRole("button", { name: "保存" }));
+
+    expect(alertMock).toHaveBeenCalledWith("タイトルと内容は必須です");
+    expect(updateRecruitment).not.toHaveBeenCalled();
+
+    // モーダルが閉じていない
+    expect(screen.getByLabelText("タイトル")).toBeInTheDocument();
+
+    alertMock.mockRestore();
+  });
+
+  test("変更がなくても保存すると updateRecruitment が呼ばれる", async () => {
+    render(
+      <EditButton
+        recruitmentData={mockRecruitmentData}
+        onUpdate={mockOnUpdate}
+      />,
+    );
+
+    // モーダルを開く
+    fireEvent.click(screen.getByRole("button", { name: "内容を編集する" }));
+
+    // 入力欄が初期状態のまま「保存」
+    fireEvent.click(screen.getByRole("button", { name: "保存" }));
+
+    // updateRecruitment が初期値で呼ばれたか確認
+    await waitFor(() => {
+      expect(updateRecruitment).toHaveBeenCalledWith(
+        mockRecruitmentData.id,
+        mockRecruitmentData.title,
+        mockRecruitmentData.explanation,
+      );
+    });
+  });
+
+  test("保存後にモーダルが閉じる", async () => {
+    render(
+      <EditButton
+        recruitmentData={mockRecruitmentData}
+        onUpdate={mockOnUpdate}
+      />,
+    );
+
+    // モーダルを開く
+    fireEvent.click(screen.getByRole("button", { name: "内容を編集する" }));
+
+    // 保存ボタンを押す
+    fireEvent.click(screen.getByRole("button", { name: "保存" }));
+
+    // モーダル内の要素が消えることを確認
+    await waitFor(() => {
+      expect(screen.queryByLabelText("タイトル")).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole("button", { name: "保存" }),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  test("編集をキャンセルすると入力状態がリセットされること", () => {
+    render(
+      <EditButton
+        recruitmentData={mockRecruitmentData}
+        onUpdate={mockOnUpdate}
+      />,
+    );
+
+    //モーダルを開く
+    fireEvent.click(screen.getByRole("button", { name: "内容を編集する" }));
+
+    //入力を変更する
+    fireEvent.change(screen.getByLabelText("タイトル"), {
+      target: { value: "編集途中のタイトル" },
+    });
+    fireEvent.change(screen.getByLabelText("内容"), {
+      target: { value: "編集途中の説明" },
+    });
+
+    // キャンセル（×ボタン）を押してモーダルを閉じる
+    fireEvent.click(screen.getByRole("button", { name: "×" }));
+
+    // 再度モーダルを開く
+    fireEvent.click(screen.getByRole("button", { name: "内容を編集する" }));
+
+    //入力状態が初期値に戻っているか確認
+    expect(screen.getByLabelText("タイトル")).toHaveValue(
+      mockRecruitmentData.title,
+    );
+    expect(screen.getByLabelText("内容")).toHaveValue(
+      mockRecruitmentData.explanation,
+    );
+  });
+
+  test("モーダルに渡す props が正しく反映されていること", () => {
+    render(
+      <EditButton
+        recruitmentData={mockRecruitmentData}
+        onUpdate={mockOnUpdate}
+      />,
+    );
+
+    // モーダルを開く
+    fireEvent.click(screen.getByRole("button", { name: "内容を編集する" }));
+
+    // モーダルに表示された入力欄に、初期値が反映されているかを確認
+    expect(screen.getByLabelText("タイトル")).toHaveValue(
+      mockRecruitmentData.title,
+    );
+    expect(screen.getByLabelText("内容")).toHaveValue(
+      mockRecruitmentData.explanation,
+    );
+  });
+
+  test("編集保存して更新の流れが正常に動作する", async () => {
+    const mockOnUpdate = vi.fn();
+
+    render(
+      <EditButton
+        recruitmentData={mockRecruitmentData}
+        onUpdate={mockOnUpdate}
+      />,
+    );
+
+    // 編集ボタンをクリック
+    fireEvent.click(screen.getByRole("button", { name: "内容を編集する" }));
+
+    // 入力値を変更
+    fireEvent.change(screen.getByLabelText("タイトル"), {
+      target: { value: "新しいタイトル" },
+    });
+    fireEvent.change(screen.getByLabelText("内容"), {
+      target: { value: "新しい説明" },
+    });
+
+    // 保存ボタンを押す
+    fireEvent.click(screen.getByRole("button", { name: "保存" }));
+
+    // updateRecruitment が呼ばれる
+    await waitFor(() => {
+      expect(updateRecruitment).toHaveBeenCalledWith(
+        mockRecruitmentData.id,
+        "新しいタイトル",
+        "新しい説明",
+      );
+    });
+
+    // onUpdate に正しいデータが渡されている
+    expect(mockOnUpdate).toHaveBeenCalledWith({
+      title: "新しいタイトル",
+      explanation: "新しい説明",
+    });
+
+    // モーダルが閉じていることの確認
+    await waitFor(() => {
+      expect(
+        screen.queryByRole("button", { name: "保存" }),
+      ).not.toBeInTheDocument();
     });
   });
 });
