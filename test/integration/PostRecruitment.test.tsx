@@ -6,63 +6,45 @@ import {
 } from "@/lib/supabase_function/recruitment";
 import RecruitmentForm from "@/components/recruitment/create/RecruitmentForm";
 import MainPageList from "@/components/mainPage/MainPageList";
+import { useRouter } from "next/navigation";
 
+vi.mock("next/navigation", () => ({
+  useRouter: vi.fn(),
+}));
 vi.mock("@/lib/supabase_function/recruitment", () => ({
   addRecruitment: vi.fn(),
   getRecruitmentList: vi.fn(),
 }));
 
 describe("PostRecruitment", () => {
-  test("投稿後、MainPageList に新しい募集が表示される", async () => {
-    const mockRecruitment = {
-      id: 1,
-      title: "テストタイトル",
-      explanation: "テスト内容",
-      tag: "Video",
-      user_id: "user123",
-      profile: {
-        username: "testuser",
-        avatar_url: "",
-      },
-    };
+  test("投稿成功時に router.push('/') が呼ばれる", async () => {
+    const pushMock = vi.fn();
+    (useRouter as unknown as Mock).mockReturnValue({ push: pushMock });
 
     (addRecruitment as Mock).mockResolvedValue(undefined);
 
-    // 一覧取得モック（投稿後に新しいデータを返す）
-    (getRecruitmentList as Mock).mockResolvedValue({
-      data: [mockRecruitment],
-      error: null,
-    });
+    render(<RecruitmentForm user_id="user123" />);
 
-    render(
-      <>
-        <RecruitmentForm user_id="user123" />
-        <MainPageList />
-      </>,
-    );
-
-    // 入力
     fireEvent.change(screen.getByLabelText("タイトル:"), {
-      target: { value: "テストタイトル" },
+      target: { value: "タイトル" },
     });
     fireEvent.change(screen.getByLabelText("内容:"), {
-      target: { value: "テスト内容" },
+      target: { value: "内容" },
     });
 
-    // カテゴリ選択（任意）
-    fireEvent.change(screen.getByLabelText("カテゴリー:"), {
-      target: { value: "Video" },
-    });
-
-    // 投稿
     fireEvent.click(screen.getByRole("button", { name: "募集する" }));
 
-    // 投稿後の一覧更新を待つ
     await waitFor(() => {
-      expect(screen.getByText("テストタイトル")).toBeInTheDocument();
-      expect(screen.getByText("テスト内容")).toBeInTheDocument();
+      expect(addRecruitment).toHaveBeenCalledWith(
+        "タイトル",
+        "内容",
+        "user123",
+        "Video",
+      );
+      expect(pushMock).toHaveBeenCalledWith("/");
     });
   });
+
   test("タイトルまたは内容が空のとき投稿できず、アラートが出る", () => {
     window.alert = vi.fn();
 
@@ -71,5 +53,28 @@ describe("PostRecruitment", () => {
     fireEvent.click(screen.getByRole("button", { name: "募集する" }));
 
     expect(window.alert).toHaveBeenCalledWith("タイトルと内容は必須です");
+  });
+
+  test("取得した募集が表示される", async () => {
+    (getRecruitmentList as Mock).mockResolvedValue({
+      data: [
+        {
+          id: 1,
+          title: "タイトルA",
+          explanation: "内容A",
+          tag: "Video",
+          user_id: "user123",
+          profile: { username: "testuser", avatar_url: "" },
+        },
+      ],
+      error: null,
+    });
+
+    render(<MainPageList />);
+
+    await waitFor(() => {
+      expect(screen.getByText("タイトルA")).toBeInTheDocument();
+      expect(screen.getByText("内容A")).toBeInTheDocument();
+    });
   });
 });
