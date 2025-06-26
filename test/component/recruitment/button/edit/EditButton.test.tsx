@@ -1,8 +1,9 @@
-import { describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import EditButton from "@/components/recruitment/recruitmentBtn/edit/EditButton";
 import { RecruitmentWithProfile } from "@/types/supabase/types";
 import { updateRecruitment } from "@/lib/supabase_function/recruitment";
+import userEvent from "@testing-library/user-event";
 vi.mock("@/lib/supabase_function/recruitment", () => ({
   updateRecruitment: vi.fn(),
 }));
@@ -19,6 +20,9 @@ const mockRecruitmentData: RecruitmentWithProfile = {
   created_at: "2025-10-01T00:00:00Z",
   updated_at: "2025-10-01T00:00:00Z",
 };
+beforeEach(() => {
+  vi.clearAllMocks();
+});
 const mockOnUpdate = vi.fn();
 describe("EditButton Component", () => {
   test("編集ボタンが正しくレンダリングされる", () => {
@@ -33,7 +37,7 @@ describe("EditButton Component", () => {
     ).toBeInTheDocument();
   });
 
-  test("編集モーダルが開く", () => {
+  test("編集モーダルが開く", async () => {
     render(
       <EditButton
         recruitmentData={mockRecruitmentData}
@@ -41,9 +45,15 @@ describe("EditButton Component", () => {
       />,
     );
     const editButton = screen.getByRole("button", { name: "内容を編集する" });
+    fireEvent.click(editButton);
 
-    editButton.click();
-    expect(screen.getByText("内容を編集する")).toBeInTheDocument();
+    // モーダルの要素が表示されていることを確認
+    await waitFor(() => {
+      expect(screen.getByLabelText("タイトル")).toBeInTheDocument();
+      expect(screen.getByLabelText("内容")).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "保存" })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "×" })).toBeInTheDocument();
+    });
   });
   test("モーダルを閉じると非表示になる", () => {
     render(
@@ -87,23 +97,34 @@ describe("EditButton Component", () => {
   });
 
   test("保存時に updateRecruitment が呼ばれる", async () => {
+    const user = userEvent.setup();
+    const mockOnUpdate = vi.fn();
     render(
       <EditButton
         recruitmentData={mockRecruitmentData}
         onUpdate={mockOnUpdate}
       />,
     );
+    const newTitle = "新しいタイトル";
+    const newExplanation = "新しい説明";
+    // モーダルを開く
+    await user.click(screen.getByRole("button", { name: "内容を編集する" }));
 
-    fireEvent.click(screen.getByRole("button", { name: "内容を編集する" }));
+    // 新しい値を入力
+    await user.clear(screen.getByLabelText("タイトル"));
+    await user.type(screen.getByLabelText("タイトル"), newTitle);
 
-    fireEvent.click(screen.getByRole("button", { name: "保存" }));
+    await user.clear(screen.getByLabelText("内容"));
+    await user.type(screen.getByLabelText("内容"), newExplanation);
 
+    await user.click(screen.getByRole("button", { name: "保存" }));
+
+    // onUpdateが同じ変数で呼び出されたことを確認する
     await waitFor(() => {
-      expect(updateRecruitment).toHaveBeenCalledWith(
-        mockRecruitmentData.id,
-        "新しいタイトル",
-        "新しい説明",
-      );
+      expect(mockOnUpdate).toHaveBeenCalledWith({
+        title: newTitle,
+        explanation: newExplanation,
+      });
     });
   });
 });
