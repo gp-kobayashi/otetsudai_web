@@ -3,7 +3,8 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import AccountForm from "@/app/account/account-form";
 import UserProfile from "@/app/userProfile/[username]/page";
 
-// 必要なモックを先に定義
+let upsertMock: ReturnType<typeof vi.fn>;
+
 vi.mock("@/utils/supabase/client", () => ({
   createClient: () => ({
     from: vi.fn(() => ({
@@ -59,7 +60,7 @@ describe("プロフィール更新のテスト", () => {
     vi.spyOn(window, "alert").mockImplementation(() => {});
   });
   test("プロフィールの更新が UserProfile に反映される", async () => {
-    // Step 1: プロフィール編集フォームに入力して送信
+    //  プロフィール編集フォームに入力して送信
     render(
       <AccountForm
         user={{ id: "user123", email: "user@example.com" } as any}
@@ -81,7 +82,7 @@ describe("プロフィール更新のテスト", () => {
     });
     fireEvent.click(screen.getByRole("button", { name: "Update" }));
 
-    // Step 2: プロフィールページに新しいデータが表示されるか確認
+    // プロフィールページに新しいデータが表示されるか確認
     const params = Promise.resolve({ username: "newuser" });
     const UserProfileComponent = await UserProfile({ params });
 
@@ -90,5 +91,18 @@ describe("プロフィール更新のテスト", () => {
     expect(await screen.findByText("newuser")).toBeInTheDocument();
     expect(screen.getByText("https://example.com")).toBeInTheDocument();
     expect(screen.getByText("こんにちは")).toBeInTheDocument();
+  });
+
+  test("プロフィール編集フォームに初期値が正しく表示される", async () => {
+    render(
+      <AccountForm
+        user={{ id: "user123", email: "user@example.com" } as any}
+      />,
+    );
+
+    // モックで返している初期値に合わせる
+    expect(await screen.findByDisplayValue("newuser")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("https://example.com")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("こんにちは")).toBeInTheDocument();
   });
 });
