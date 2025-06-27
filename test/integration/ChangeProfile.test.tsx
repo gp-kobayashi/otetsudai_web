@@ -100,7 +100,6 @@ describe("プロフィール更新のテスト", () => {
       />,
     );
 
-    // モックで返している初期値に合わせる
     expect(await screen.findByDisplayValue("newuser")).toBeInTheDocument();
     expect(screen.getByDisplayValue("https://example.com")).toBeInTheDocument();
     expect(screen.getByDisplayValue("こんにちは")).toBeInTheDocument();
