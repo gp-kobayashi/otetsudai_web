@@ -77,4 +77,93 @@ describe("PostRecruitment", () => {
       expect(screen.getByText("内容A")).toBeInTheDocument();
     });
   });
+
+  test("カテゴリーを変更して投稿できる", async () => {
+    const pushMock = vi.fn();
+    (useRouter as unknown as Mock).mockReturnValue({ push: pushMock });
+    (addRecruitment as Mock).mockResolvedValue(undefined);
+
+    render(<RecruitmentForm user_id="user456" />);
+
+    fireEvent.change(screen.getByLabelText("タイトル:"), {
+      target: { value: "別タイトル" },
+    });
+    fireEvent.change(screen.getByLabelText("内容:"), {
+      target: { value: "別内容" },
+    });
+    fireEvent.change(screen.getByLabelText("カテゴリー:"), {
+      target: { value: "Text" },
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "募集する" }));
+
+    await waitFor(() => {
+      expect(addRecruitment).toHaveBeenCalledWith(
+        "別タイトル",
+        "別内容",
+        "user456",
+        "Text",
+      );
+      expect(pushMock).toHaveBeenCalledWith("/");
+    });
+  });
+
+  test("addRecruitmentが失敗した場合、router.push('/')が呼ばれずフォームはリセットされない", async () => {
+    const pushMock = vi.fn();
+    (useRouter as unknown as Mock).mockReturnValue({ push: pushMock });
+    // addRecruitmentがエラーをthrow
+    (addRecruitment as Mock).mockRejectedValue(new Error("投稿失敗"));
+
+    render(<RecruitmentForm user_id="user999" />);
+
+    const titleInput = screen.getByLabelText("タイトル:") as HTMLInputElement;
+    const explanationInput = screen.getByLabelText(
+      "内容:",
+    ) as HTMLTextAreaElement;
+    const categorySelect = screen.getByLabelText(
+      "カテゴリー:",
+    ) as HTMLSelectElement;
+
+    fireEvent.change(titleInput, { target: { value: "エラーテスト" } });
+    fireEvent.change(explanationInput, { target: { value: "エラー内容" } });
+    fireEvent.change(categorySelect, { target: { value: "Audio" } });
+
+    fireEvent.click(screen.getByRole("button", { name: "募集する" }));
+
+    // エラー時はpushが呼ばれず、フォーム値がそのまま
+    await waitFor(() => {
+      expect(pushMock).not.toHaveBeenCalled();
+      expect(titleInput.value).toBe("エラーテスト");
+      expect(explanationInput.value).toBe("エラー内容");
+      expect(categorySelect.value).toBe("Audio");
+    });
+  });
+
+  test("投稿成功後、フォームがリセットされる", async () => {
+    const pushMock = vi.fn();
+    (useRouter as unknown as Mock).mockReturnValue({ push: pushMock });
+    (addRecruitment as Mock).mockResolvedValue(undefined);
+
+    render(<RecruitmentForm user_id="user789" />);
+
+    const titleInput = screen.getByLabelText("タイトル:") as HTMLInputElement;
+    const explanationInput = screen.getByLabelText(
+      "内容:",
+    ) as HTMLTextAreaElement;
+    const categorySelect = screen.getByLabelText(
+      "カテゴリー:",
+    ) as HTMLSelectElement;
+
+    fireEvent.change(titleInput, { target: { value: "リセットテスト" } });
+    fireEvent.change(explanationInput, { target: { value: "リセット内容" } });
+    fireEvent.change(categorySelect, { target: { value: "Audio" } });
+
+    fireEvent.click(screen.getByRole("button", { name: "募集する" }));
+
+    await waitFor(() => {
+      expect(titleInput.value).toBe("");
+      expect(explanationInput.value).toBe("");
+      expect(categorySelect.value).toBe("Video");
+    });
+  });
 });
