@@ -1,14 +1,5 @@
-import {
-  describe,
-  expect,
-  test,
-  vi,
-  type Mock,
-  beforeEach,
-  afterEach,
-} from "vitest";
+import { describe, expect, test, vi, beforeEach, afterEach } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import createRecruitment from "@/app/createRecruitment/page";
 
 const pushMock = vi.fn();
 const redirectMock = vi.fn();
@@ -19,6 +10,11 @@ vi.mock("next/navigation", () => ({
     redirectMock(path);
     throw new Error("NEXT_REDIRECT");
   },
+}));
+
+const addRecruitmentMock = vi.fn().mockResolvedValue({ error: null });
+vi.doMock("@/lib/supabase_function/recruitment", () => ({
+  addRecruitment: addRecruitmentMock,
 }));
 
 describe("CreateRecruitmentPage", () => {
@@ -95,5 +91,52 @@ describe("CreateRecruitmentPage", () => {
     await expect(createRecruitment()).rejects.toThrow("NEXT_REDIRECT");
 
     expect(redirectMock).toHaveBeenCalledWith("/login");
+  });
+  test("ユーザープロフィールが取得できない場合、リダイレクトされる", async () => {
+    vi.doMock("@/utils/supabase/server", () => ({
+      createClient: async () => ({
+        auth: {
+          getUser: async () => ({ data: { user: { id: "user123" } } }),
+        },
+      }),
+    }));
+    vi.doMock("@/lib/supabase_function/profile", () => ({
+      fetchProfile: () => Promise.resolve({ data: null }), // プロフィールが取得できない
+    }));
+
+    const { default: createRecruitment } = await import(
+      "@/app/createRecruitment/page"
+    );
+    await expect(createRecruitment()).rejects.toThrow("NEXT_REDIRECT");
+    expect(redirectMock).toHaveBeenCalledWith("/login");
+  });
+
+  test("ユーザー名が未設定の場合、リダイレクトされる", async () => {
+    vi.doMock("@/utils/supabase/server", () => ({
+      createClient: async () => ({
+        auth: {
+          getUser: async () => ({ data: { user: { id: "user123" } } }),
+        },
+      }),
+    }));
+    vi.doMock("@/lib/supabase_function/profile", () => ({
+      fetchProfile: () =>
+        Promise.resolve({
+          data: {
+            id: "user123",
+            username: null, // ユーザー名が未設定
+            website: "http://example.com",
+            avatar_url: "avatar.png",
+            bio: "テスト",
+          },
+        }),
+    }));
+
+    const { default: createRecruitment } = await import(
+      "@/app/createRecruitment/page"
+    );
+    await expect(createRecruitment()).rejects.toThrow("NEXT_REDIRECT");
+
+    expect(redirectMock).toHaveBeenCalledWith("/insertUserName");
   });
 });
