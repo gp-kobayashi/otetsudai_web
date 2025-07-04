@@ -74,15 +74,15 @@ describe("CreateRecruitmentPage", () => {
     fireEvent.click(screen.getByRole("button", { name: "募集する" }));
 
     //addRecruitment が正しく呼ばれたか確認
-  await waitFor(() => {
-    expect(addRecruitmentMock).toHaveBeenCalledWith({
-      user_id: "user123",
-      title: "テストタイトル",
-      content: "テスト内容",
-      tag: "Video",
-    });
-    // 投稿処理が完了し、router.push("/") が呼ばれたことを確認
     await waitFor(() => {
+      expect(addRecruitmentMock).toHaveBeenCalledWith(
+        "テストタイトル",
+        "テスト内容",
+        "user123",
+        "Video",
+      );
+      // 投稿処理が完了し、router.push("/") が呼ばれたことを確認
+
       expect(pushMock).toHaveBeenCalledWith("/");
     });
   });
