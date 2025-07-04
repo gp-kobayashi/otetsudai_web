@@ -22,7 +22,11 @@ const RecruitmentForm = ({ user_id }: Props) => {
       return;
     }
     try {
-      await addRecruitment(title, explanation, user_id, tag);
+      const result = await addRecruitment(title, explanation, user_id, tag);
+      if (result?.error) {
+        alert(result.error.message || "投稿に失敗しました");
+        return;
+      }
       setTitle("");
       setExplanation("");
       setTag(tags[0]);
