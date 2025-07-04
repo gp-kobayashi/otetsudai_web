@@ -245,4 +245,60 @@ describe("CreateRecruitmentPage", () => {
     // push が呼ばれていないことを確認
     expect(pushMock).not.toHaveBeenCalled();
   });
+
+  test("認証ユーザーが正しい値を入力し投稿に成功する", async () => {
+    vi.doMock("@/utils/supabase/server", () => ({
+      createClient: async () => ({
+        auth: {
+          getUser: async () => ({ data: { user: { id: "user123" } } }),
+        },
+      }),
+    }));
+    vi.doMock("@/lib/supabase_function/profile", () => ({
+      fetchProfile: () =>
+        Promise.resolve({
+          data: {
+            id: "user123",
+            username: "testuser",
+            website: "http://example.com",
+            avatar_url: "avatar.png",
+            bio: "テスト",
+          },
+        }),
+    }));
+
+    const addRecruitmentMock = vi.fn().mockResolvedValue({ error: null });
+    vi.doMock("@/lib/supabase_function/recruitment", () => ({
+      addRecruitment: addRecruitmentMock,
+    }));
+    const { default: createRecruitment } = await import(
+      "@/app/createRecruitment/page"
+    );
+    const authenticatedPage = await createRecruitment(); // コンポーネントを直接呼び出す
+    render(authenticatedPage);
+    // 入力フォームに値を入力
+    fireEvent.change(screen.getByLabelText("タイトル:"), {
+      target: { value: "成功テストタイトル" },
+    });
+    fireEvent.change(screen.getByLabelText("内容:"), {
+      target: { value: "成功テスト内容" },
+    });
+    fireEvent.change(screen.getByLabelText("カテゴリー:"), {
+      target: { value: "Video" },
+    });
+    // 投稿ボタンをクリック
+    fireEvent.click(screen.getByRole("button", { name: "募集する" }));
+    // addRecruitment が正しく呼ばれたか確認
+
+    await waitFor(() => {
+      expect(addRecruitmentMock).toHaveBeenCalledWith(
+        "成功テストタイトル",
+        "成功テスト内容",
+        "user123",
+        "Video",
+      );
+      // 投稿処理が完了し、router.push("/") が呼ばれたことを確認
+      expect(pushMock).toHaveBeenCalledWith("/");
+    });
+  });
 });
