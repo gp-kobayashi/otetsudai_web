@@ -49,4 +49,25 @@ describe("AccountPage", () => {
     await expect(Account()).rejects.toThrow("NEXT_REDIRECT");
     expect(redirectMock).toHaveBeenCalledWith("/insertUserName");
   });
+
+  test("ユーザー情報が確認できた場合、AccountFormが表示される", async () => {
+    vi.doMock("@/utils/supabase/server", () => ({
+      createClient: async () => ({
+        auth: {
+          getUser: async () => ({
+            data: { user: { id: "123", email: "test@example.com" } },
+          }),
+        },
+      }),
+    }));
+    vi.doMock("@/lib/supabase_function/profile", () => ({
+      fetchProfile: async () => ({ data: { username: "testuser" } }),
+    }));
+
+    const { default: Account } = await import("@/app/account/page");
+    const result = await Account();
+
+    // AccountFormが描画されているか確認
+    expect(result.type.name).toBe("AccountForm");
+  });
 });
