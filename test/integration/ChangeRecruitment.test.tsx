@@ -137,4 +137,55 @@ describe("recruitment/[id] test", () => {
     expect(screen.getByText("これは募集の内容です")).toBeInTheDocument();
     expect(screen.getByText("open")).toBeInTheDocument(); // ステータス確認
   });
+
+  test("募集の投稿者の場合、編集ボタンが表示される", async () => {
+    // ユーザー認証済み
+    vi.doMock("@/utils/supabase/server", () => ({
+      createClient: async () => ({
+        auth: {
+          getUser: async () => ({
+            data: { user: { id: "user1" } },
+          }),
+        },
+      }),
+    }));
+
+    // プロフィールあり
+    vi.doMock("@/lib/supabase_function/profile", () => ({
+      DEFAULT_AVATAR_URL: "https://example.com/default-avatar.png",
+      fetchProfile: async () => ({
+        data: {
+          id: "user1",
+          username: "testuser",
+          avatar_url: null,
+        },
+      }),
+    }));
+
+    // 募集データあり
+    vi.doMock("@/lib/supabase_function/recruitment", () => ({
+      getRecruitmentById: async () => ({
+        data: {
+          id: 1,
+          user_id: "user1",
+          title: "テストタイトル",
+          explanation: "これは募集の内容です",
+          status: "open",
+          profile: {},
+        },
+      }),
+    }));
+
+    // ページインポート・描画
+    const { default: RecruitmentPage } = await import(
+      "@/app/recruitment/[id]/page"
+    );
+    const rendered = await RecruitmentPage({
+      params: Promise.resolve({ id: 1 }),
+    });
+    render(rendered);
+
+    // 編集ボタンが表示されていることを確認
+    expect(await screen.findByText("内容を編集する")).toBeInTheDocument();
+  });
 });
