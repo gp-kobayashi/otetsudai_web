@@ -26,8 +26,14 @@ const setupUser = (userId = "user1") => {
   }));
 };
 
+type ProfileData = {
+  id: string;
+  username: string | null;
+  avatar_url: string | null;
+} | null;
+
 const setupProfile = (
-  profile = {
+  profile: ProfileData = {
     id: "user1",
     username: "testuser",
     avatar_url: null,
@@ -39,13 +45,22 @@ const setupProfile = (
   }));
 };
 
+type RecruitmentData = {
+  id: number;
+  user_id: string;
+  title: string;
+  explanation: string;
+  status: string;
+  profile: { id: string; username: string | null; avatar_url: string | null };
+} | null;
+
 const setupRecruitment = (
-  recruitmentData = null,
-  updateRecruitmentFn = undefined,
+  recruitmentData: RecruitmentData = null,
+  updateRecruitmentFn?: () => Promise<{ error: null }>,
 ) => {
   vi.doMock("@/lib/supabase_function/recruitment", () => ({
     getRecruitmentById: async () => ({ data: recruitmentData }),
-    ...(updateRecruitmentFn && { updateRecruitment: updateRecruitmentFn }),
+    ...(updateRecruitmentFn ? { updateRecruitment: updateRecruitmentFn } : {}),
   }));
 };
 // ----------------------
