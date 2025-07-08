@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, expect, test, vi, beforeEach } from "vitest";
 
 const redirectMock = vi.fn();
@@ -41,7 +41,11 @@ describe("recruitment/[id] test", () => {
           title: "タイトル",
           explanation: "内容",
           status: "open",
-          profile: {},
+          profile: {
+            id: "user1",
+            username: "testuser",
+            avatar_url: null,
+          },
         },
       }),
     }));
@@ -96,7 +100,6 @@ describe("recruitment/[id] test", () => {
         },
       }),
     }));
-
     // モック2: プロフィールあり
     vi.doMock("@/lib/supabase_function/profile", () => ({
       DEFAULT_AVATAR_URL: "https://example.com/default-avatar.png",
@@ -108,7 +111,6 @@ describe("recruitment/[id] test", () => {
         },
       }),
     }));
-
     // モック3: 募集データあり
     vi.doMock("@/lib/supabase_function/recruitment", () => ({
       getRecruitmentById: async () => ({
@@ -118,7 +120,11 @@ describe("recruitment/[id] test", () => {
           title: "テストタイトル",
           explanation: "これは募集の内容です",
           status: "open",
-          profile: {},
+          profile: {
+            id: "user1",
+            username: "testuser",
+            avatar_url: null,
+          },
         },
       }),
     }));
@@ -149,7 +155,6 @@ describe("recruitment/[id] test", () => {
         },
       }),
     }));
-
     // プロフィールあり
     vi.doMock("@/lib/supabase_function/profile", () => ({
       DEFAULT_AVATAR_URL: "https://example.com/default-avatar.png",
@@ -161,7 +166,6 @@ describe("recruitment/[id] test", () => {
         },
       }),
     }));
-
     // 募集データあり
     vi.doMock("@/lib/supabase_function/recruitment", () => ({
       getRecruitmentById: async () => ({
@@ -171,7 +175,11 @@ describe("recruitment/[id] test", () => {
           title: "テストタイトル",
           explanation: "これは募集の内容です",
           status: "open",
-          profile: {},
+          profile: {
+            id: "user1",
+            username: "testuser",
+            avatar_url: null,
+          },
         },
       }),
     }));
@@ -200,7 +208,6 @@ describe("recruitment/[id] test", () => {
         },
       }),
     }));
-
     // プロフィールあり
     vi.doMock("@/lib/supabase_function/profile", () => ({
       DEFAULT_AVATAR_URL: "https://example.com/default-avatar.png",
@@ -212,7 +219,6 @@ describe("recruitment/[id] test", () => {
         },
       }),
     }));
-
     // 募集データあり
     vi.doMock("@/lib/supabase_function/recruitment", () => ({
       getRecruitmentById: async () => ({
@@ -222,7 +228,11 @@ describe("recruitment/[id] test", () => {
           title: "テストタイトル",
           explanation: "これは募集の内容です",
           status: "open",
-          profile: {},
+          profile: {
+            id: "user1",
+            username: "testuser",
+            avatar_url: null,
+          },
         },
       }),
     }));
@@ -238,5 +248,100 @@ describe("recruitment/[id] test", () => {
 
     // 編集ボタンが表示されていないことを確認
     expect(screen.queryByText("内容を編集する")).not.toBeInTheDocument();
+  });
+
+  test("編集ボタンをクリックして募集内容を更新し、表示に反映される", async () => {
+    // Arrange
+    // ユーザー認証済み (投稿者と同じID)
+    vi.doMock("@/utils/supabase/server", () => ({
+      createClient: async () => ({
+        auth: {
+          getUser: async () => ({
+            data: { user: { id: "user1" } },
+          }),
+        },
+      }),
+    }));
+    // プロフィールあり
+    vi.doMock("@/lib/supabase_function/profile", () => ({
+      DEFAULT_AVATAR_URL: "https://example.com/default-avatar.png",
+      fetchProfile: async () => ({
+        data: {
+          id: "user1",
+          username: "testuser",
+          avatar_url: null,
+        },
+      }),
+    }));
+
+    // updateRecruitmentのモックを作成
+    const mockedUpdateRecruitment = vi.fn().mockResolvedValue({ error: null });
+
+    // 募集データと更新関数のモック
+    vi.doMock("@/lib/supabase_function/recruitment", () => ({
+      getRecruitmentById: async () => ({
+        data: {
+          id: 1,
+          user_id: "user1",
+          title: "元のタイトル",
+          explanation: "元の説明",
+          status: "open",
+          profile: {
+            id: "user1",
+            username: "testuser",
+            avatar_url: null,
+          },
+        },
+      }),
+      updateRecruitment: mockedUpdateRecruitment,
+    }));
+
+    // ページインポート・描画
+    const { default: RecruitmentPage } = await import(
+      "@/app/recruitment/[id]/page"
+    );
+    const rendered = await RecruitmentPage({
+      params: Promise.resolve({ id: 1 }),
+    });
+    render(rendered);
+
+    // Act
+    // 1. 編集ボタンをクリック
+    const editButton = await screen.findByText("内容を編集する");
+    fireEvent.click(editButton);
+
+    // 2. 編集フォームが開くことを確認し、内容を変更
+    const titleInput = await screen.findByDisplayValue("元のタイトル");
+    const explanationTextarea = await screen.findByDisplayValue("元の説明");
+    const newTitle = "更新後のタイトル";
+    const newExplanation = "更新後の説明";
+    fireEvent.change(titleInput, { target: { value: newTitle } });
+    fireEvent.change(explanationTextarea, {
+      target: { value: newExplanation },
+    });
+
+    // 3. 保存ボタンをクリック
+    const saveButton = screen.getByText("保存");
+    fireEvent.click(saveButton);
+
+    // Assert
+    // 4. updateRecruitmentが正しい引数で呼び出されたか確認
+    await waitFor(() => {
+      expect(mockedUpdateRecruitment).toHaveBeenCalledWith(
+        1,
+        newTitle,
+        newExplanation,
+      );
+    });
+
+    // 5. 画面に変更が反映されているか確認
+    await waitFor(() => {
+      expect(screen.getByText(newTitle)).toBeInTheDocument();
+      expect(screen.getByText(newExplanation)).toBeInTheDocument();
+    });
+
+    // 6. フォームが閉じていることを確認
+    expect(screen.queryByText("保存")).not.toBeInTheDocument();
+    expect(screen.queryByDisplayValue(newTitle)).not.toBeInTheDocument();
   });
 });
