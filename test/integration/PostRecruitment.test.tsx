@@ -194,4 +194,38 @@ describe("CreateRecruitmentPage", () => {
     });
     expect(pushMock).not.toHaveBeenCalled();
   });
+
+  test("例外的なエラーが出た場合、アラートでエラーメッセージが表示される", async () => {
+    mockAuthUser();
+    mockProfile();
+    // addRecruitmentが例外をスローするようにモック
+    vi.doMock("@/lib/supabase_function/recruitment", () => ({
+      addRecruitment: vi
+        .fn()
+        .mockRejectedValue(new Error("Database connection failed")),
+    }));
+
+    const { default: createRecruitment } = await import(
+      "@/app/createRecruitment/page"
+    );
+    const authenticatedPage = await createRecruitment();
+    render(authenticatedPage);
+
+    // フォームに入力して送信
+    fireEvent.change(screen.getByLabelText("タイトル:"), {
+      target: { value: "例外テスト" },
+    });
+    fireEvent.change(screen.getByLabelText("内容:"), {
+      target: { value: "例外テストの内容" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "募集する" }));
+
+    // アラートが表示されることを確認
+    await waitFor(() => {
+      expect(window.alert).toHaveBeenCalledWith("投稿に失敗しました");
+    });
+
+    // ページ遷移が起こらないことを確認
+    expect(pushMock).not.toHaveBeenCalled();
+  });
 });
