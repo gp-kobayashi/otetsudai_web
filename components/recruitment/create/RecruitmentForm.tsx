@@ -21,11 +21,19 @@ const RecruitmentForm = ({ user_id }: Props) => {
       alert("タイトルと内容は必須です");
       return;
     }
-    await addRecruitment(title, explanation, user_id, tag);
-    setTitle("");
-    setExplanation("");
-    setTag(tags[0]);
-    router.push("/");
+    try {
+      const result = await addRecruitment(title, explanation, user_id, tag);
+      if (result?.error) {
+        alert(result.error.message || "投稿に失敗しました");
+        return;
+      }
+      setTitle("");
+      setExplanation("");
+      setTag(tags[0]);
+      router.push("/");
+    } catch (error) {
+      alert("投稿に失敗しました");
+    }
   };
   return (
     <form className={styles.form_container} onSubmit={handleSubmit}>
