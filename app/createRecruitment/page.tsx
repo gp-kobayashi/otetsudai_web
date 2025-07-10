@@ -15,7 +15,7 @@ const createRecruitment = async () => {
     redirect("/login");
   }
 
-  const UserProfile = await fetchProfile(user.id || "");
+  const UserProfile = await fetchProfile(user.id);
   if (!UserProfile.data) {
     redirect("/login");
   }
@@ -23,7 +23,7 @@ const createRecruitment = async () => {
     redirect("/insertUserName");
   }
 
-  const user_id = UserProfile.data?.id || "";
+  const user_id = UserProfile.data.id;
 
   return (
     <div className={styles.page_container}>
