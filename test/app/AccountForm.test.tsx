@@ -1,24 +1,35 @@
-import {
-  describe,
-  expect,
-  test,
-  beforeAll,
-  afterEach,
-  afterAll,
-  vi,
-} from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { describe, expect, test, afterEach, vi } from "vitest";
+import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import AccountForm from "../../app/account/account-form";
-import { http, HttpResponse } from "msw";
-import { setupServer } from "msw/node";
 import { User } from "@supabase/supabase-js";
+
+const mockProfile = {
+  username: "testuser",
+  website: "https://example.com",
+  bio: "This is a test bio.",
+  avatar_url: "test-avatar.png",
+};
+
+// Supabaseクライアントのモック
+const mockUpsert = vi.fn().mockResolvedValue({ error: null });
+
+vi.mock("@/utils/supabase/client", () => ({
+  createClient: () => ({
+    from: vi.fn().mockReturnValue({
+      select: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockReturnThis(),
+      single: vi.fn().mockResolvedValue({ data: mockProfile, error: null }),
+      upsert: mockUpsert,
+    }),
+  }),
+}));
 
 // Avatarコンポーネントをモック化し、onUploadを呼び出すボタンを設置
 vi.mock("../../app/account/avatar", () => ({
   default: ({ onUpload }: { onUpload: (url: string) => void }) => (
     <div>
-      <button onClick={() => onUpload("new-avatar.png")}>
+      <button type="button" onClick={() => onUpload("new-avatar.png")}>
         Upload New Avatar
       </button>
     </div>
@@ -35,41 +46,10 @@ const mockUser: User = {
   created_at: new Date().toISOString(),
 };
 
-const mockProfile = {
-  username: "testuser",
-  website: "https://example.com",
-  bio: "This is a test bio.",
-  avatar_url: "test-avatar.png",
-};
-
-// 2. MSW（Mock Service Worker）によるAPIモックサーバーのセットアップ
-const server = setupServer(
-  http.get(
-    "https://ridyklrbkirszfklksng.supabase.co/rest/v1/profiles",
-    ({ request }) => {
-      const url = new URL(request.url);
-      if (
-        url.searchParams.get("id") === `eq.${mockUser.id}` &&
-        request.headers.get("Accept") === "application/vnd.pgrst.object+json"
-      ) {
-        return HttpResponse.json(mockProfile);
-      }
-    },
-  ),
-  // プロフィール更新(upsertはPOST)リクエスト用のハンドラ
-  http.post(
-    "https://ridyklrbkirszfklksng.supabase.co/rest/v1/profiles",
-    async () => {
-      // 成功時はerrorプロパティを含まない空のJSONを返す
-      return HttpResponse.json({}, { status: 200 });
-    },
-  ),
-);
-
-// 3. テスト全体のライフサイクルでモックサーバーを制御
-beforeAll(() => server.listen());
-afterEach(() => server.resetHandlers());
-afterAll(() => server.close());
+afterEach(() => {
+  // 各テストの後にモックの呼び出し履歴をクリア
+  mockUpsert.mockClear();
+});
 
 // 4. テストスイート
 describe("AccountForm", () => {
@@ -89,47 +69,69 @@ describe("AccountForm", () => {
   });
 
   test("プロフィールが正しく更新される。", async () => {
+    // Arrange: テストの準備
     const user = userEvent.setup();
     const alertSpy = vi.spyOn(window, "alert").mockImplementation(() => {});
 
+    // API呼び出し（upsert）をテスト内で手動で解決できるように設定
+    let resolveUpsert: (value: { error: null }) => void;
+    const upsertPromise = new Promise<{ error: null }>((resolve) => {
+      resolveUpsert = resolve;
+    });
+    // このテストケース内でのみmockUpsertの実装を上書き
+    mockUpsert.mockImplementation(() => upsertPromise);
+
     render(<AccountForm user={mockUser} />);
 
-    // 初期データがフォームに表示されるのを待つ
-    await screen.findByDisplayValue(mockProfile.username);
+    const usernameInput =
+      await screen.findByLabelText<HTMLInputElement>("Username");
+    const updateButton = screen.getByRole("button", { name: /Update/i });
 
-    // フォームの値を変更する
+    // Act: フォームの値を変更
     const newUsername = "newtestuser";
-    const usernameInput = screen.getByLabelText("Username");
     await user.clear(usernameInput);
     await user.type(usernameInput, newUsername);
 
-    // 更新ボタンをクリックする
-    const updateButton = screen.getByRole("button", { name: /Update/i });
+    // Assert: 更新前のUI状態を確認（ボタンが有効であること）
+    expect(updateButton).toBeEnabled();
+
+    // Act: 更新ボタンをクリック
     await user.click(updateButton);
 
-    // アラートが表示されるのを待つ
+    // Assert: ローディング中のUI挙動を検証
+    // `user.click` 後、`setLoading(true)` による再レンダリングを待つ必要がある。
+    // `findByText` は要素が表示されるまで待機するため、非同期更新の検証に適している。
+    await screen.findByText("Loading ...");
+    // "Loading ..." が表示された時点で、ボタンは無効化されているはず。
+    expect(updateButton).toBeDisabled();
+
+    // Assert: API呼び出し（upsert）が正しい引数で呼び出されたか検証
+    expect(mockUpsert).toHaveBeenCalledTimes(1);
+    expect(mockUpsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: mockUser.id,
+        username: newUsername,
+        website: mockProfile.website,
+        bio: mockProfile.bio,
+      }),
+    );
+
+    // Act: API呼び出しを成功させる
+    await resolveUpsert!({ error: null });
+
+    // Assert: 更新後のUIとアラートを検証
     await waitFor(() => {
       expect(alertSpy).toHaveBeenCalledWith("プロフィールが更新されました");
     });
+    expect(updateButton).toBeEnabled();
+    expect(usernameInput).toHaveValue(newUsername); // フォームの値が維持されていることを確認
+
     alertSpy.mockRestore();
   });
 
   test("アバター画像が正しく更新される。", async () => {
     const user = userEvent.setup();
     const alertSpy = vi.spyOn(window, "alert").mockImplementation(() => {});
-    const mockUpsert = vi.fn();
-
-    // このテストケースでのみPOSTハンドラを上書きしてリクエストボディを検証
-    server.use(
-      http.post(
-        "https://ridyklrbkirszfklksng.supabase.co/rest/v1/profiles",
-        async ({ request }) => {
-          const requestBody = await request.json();
-          mockUpsert(requestBody);
-          return HttpResponse.json({}, { status: 200 });
-        },
-      ),
-    );
 
     render(<AccountForm user={mockUser} />);
 
@@ -148,6 +150,7 @@ describe("AccountForm", () => {
 
     // upsertが新しいアバターURLを含む正しいデータで呼び出されたか検証
     await waitFor(() => {
+      expect(mockUpsert).toHaveBeenCalledTimes(1);
       expect(mockUpsert).toHaveBeenCalledWith(
         expect.objectContaining({
           avatar_url: "new-avatar.png",

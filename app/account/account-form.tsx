@@ -98,7 +98,10 @@ export default function AccountForm({ user }: { user: User | null }) {
           size={150}
           onUpload={(url) => {
             setAvatarUrl(url);
-            setValue("avatar_url", url);
+            setValue("avatar_url", url, {
+              shouldDirty: true,
+              shouldValidate: true,
+            });
           }}
         />
         {/* ... */}
