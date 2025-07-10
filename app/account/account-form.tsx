@@ -121,7 +121,7 @@ export default function AccountForm({ user }: { user: User | null }) {
           <input
             id="username"
             type="text"
-            {...register("username", { required: "ユーザー名は必須です" })}
+            {...register("username")}
             className={styles.account_input}
           />
           {errors.username && (
