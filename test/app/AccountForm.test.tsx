@@ -176,4 +176,70 @@ describe("AccountForm", () => {
     expect(form).toHaveAttribute("action", "/auth/signout");
     expect(form).toHaveAttribute("method", "post");
   });
+
+  test("ユーザー名を空にすると、エラーメッセージが表示され更新ボタンが無効になる。", async () => {
+    const user = userEvent.setup();
+    render(<AccountForm user={mockUser} />);
+    const usernameInput =
+      await screen.findByLabelText<HTMLInputElement>("Username");
+    const updateButton = screen.getByRole("button", { name: /Update/i });
+
+    // 初期値がフォームに設定されるのを待ってからクリアする
+    await waitFor(() =>
+      expect(usernameInput).toHaveValue(mockProfile.username),
+    );
+    await user.clear(usernameInput);
+
+    // zodResolverによるバリデーションとUIの更新は非同期の場合がある
+    await waitFor(() => {
+      expect(
+        screen.getByText("ユーザー名は3文字以上で入力してください"),
+      ).toBeInTheDocument();
+    });
+    expect(updateButton).toBeDisabled();
+  });
+
+  test("一般的なAPIエラーが発生した場合、エラーアラートが表示される。", async () => {
+    const user = userEvent.setup();
+    const alertSpy = vi.spyOn(window, "alert").mockImplementation(() => {});
+    const apiError = new Error("Internal Server Error");
+    mockUpsert.mockResolvedValue({ error: apiError });
+
+    render(<AccountForm user={mockUser} />);
+
+    const updateButton = await screen.findByRole("button", {
+      name: /Update/i,
+    });
+
+    await user.click(updateButton);
+
+    await waitFor(() => {
+      expect(alertSpy).toHaveBeenCalledWith(
+        "プロフィールの更新中にエラーが発生しました。",
+      );
+    });
+    expect(updateButton).toBeEnabled(); // ローディングが解除されること
+    alertSpy.mockRestore();
+  });
+
+  test("ユーザー名が重複した場合、専用のエラーアラートが表示される。", async () => {
+    const user = userEvent.setup();
+    const alertSpy = vi.spyOn(window, "alert").mockImplementation(() => {});
+    const duplicateError = { code: "23505", message: "Duplicate key" };
+    mockUpsert.mockResolvedValue({ error: duplicateError });
+
+    render(<AccountForm user={mockUser} />);
+
+    const updateButton = await screen.findByRole("button", { name: /Update/i });
+
+    await user.click(updateButton);
+
+    await waitFor(() => {
+      expect(alertSpy).toHaveBeenCalledWith(
+        "そのユーザー名はすでに使用されています。",
+      );
+    });
+    expect(updateButton).toBeEnabled();
+    alertSpy.mockRestore();
+  });
 });
