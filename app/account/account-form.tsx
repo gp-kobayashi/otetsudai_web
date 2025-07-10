@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { type User } from "@supabase/supabase-js";
 import Avatar from "./avatar";
@@ -12,7 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 type ProfileFormData = z.infer<typeof profileSchema>;
 
 export default function AccountForm({ user }: { user: User | null }) {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [loading, setLoading] = useState(true);
   const [avatar_url, setAvatarUrl] = useState<string | null>(null);
   const {
