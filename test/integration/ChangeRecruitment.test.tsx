@@ -1,6 +1,24 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, expect, test, vi, beforeEach, type Mock } from "vitest";
 
+vi.mock("@/utils/supabase/client", () => ({
+  createClient: () => ({
+    storage: {
+      from: () => ({
+        download: vi.fn().mockResolvedValue({
+          data: new Blob(["avatar-image-data"]),
+          error: null,
+        }),
+        upload: vi.fn().mockResolvedValue({ error: null }),
+      }),
+    },
+    from: vi.fn().mockReturnValue({
+      select: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockResolvedValue({ data: [], error: null }),
+    }),
+  }),
+}));
+
 const redirectMock = vi.fn();
 const pushMock = vi.fn();
 
