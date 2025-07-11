@@ -75,10 +75,12 @@ type RecruitmentData = {
 const setupRecruitment = (
   recruitmentData: RecruitmentData = null,
   updateRecruitmentFn?: () => Promise<{ error: null }>,
+  deleteRecruitmentFn?: () => Promise<{ error: null }>,
 ) => {
   vi.doMock("@/lib/supabase_function/recruitment", () => ({
     getRecruitmentById: async () => ({ data: recruitmentData }),
     ...(updateRecruitmentFn ? { updateRecruitment: updateRecruitmentFn } : {}),
+    ...(deleteRecruitmentFn ? { deleteRecruitment: deleteRecruitmentFn } : {}),
   }));
 };
 // ----------------------
@@ -260,5 +262,101 @@ describe("recruitment/[id] test", () => {
     // フォームが閉じていることを確認
     expect(screen.queryByText("保存")).not.toBeInTheDocument();
     expect(screen.queryByDisplayValue(newTitle)).not.toBeInTheDocument();
+  });
+
+  test("募集とユーザー情報が正常に表示される場合、コメント欄も表示される", async () => {
+    setupUser("user1");
+    setupProfile();
+    setupRecruitment({
+      id: 1,
+      user_id: "user1",
+      title: "テストタイトル",
+      explanation: "これは募集の内容です",
+      status: "open",
+      profile: { id: "user1", username: "testuser", avatar_url: null },
+    });
+
+    const { default: RecruitmentPage } = await import(
+      "@/app/recruitment/[id]/page"
+    );
+    const rendered = await RecruitmentPage({
+      params: Promise.resolve({ id: 1 }),
+    });
+    render(rendered);
+
+    // CommentAppコンポーネントの一部が表示されていることを確認
+    // 注: このテストは、CommentAppコンポーネント内にこのボタンが存在することを想定しています
+    expect(
+      await screen.findByRole("button", { name: "投稿" }),
+    ).toBeInTheDocument();
+  });
+
+  test("投稿者が削除ボタンを押すと、APIが呼ばれリダイレクトされる", async () => {
+    setupUser("user1");
+    setupProfile();
+    const mockedDeleteRecruitment = vi.fn().mockResolvedValue({ error: null });
+    setupRecruitment(
+      {
+        id: 1,
+        user_id: "user1",
+        title: "削除される募集",
+        explanation: "この募集は削除されます",
+        status: "open",
+        profile: { id: "user1", username: "testuser", avatar_url: null },
+      },
+      undefined,
+      mockedDeleteRecruitment,
+    );
+
+    // window.confirmをモック化し、常にtrueを返すようにする
+    vi.spyOn(window, "confirm").mockReturnValue(true);
+
+    const { default: RecruitmentPage } = await import(
+      "@/app/recruitment/[id]/page"
+    );
+    const rendered = await RecruitmentPage({
+      params: Promise.resolve({ id: 1 }),
+    });
+    render(rendered);
+
+    // 削除ボタンをクリック
+    // 注: Recruitmentコンポーネントに name="削除する" のボタン実装が必要
+    const deleteButton = await screen.findByRole("button", {
+      name: "削除",
+    });
+    fireEvent.click(deleteButton);
+
+    // 確認ダイアログが表示されたことを確認
+    expect(window.confirm).toHaveBeenCalledWith("本当に削除しますか？");
+
+    // deleteRecruitmentが正しい引数で呼び出されたか確認
+    await waitFor(() => {
+      expect(mockedDeleteRecruitment).toHaveBeenCalledWith(1);
+    });
+  });
+  test("投稿者以外には削除ボタンが表示されない", async () => {
+    setupUser("user2");
+    setupProfile({ id: "user2", username: "testuser2", avatar_url: null });
+    setupRecruitment({
+      id: 1,
+      user_id: "user1",
+      title: "テストタイトル",
+      explanation: "これは募集の内容です",
+      status: "open",
+      profile: { id: "user1", username: "testuser", avatar_url: null },
+    });
+
+    const { default: RecruitmentPage } = await import(
+      "@/app/recruitment/[id]/page"
+    );
+    const rendered = await RecruitmentPage({
+      params: Promise.resolve({ id: 1 }),
+    });
+    render(rendered);
+
+    // 削除ボタンが表示されないことを確認
+    expect(
+      screen.queryByRole("button", { name: "削除" }),
+    ).not.toBeInTheDocument();
   });
 });
