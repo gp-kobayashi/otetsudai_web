@@ -17,7 +17,11 @@ export const profileSchema = z.object({
       .nullable()
       .or(z.literal("")), 
     avatar_url: z.string().nullable().or(z.literal("")),
-    bio: z.string().nullable().or(z.literal(""))
+    bio: z
+      .string()
+      .max(500, "自己紹介は500文字以内で入力してください")
+      .nullable()
+      .or(z.literal("")),
   });
 
    
