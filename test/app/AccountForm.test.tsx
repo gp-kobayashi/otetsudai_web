@@ -3,6 +3,7 @@ import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import AccountForm from "../../app/account/account-form";
 import { User } from "@supabase/supabase-js";
+import { beforeEach } from "vitest";
 
 const mockProfile = {
   username: "testuser",
@@ -11,15 +12,23 @@ const mockProfile = {
   avatar_url: "test-avatar.png",
 };
 
-// Supabaseクライアントのモック
-const mockUpsert = vi.fn().mockResolvedValue({ error: null });
+const mockSingle = vi.fn();
+const mockUpsert = vi.fn();
 
 vi.mock("@/utils/supabase/client", () => ({
   createClient: () => ({
+    storage: {
+      from: () => ({
+        download: vi.fn().mockResolvedValue({
+          data: new Blob(["avatar-image-data"]),
+          error: null,
+        }),
+      }),
+    },
     from: vi.fn().mockReturnValue({
       select: vi.fn().mockReturnThis(),
       eq: vi.fn().mockReturnThis(),
-      single: vi.fn().mockResolvedValue({ data: mockProfile, error: null }),
+      single: mockSingle,
       upsert: mockUpsert,
     }),
   }),
@@ -46,13 +55,22 @@ const mockUser: User = {
   created_at: new Date().toISOString(),
 };
 
-afterEach(() => {
-  // 各テストの後にモックの呼び出し履歴をクリア
-  mockUpsert.mockClear();
-});
-
 // 4. テストスイート
 describe("AccountForm", () => {
+  beforeEach(() => {
+    // 各テストの前に、getProfileが成功するデフォルトの振る舞いを設定
+    mockSingle.mockResolvedValue({ data: mockProfile, error: null });
+    // upsertもデフォルトで成功するように設定
+    mockUpsert.mockResolvedValue({ error: null });
+  });
+
+  afterEach(() => {
+    // 各テストの後にモックの呼び出し履歴をクリア
+    mockSingle.mockClear();
+    mockUpsert.mockClear();
+    vi.restoreAllMocks(); // spyをリストア
+  });
+
   test("既存のプロフィール情報がフォームの初期値として正しく表示される。", async () => {
     render(<AccountForm user={mockUser} />);
 
@@ -132,7 +150,6 @@ describe("AccountForm", () => {
   test("アバター画像が正しく更新される。", async () => {
     const user = userEvent.setup();
     const alertSpy = vi.spyOn(window, "alert").mockImplementation(() => {});
-
     render(<AccountForm user={mockUser} />);
 
     // 初期データがフォームに表示されるのを待つ
@@ -194,6 +211,51 @@ describe("AccountForm", () => {
     await waitFor(() => {
       expect(
         screen.getByText("ユーザー名は3文字以上で入力してください"),
+      ).toBeInTheDocument();
+    });
+    expect(updateButton).toBeDisabled();
+  });
+
+  test("Websiteに無効なURLを入力すると、エラーメッセージが表示され更新ボタンが無効になる。", async () => {
+    const user = userEvent.setup();
+    render(<AccountForm user={mockUser} />);
+    const websiteInput =
+      await screen.findByLabelText<HTMLInputElement>("Website");
+    const updateButton = screen.getByRole("button", { name: /Update/i });
+
+    // 初期値が設定されるのを待つ
+    await waitFor(() => expect(websiteInput).toHaveValue(mockProfile.website));
+
+    // 無効なURLを入力
+    await user.clear(websiteInput);
+    await user.type(websiteInput, "invalid-url");
+
+    // エラーメッセージが表示されるのを待つ
+    await waitFor(() => {
+      expect(
+        screen.getByText("正しいURL形式で入力してください"),
+      ).toBeInTheDocument();
+    });
+    expect(updateButton).toBeDisabled();
+  });
+
+  test("自己紹介が長すぎる場合、エラーメッセージが表示され更新ボタンが無効になる。", async () => {
+    const user = userEvent.setup();
+    render(<AccountForm user={mockUser} />);
+    const bioInput =
+      await screen.findByLabelText<HTMLTextAreaElement>("自己紹介");
+    const updateButton = screen.getByRole("button", { name: /Update/i });
+
+    // 初期値が設定されるのを待つ
+    await waitFor(() => expect(bioInput).toHaveValue(mockProfile.bio));
+
+    // 500文字を超える文字列を入力（z.string().max(500)のようなバリデーションを想定）
+    const longBio = "a".repeat(501);
+    fireEvent.change(bioInput, { target: { value: longBio } });
+
+    await waitFor(() => {
+      expect(
+        screen.getByText("自己紹介は500文字以内で入力してください"),
       ).toBeInTheDocument();
     });
     expect(updateButton).toBeDisabled();
