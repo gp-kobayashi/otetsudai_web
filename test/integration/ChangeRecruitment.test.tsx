@@ -10,6 +10,9 @@ vi.mock("@/utils/supabase/client", () => ({
           error: null,
         }),
         upload: vi.fn().mockResolvedValue({ error: null }),
+        getPublicUrl: vi.fn((path) => ({
+          data: { publicUrl: `https://example.com/avatars/${path}` },
+        })),
       }),
     },
     from: vi.fn().mockReturnValue({
@@ -43,7 +46,6 @@ const setupUser = (userId = "user1") => {
     }),
   }));
 };
-
 type ProfileData = {
   id: string;
   username: string | null;
@@ -57,10 +59,14 @@ const setupProfile = (
     avatar_url: null,
   },
 ) => {
-  vi.doMock("@/lib/supabase_function/profile", () => ({
-    DEFAULT_AVATAR_URL: "https://example.com/default-avatar.png",
-    fetchProfile: async () => ({ data: profile }),
-  }));
+  vi.doMock("@/lib/supabase_function/profile", async (importOriginal) => {
+    const original =
+      await importOriginal<typeof import("@/lib/supabase_function/profile")>();
+    return {
+      ...original,
+      fetchProfile: async () => ({ data: profile }),
+    };
+  });
 };
 
 type RecruitmentData = {
@@ -422,5 +428,126 @@ describe("recruitment/[id] test", () => {
       RecruitmentPage({ params: Promise.resolve({ id: 1 }) }),
     ).rejects.toThrow("NEXT_REDIRECT");
     expect(redirectMock).toHaveBeenCalledWith("/login");
+  });
+  test("ステータスが更新されると、画面に反映される", async () => {
+    setupUser("user1");
+    setupProfile();
+
+    // updateRecruitmentは使われていないので不要
+    // updateStatusをモック
+    vi.doMock("@/lib/supabase_function/recruitment", () => ({
+      getRecruitmentById: async () => ({
+        data: {
+          id: 1,
+          user_id: "user1",
+          title: "テストタイトル",
+          explanation: "これは募集の内容です",
+          status: "募集中",
+          username: "testuser",
+          avatar_url: null,
+          tag: "test",
+          created_at: "2023-01-01T00:00:00Z",
+        },
+      }),
+      updateStatus: vi.fn().mockResolvedValue({ error: null }),
+    }));
+
+    const { default: RecruitmentPage } = await import(
+      "@/app/recruitment/[id]/page"
+    );
+    const rendered = await RecruitmentPage({
+      params: Promise.resolve({ id: 1 }),
+    });
+    render(rendered);
+
+    // ステータスが初期値で表示されていることを確認
+    expect(screen.getAllByText("募集中").length).toBeGreaterThan(0);
+
+    // ステータス変更ラベルをクリックしてセレクトボックスを取得
+    const statusLabel = screen.getByText("ステータス変更");
+    fireEvent.click(statusLabel);
+
+    const statusSelect = screen.getByRole("combobox");
+    expect(statusSelect).toBeInTheDocument();
+
+    // ステータスを「キャンセル」に変更
+    fireEvent.change(statusSelect, { target: { value: "キャンセル" } });
+
+    // 画面に新しいステータスが反映されていることを確認
+    await waitFor(() => {
+      expect(screen.getByText("キャンセル")).toBeVisible();
+    });
+  });
+  test("コメントを投稿し、画面に反映される", async () => {
+    setupUser("user1");
+    setupProfile();
+    setupRecruitment({
+      id: 1,
+      user_id: "user1",
+      title: "テストタイトル",
+      explanation: "これは募集の内容です",
+      status: "open",
+      username: "testuser",
+      avatar_url: null,
+      tag: "test",
+      created_at: "2023-01-01T00:00:00Z",
+    });
+
+    vi.doMock("@/lib/supabase_function/comment", () => ({
+      addComment: async (
+        userId: string,
+        recruitmentId: number,
+        text: string,
+      ) => ({
+        data: {
+          id: 2,
+          user_id: userId,
+          recruitment_id: recruitmentId,
+          text,
+          created_at: new Date().toISOString(),
+        },
+        error: null,
+      }),
+      getCommentByRecruitment: async (recruitmentId: number) => ({
+        data: [
+          {
+            id: 1,
+            user_id: "user1",
+            recruitment_id: recruitmentId,
+            text: "初めてのコメント",
+            created_at: new Date().toISOString(),
+            profile: { username: "testuser", avatar_url: null },
+          },
+        ],
+        error: null,
+      }),
+    }));
+
+    const { default: RecruitmentPage } = await import(
+      "@/app/recruitment/[id]/page"
+    );
+    const rendered = await RecruitmentPage({
+      params: Promise.resolve({ id: 1 }),
+    });
+    render(rendered);
+
+    // コメント欄が表示されていることを確認
+    expect(await screen.findByText("コメントを投稿:")).toBeInTheDocument();
+
+    // コメント入力欄にテキストを入力
+    const commentInput = screen.getByRole("textbox");
+    fireEvent.change(commentInput, { target: { value: "新しいコメント" } });
+
+    // 投稿ボタンをクリック
+    const submitButton = screen.getByRole("button", { name: "投稿" });
+    fireEvent.click(submitButton);
+
+    // コメントが追加され、画面に反映されていることを確認
+    await waitFor(() => {
+      expect(screen.getByText("新しいコメント")).toBeInTheDocument();
+    });
+
+    // 初期コメントも表示されていることを確認
+    expect(screen.getByText("初めてのコメント")).toBeInTheDocument();
   });
 });
