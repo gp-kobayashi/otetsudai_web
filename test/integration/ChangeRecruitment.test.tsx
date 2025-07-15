@@ -69,7 +69,10 @@ type RecruitmentData = {
   title: string;
   explanation: string;
   status: string;
-  profile: { id: string; username: string | null; avatar_url: string | null };
+  username: string | null;
+  avatar_url: string | null;
+  tag: string;
+  created_at: string;
 } | null;
 
 const setupRecruitment = (
@@ -102,7 +105,10 @@ describe("recruitment/[id] test", () => {
       title: "タイトル",
       explanation: "内容",
       status: "open",
-      profile: { id: "user1", username: "testuser", avatar_url: null },
+      username: "testuser",
+      avatar_url: null,
+      tag: "test",
+      created_at: "2023-01-01T00:00:00Z",
     });
 
     const { default: RecruitmentPage } = await import(
@@ -140,7 +146,10 @@ describe("recruitment/[id] test", () => {
       title: "テストタイトル",
       explanation: "これは募集の内容です",
       status: "open",
-      profile: { id: "user1", username: "testuser", avatar_url: null },
+      username: "testuser",
+      avatar_url: null,
+      tag: "test",
+      created_at: "2023-01-01T00:00:00Z",
     });
 
     const { default: RecruitmentPage } = await import(
@@ -165,7 +174,10 @@ describe("recruitment/[id] test", () => {
       title: "テストタイトル",
       explanation: "これは募集の内容です",
       status: "open",
-      profile: { id: "user1", username: "testuser", avatar_url: null },
+      username: "testuser",
+      avatar_url: null,
+      tag: "test",
+      created_at: "2023-01-01T00:00:00Z",
     });
 
     const { default: RecruitmentPage } = await import(
@@ -188,7 +200,10 @@ describe("recruitment/[id] test", () => {
       title: "テストタイトル",
       explanation: "これは募集の内容です",
       status: "open",
-      profile: { id: "user1", username: "testuser", avatar_url: null },
+      username: "testuser",
+      avatar_url: null,
+      tag: "test",
+      created_at: "2023-01-01T00:00:00Z",
     });
 
     const { default: RecruitmentPage } = await import(
@@ -213,7 +228,10 @@ describe("recruitment/[id] test", () => {
         title: "元のタイトル",
         explanation: "元の説明",
         status: "open",
-        profile: { id: "user1", username: "testuser", avatar_url: null },
+        username: "testuser",
+        avatar_url: null,
+        tag: "test",
+        created_at: "2023-01-01T00:00:00Z",
       },
       mockedUpdateRecruitment,
     );
@@ -273,7 +291,10 @@ describe("recruitment/[id] test", () => {
       title: "テストタイトル",
       explanation: "これは募集の内容です",
       status: "open",
-      profile: { id: "user1", username: "testuser", avatar_url: null },
+      username: "testuser",
+      avatar_url: null,
+      tag: "test",
+      created_at: "2023-01-01T00:00:00Z",
     });
 
     const { default: RecruitmentPage } = await import(
@@ -284,8 +305,12 @@ describe("recruitment/[id] test", () => {
     });
     render(rendered);
 
-    // CommentAppコンポーネントの一部が表示されていることを確認
-    // 注: このテストは、CommentAppコンポーネント内にこのボタンが存在することを想定しています
+    // 募集タイトル・内容・ユーザー名が表示されていることを確認
+    expect(await screen.findByText("テストタイトル")).toBeInTheDocument();
+    expect(screen.getByText("これは募集の内容です")).toBeInTheDocument();
+    expect(screen.getByText("testuser")).toBeInTheDocument();
+
+    // コメント欄の投稿ボタンが表示されていることを確認
     expect(
       await screen.findByRole("button", { name: "投稿" }),
     ).toBeInTheDocument();
@@ -302,7 +327,10 @@ describe("recruitment/[id] test", () => {
         title: "削除される募集",
         explanation: "この募集は削除されます",
         status: "open",
-        profile: { id: "user1", username: "testuser", avatar_url: null },
+        username: "testuser",
+        avatar_url: null,
+        tag: "test",
+        created_at: "2023-01-01T00:00:00Z",
       },
       undefined,
       mockedDeleteRecruitment,
@@ -343,7 +371,10 @@ describe("recruitment/[id] test", () => {
       title: "テストタイトル",
       explanation: "これは募集の内容です",
       status: "open",
-      profile: { id: "user1", username: "testuser", avatar_url: null },
+      username: "testuser",
+      avatar_url: null,
+      tag: "test",
+      created_at: "2023-01-01T00:00:00Z",
     });
 
     const { default: RecruitmentPage } = await import(
