@@ -361,6 +361,11 @@ describe("recruitment/[id] test", () => {
     await waitFor(() => {
       expect(mockedDeleteRecruitment).toHaveBeenCalledWith(1);
     });
+
+    // router.pushが呼ばれ、トップページにリダイレクトされることを確認
+    await waitFor(() => {
+      expect(pushMock).toHaveBeenCalledWith("/");
+    });
   });
   test("投稿者以外には削除ボタンが表示されない", async () => {
     setupUser("user2");
