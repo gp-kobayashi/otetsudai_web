@@ -395,4 +395,32 @@ describe("recruitment/[id] test", () => {
       screen.queryByRole("button", { name: "削除" }),
     ).not.toBeInTheDocument();
   });
+  test("ユーザーがログインしていない場合、/loginにリダイレクトされる", async () => {
+    // ログインしていない状態を直接モックする
+    vi.doMock("@/utils/supabase/server", () => ({
+      createClient: async () => ({
+        auth: {
+          getUser: async () => ({ data: { user: null } }),
+        },
+      }),
+    }));
+    setupRecruitment({
+      id: 1,
+      user_id: "user1",
+      title: "テストタイトル",
+      explanation: "これは募集の内容です",
+      status: "open",
+      username: "testuser",
+      avatar_url: null,
+      tag: "test",
+      created_at: "2023-01-01T00:00:00Z",
+    });
+    const { default: RecruitmentPage } = await import(
+      "@/app/recruitment/[id]/page"
+    );
+    await expect(
+      RecruitmentPage({ params: Promise.resolve({ id: 1 }) }),
+    ).rejects.toThrow("NEXT_REDIRECT");
+    expect(redirectMock).toHaveBeenCalledWith("/login");
+  });
 });
