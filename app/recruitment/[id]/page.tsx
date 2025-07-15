@@ -20,6 +20,10 @@ const recruitment = async ({ params }: Params) => {
   let userId = null;
   let username = null;
   let avatarUrl = null;
+  if (!user) {
+    redirect("/login");
+  }
+
   if (user) {
     userId = user.id;
     const { data: profile } = await fetchProfile(userId);
