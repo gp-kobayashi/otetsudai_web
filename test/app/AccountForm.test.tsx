@@ -103,12 +103,23 @@ describe("AccountForm", () => {
 
     const usernameInput =
       await screen.findByLabelText<HTMLInputElement>("Username");
+    const websiteInput =
+      await screen.findByLabelText<HTMLInputElement>("Website");
+    const bioInput =
+      await screen.findByLabelText<HTMLTextAreaElement>("自己紹介");
     const updateButton = screen.getByRole("button", { name: /Update/i });
 
     // Act: フォームの値を変更
     const newUsername = "newtestuser";
+    const newWebsite = "https://new.example.com";
+    const newBio = "This is an updated bio.";
+
     await user.clear(usernameInput);
     await user.type(usernameInput, newUsername);
+    await user.clear(websiteInput);
+    await user.type(websiteInput, newWebsite);
+    await user.clear(bioInput);
+    await user.type(bioInput, newBio);
 
     // Assert: 更新前のUI状態を確認（ボタンが有効であること）
     expect(updateButton).toBeEnabled();
@@ -129,8 +140,8 @@ describe("AccountForm", () => {
       expect.objectContaining({
         id: mockUser.id,
         username: newUsername,
-        website: mockProfile.website,
-        bio: mockProfile.bio,
+        website: newWebsite,
+        bio: newBio,
       }),
     );
 
@@ -143,6 +154,8 @@ describe("AccountForm", () => {
     });
     expect(updateButton).toBeEnabled();
     expect(usernameInput).toHaveValue(newUsername); // フォームの値が維持されていることを確認
+    expect(websiteInput).toHaveValue(newWebsite);
+    expect(bioInput).toHaveValue(newBio);
 
     alertSpy.mockRestore();
   });
