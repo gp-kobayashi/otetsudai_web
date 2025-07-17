@@ -1,5 +1,20 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { describe, expect, test, vi, beforeEach, type Mock } from "vitest";
+import { describe, expect, test, vi, beforeEach } from "vitest";
+
+// --- 共通モック ---
+const redirectMock = vi.fn();
+const pushMock = vi.fn();
+
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({
+    push: pushMock,
+    refresh: vi.fn(),
+  }),
+  redirect: (url: string) => {
+    redirectMock(url);
+    throw new Error("NEXT_REDIRECT");
+  },
+}));
 
 vi.mock("@/utils/supabase/client", () => ({
   createClient: () => ({
@@ -22,22 +37,39 @@ vi.mock("@/utils/supabase/client", () => ({
   }),
 }));
 
-const redirectMock = vi.fn();
-const pushMock = vi.fn();
+// --- 型定義 ---
+type ProfileData = {
+  id: string;
+  username: string | null;
+  avatar_url: string | null;
+} | null;
 
-vi.mock("next/navigation", () => ({
-  useRouter: () => ({
-    push: pushMock,
-    refresh: vi.fn(),
-  }),
-  redirect: (url: string) => {
-    redirectMock(url);
-    throw new Error("NEXT_REDIRECT");
-  },
-}));
+type RecruitmentData = {
+  id: number;
+  user_id: string;
+  title: string;
+  explanation: string;
+  status: string;
+  username: string | null;
+  avatar_url: string | null;
+  tag: string;
+  created_at: string;
+} | null;
+
+type CommentData = {
+  id: number;
+  user_id: string;
+  recruitment_id: number;
+  text: string;
+  created_at: string;
+  profile: {
+    username: string | null;
+    avatar_url: string | null;
+  };
+};
 
 // --- 共通モック関数 ---
-const setupUser = (userId = "user1") => {
+const mockUser = (userId = "user1") => {
   vi.doMock("@/utils/supabase/server", () => ({
     createClient: async () => ({
       auth: {
@@ -46,13 +78,8 @@ const setupUser = (userId = "user1") => {
     }),
   }));
 };
-type ProfileData = {
-  id: string;
-  username: string | null;
-  avatar_url: string | null;
-} | null;
 
-const setupProfile = (
+const mockProfile = (
   profile: ProfileData = {
     id: "user1",
     username: "testuser",
@@ -69,31 +96,51 @@ const setupProfile = (
   });
 };
 
-type RecruitmentData = {
-  id: number;
-  user_id: string;
-  title: string;
-  explanation: string;
-  status: string;
-  username: string | null;
-  avatar_url: string | null;
-  tag: string;
-  created_at: string;
-} | null;
-
-const setupRecruitment = (
+const mockRecruitment = (
   recruitmentData: RecruitmentData = null,
-  updateRecruitmentFn?: () => Promise<{ error: null }>,
-  deleteRecruitmentFn?: () => Promise<{ error: null }>,
+  options?: {
+    updateRecruitment?: ReturnType<typeof vi.fn>;
+    deleteRecruitment?: ReturnType<typeof vi.fn>;
+    updateStatus?: ReturnType<typeof vi.fn>;
+  },
 ) => {
   vi.doMock("@/lib/supabase_function/recruitment", () => ({
     getRecruitmentById: async () => ({ data: recruitmentData }),
-    ...(updateRecruitmentFn ? { updateRecruitment: updateRecruitmentFn } : {}),
-    ...(deleteRecruitmentFn ? { deleteRecruitment: deleteRecruitmentFn } : {}),
+    ...(options?.updateRecruitment && {
+      updateRecruitment: options.updateRecruitment,
+    }),
+    ...(options?.deleteRecruitment && {
+      deleteRecruitment: options.deleteRecruitment,
+    }),
+    ...(options?.updateStatus && { updateStatus: options.updateStatus }),
   }));
 };
-// ----------------------
 
+const mockComment = (
+  initialComments: CommentData[] = [],
+  addCommentImpl?: any,
+) => {
+  vi.doMock("@/lib/supabase_function/comment", () => ({
+    addComment: addCommentImpl
+      ? addCommentImpl
+      : async (userId: string, recruitmentId: number, text: string) => ({
+          data: {
+            id: 2,
+            user_id: userId,
+            recruitment_id: recruitmentId,
+            text,
+            created_at: new Date().toISOString(),
+          },
+          error: null,
+        }),
+    getCommentByRecruitment: async (recruitmentId: number) => ({
+      data: initialComments,
+      error: null,
+    }),
+  }));
+};
+
+// --- テスト ---
 describe("recruitment/[id] test", () => {
   beforeEach(() => {
     vi.resetModules();
@@ -103,9 +150,9 @@ describe("recruitment/[id] test", () => {
   });
 
   test("usernameが未確認の場合、/insertUserNameにリダイレクトされる", async () => {
-    setupUser("user1");
-    setupProfile(null);
-    setupRecruitment({
+    mockUser("user1");
+    mockProfile(null);
+    mockRecruitment({
       id: 1,
       user_id: "user1",
       title: "タイトル",
@@ -127,9 +174,9 @@ describe("recruitment/[id] test", () => {
   });
 
   test("募集データが存在しない場合、エラーメッセージが表示される", async () => {
-    setupUser("user1");
-    setupProfile();
-    setupRecruitment(null);
+    mockUser("user1");
+    mockProfile();
+    mockRecruitment(null);
 
     const { default: RecruitmentPage } = await import(
       "@/app/recruitment/[id]/page"
@@ -144,9 +191,9 @@ describe("recruitment/[id] test", () => {
   });
 
   test("ユーザー名を確認し募集もある場合、正常に募集が表示される", async () => {
-    setupUser("user1");
-    setupProfile();
-    setupRecruitment({
+    mockUser("user1");
+    mockProfile();
+    mockRecruitment({
       id: 1,
       user_id: "user1",
       title: "テストタイトル",
@@ -172,9 +219,9 @@ describe("recruitment/[id] test", () => {
   });
 
   test("募集の投稿者の場合、編集ボタンが表示される", async () => {
-    setupUser("user1");
-    setupProfile();
-    setupRecruitment({
+    mockUser("user1");
+    mockProfile();
+    mockRecruitment({
       id: 1,
       user_id: "user1",
       title: "テストタイトル",
@@ -198,9 +245,9 @@ describe("recruitment/[id] test", () => {
   });
 
   test("募集の投稿者でない場合、編集ボタンが表示されない", async () => {
-    setupUser("user2");
-    setupProfile({ id: "user2", username: "testuser2", avatar_url: null });
-    setupRecruitment({
+    mockUser("user2");
+    mockProfile({ id: "user2", username: "testuser2", avatar_url: null });
+    mockRecruitment({
       id: 1,
       user_id: "user1",
       title: "テストタイトル",
@@ -224,10 +271,10 @@ describe("recruitment/[id] test", () => {
   });
 
   test("編集ボタンをクリックして募集内容を更新し、表示に反映される", async () => {
-    setupUser("user1");
-    setupProfile();
+    mockUser("user1");
+    mockProfile();
     const mockedUpdateRecruitment = vi.fn().mockResolvedValue({ error: null });
-    setupRecruitment(
+    mockRecruitment(
       {
         id: 1,
         user_id: "user1",
@@ -239,7 +286,7 @@ describe("recruitment/[id] test", () => {
         tag: "test",
         created_at: "2023-01-01T00:00:00Z",
       },
-      mockedUpdateRecruitment,
+      { updateRecruitment: mockedUpdateRecruitment },
     );
 
     const { default: RecruitmentPage } = await import(
@@ -289,9 +336,9 @@ describe("recruitment/[id] test", () => {
   });
 
   test("募集とユーザー情報が正常に表示される場合、コメント欄も表示される", async () => {
-    setupUser("user1");
-    setupProfile();
-    setupRecruitment({
+    mockUser("user1");
+    mockProfile();
+    mockRecruitment({
       id: 1,
       user_id: "user1",
       title: "テストタイトル",
@@ -323,10 +370,10 @@ describe("recruitment/[id] test", () => {
   });
 
   test("投稿者が削除ボタンを押すと、APIが呼ばれリダイレクトされる", async () => {
-    setupUser("user1");
-    setupProfile();
+    mockUser("user1");
+    mockProfile();
     const mockedDeleteRecruitment = vi.fn().mockResolvedValue({ error: null });
-    setupRecruitment(
+    mockRecruitment(
       {
         id: 1,
         user_id: "user1",
@@ -338,8 +385,7 @@ describe("recruitment/[id] test", () => {
         tag: "test",
         created_at: "2023-01-01T00:00:00Z",
       },
-      undefined,
-      mockedDeleteRecruitment,
+      { deleteRecruitment: mockedDeleteRecruitment },
     );
 
     // window.confirmをモック化し、常にtrueを返すようにする
@@ -374,9 +420,9 @@ describe("recruitment/[id] test", () => {
     });
   });
   test("投稿者以外には削除ボタンが表示されない", async () => {
-    setupUser("user2");
-    setupProfile({ id: "user2", username: "testuser2", avatar_url: null });
-    setupRecruitment({
+    mockUser("user2");
+    mockProfile({ id: "user2", username: "testuser2", avatar_url: null });
+    mockRecruitment({
       id: 1,
       user_id: "user1",
       title: "テストタイトル",
@@ -410,7 +456,7 @@ describe("recruitment/[id] test", () => {
         },
       }),
     }));
-    setupRecruitment({
+    mockRecruitment({
       id: 1,
       user_id: "user1",
       title: "テストタイトル",
@@ -430,8 +476,8 @@ describe("recruitment/[id] test", () => {
     expect(redirectMock).toHaveBeenCalledWith("/login");
   });
   test("ステータスが更新されると、画面に反映される", async () => {
-    setupUser("user1");
-    setupProfile();
+    mockUser("user1");
+    mockProfile();
 
     // updateRecruitmentは使われていないので不要
     // updateStatusをモック
@@ -479,9 +525,9 @@ describe("recruitment/[id] test", () => {
     });
   });
   test("コメントを投稿し、画面に反映される", async () => {
-    setupUser("user1");
-    setupProfile();
-    setupRecruitment({
+    mockUser("user1");
+    mockProfile();
+    mockRecruitment({
       id: 1,
       user_id: "user1",
       title: "テストタイトル",
@@ -492,36 +538,16 @@ describe("recruitment/[id] test", () => {
       tag: "test",
       created_at: "2023-01-01T00:00:00Z",
     });
-
-    vi.doMock("@/lib/supabase_function/comment", () => ({
-      addComment: async (
-        userId: string,
-        recruitmentId: number,
-        text: string,
-      ) => ({
-        data: {
-          id: 2,
-          user_id: userId,
-          recruitment_id: recruitmentId,
-          text,
-          created_at: new Date().toISOString(),
-        },
-        error: null,
-      }),
-      getCommentByRecruitment: async (recruitmentId: number) => ({
-        data: [
-          {
-            id: 1,
-            user_id: "user1",
-            recruitment_id: recruitmentId,
-            text: "初めてのコメント",
-            created_at: new Date().toISOString(),
-            profile: { username: "testuser", avatar_url: null },
-          },
-        ],
-        error: null,
-      }),
-    }));
+    mockComment([
+      {
+        id: 1,
+        user_id: "user1",
+        recruitment_id: 1,
+        text: "初めてのコメント",
+        created_at: new Date().toISOString(),
+        profile: { username: "testuser", avatar_url: null },
+      },
+    ]);
 
     const { default: RecruitmentPage } = await import(
       "@/app/recruitment/[id]/page"
@@ -531,23 +557,17 @@ describe("recruitment/[id] test", () => {
     });
     render(rendered);
 
-    // コメント欄が表示されていることを確認
     expect(await screen.findByText("コメントを投稿:")).toBeInTheDocument();
 
-    // コメント入力欄にテキストを入力
     const commentInput = screen.getByRole("textbox");
     fireEvent.change(commentInput, { target: { value: "新しいコメント" } });
 
-    // 投稿ボタンをクリック
     const submitButton = screen.getByRole("button", { name: "投稿" });
     fireEvent.click(submitButton);
 
-    // コメントが追加され、画面に反映されていることを確認
     await waitFor(() => {
       expect(screen.getByText("新しいコメント")).toBeInTheDocument();
     });
-
-    // 初期コメントも表示されていることを確認
     expect(screen.getByText("初めてのコメント")).toBeInTheDocument();
   });
 });
