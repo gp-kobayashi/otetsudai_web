@@ -304,4 +304,28 @@ describe("AccountForm", () => {
     expect(updateButton).toBeEnabled();
     alertSpy.mockRestore();
   });
+
+  test("プロフィールの読み込みに失敗した場合、エラーのアラートが表示される。", async () => {
+    // Arrange: window.alertとconsole.errorをスパイし、APIがエラーを返すようにモックする
+    const alertSpy = vi.spyOn(window, "alert").mockImplementation(() => {});
+    const consoleErrorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+    const apiError = new Error("Failed to fetch profile");
+    mockSingle.mockResolvedValue({ data: null, error: apiError, status: 500 });
+
+    // Act: コンポーネントをレンダリングすると、useEffect内でgetProfileが呼ばれる
+    render(<AccountForm user={mockUser} />);
+
+    // Assert: catchブロック内の処理が正しく呼び出されたことを確認
+    await waitFor(() => {
+      expect(alertSpy).toHaveBeenCalledWith(
+        "プロフィールの読み込み中にエラーが発生しました。",
+      );
+    });
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      "Error loading user data",
+      apiError,
+    );
+  });
 });
