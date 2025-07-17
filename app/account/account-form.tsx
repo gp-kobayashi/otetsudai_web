@@ -32,7 +32,7 @@ export default function AccountForm({ user }: { user: User | null }) {
     mode: "onChange",
   });
 
-  const getProfile = useCallback(async () => {
+  const loadProfile = useCallback(async () => {
     try {
       setLoading(true);
 
@@ -64,8 +64,8 @@ export default function AccountForm({ user }: { user: User | null }) {
   }, [user, supabase, reset]);
 
   useEffect(() => {
-    getProfile();
-  }, [user, getProfile]);
+    loadProfile();
+  }, [user, loadProfile]);
 
   const onSubmit = async (values: ProfileFormData) => {
     try {
