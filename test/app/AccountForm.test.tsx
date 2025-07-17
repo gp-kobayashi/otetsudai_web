@@ -341,4 +341,51 @@ describe("AccountForm", () => {
       apiError,
     );
   });
+  test("ユーザー名が20文字を超える場合、エラーメッセージが表示され更新ボタンが無効になる。", async () => {
+    const user = userEvent.setup();
+
+    render(<AccountForm user={mockUser} />);
+    const usernameInput =
+      await screen.findByLabelText<HTMLInputElement>("Username");
+    const updateButton = screen.getByRole("button", { name: /Update/i });
+    // 初期値がフォームに設定されるのを待つ
+    await waitFor(() =>
+      expect(usernameInput).toHaveValue(mockProfile.username),
+    );
+    // 21文字のユーザー名を入力
+    const longUsername = "a".repeat(21);
+    await user.clear(usernameInput);
+    await user.type(usernameInput, longUsername);
+    // エラーメッセージが表示されるのを待つ
+    await waitFor(() => {
+      expect(
+        screen.getByText("ユーザー名は20文字以内で入力してください"),
+      ).toBeInTheDocument();
+    });
+    expect(updateButton).toBeDisabled();
+  });
+  test("ユーザー名に英数字以外を使用した場合、エラーメッセージが表示され更新ボタンが無効になる。", async () => {
+    const user = userEvent.setup();
+    render(<AccountForm user={mockUser} />);
+    const usernameInput =
+      await screen.findByLabelText<HTMLInputElement>("Username");
+    const updateButton = screen.getByRole("button", { name: /Update/i });
+
+    // 初期値がフォームに設定されるのを待つ
+    await waitFor(() =>
+      expect(usernameInput).toHaveValue(mockProfile.username),
+    );
+
+    // 英数字以外の文字を入力
+    await user.clear(usernameInput);
+    await user.type(usernameInput, "テストユーザー");
+
+    // エラーメッセージが表示されるのを待つ
+    await waitFor(() => {
+      expect(
+        screen.getByText("ユーザー名は英数字のみ使用できます"),
+      ).toBeInTheDocument();
+    });
+    expect(updateButton).toBeDisabled();
+  });
 });
