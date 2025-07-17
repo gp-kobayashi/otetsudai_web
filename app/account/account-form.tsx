@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { type User } from "@supabase/supabase-js";
 import Avatar from "./avatar";
@@ -12,7 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 type ProfileFormData = z.infer<typeof profileSchema>;
 
 export default function AccountForm({ user }: { user: User | null }) {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [loading, setLoading] = useState(true);
   const [avatar_url, setAvatarUrl] = useState<string | null>(null);
   const {
@@ -32,7 +32,7 @@ export default function AccountForm({ user }: { user: User | null }) {
     mode: "onChange",
   });
 
-  const getProfile = useCallback(async () => {
+  const loadProfile = useCallback(async () => {
     try {
       setLoading(true);
 
@@ -43,7 +43,6 @@ export default function AccountForm({ user }: { user: User | null }) {
         .single();
 
       if (error && status !== 406) {
-        console.log(error);
         throw error;
       }
 
@@ -56,14 +55,17 @@ export default function AccountForm({ user }: { user: User | null }) {
         });
         setAvatarUrl(data.avatar_url);
       }
+    } catch (error) {
+      alert("プロフィールの読み込み中にエラーが発生しました。");
+      console.error("Error loading user data", error);
     } finally {
       setLoading(false);
     }
   }, [user, supabase, reset]);
 
   useEffect(() => {
-    getProfile();
-  }, [user, getProfile]);
+    loadProfile();
+  }, [user, loadProfile]);
 
   const onSubmit = async (values: ProfileFormData) => {
     try {
@@ -98,7 +100,10 @@ export default function AccountForm({ user }: { user: User | null }) {
           size={150}
           onUpload={(url) => {
             setAvatarUrl(url);
-            setValue("avatar_url", url);
+            setValue("avatar_url", url, {
+              shouldDirty: true,
+              shouldValidate: true,
+            });
           }}
         />
         {/* ... */}
@@ -118,7 +123,7 @@ export default function AccountForm({ user }: { user: User | null }) {
           <input
             id="username"
             type="text"
-            {...register("username", { required: "ユーザー名は必須です" })}
+            {...register("username")}
             className={styles.account_input}
           />
           {errors.username && (
