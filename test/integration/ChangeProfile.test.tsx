@@ -247,4 +247,167 @@ describe("AccountPage", () => {
 
     expect(alertMock).toHaveBeenCalledWith("プロフィールが更新されました");
   });
+
+  test("更新時にユーザー名が重複した場合、エラーメッセージが表示される", async () => {
+    const user = userEvent.setup();
+    const alertMock = vi.fn();
+    window.alert = alertMock;
+
+    vi.doMock("@/utils/supabase/server", () => ({
+      createClient: async () => ({
+        auth: {
+          getUser: async () => ({
+            data: { user: { id: "123", email: "test@example.com" } },
+          }),
+        },
+      }),
+    }));
+    vi.doMock("@/lib/supabase_function/profile", () => ({
+      fetchProfile: async () => ({ data: { username: "testuser" } }),
+    }));
+
+    const upsertMock = vi
+      .fn()
+      .mockResolvedValue({ error: { code: "23505" } }); // ユーザー名重複エラー
+    vi.doMock("@/utils/supabase/client", () => ({
+      createClient: () => ({
+        from: () => ({
+          select: () => ({
+            eq: () => ({
+              single: () =>
+                Promise.resolve({
+                  data: {
+                    username: "testuser",
+                    website: "",
+                    bio: "",
+                    avatar_url: "",
+                  },
+                  error: null,
+                }),
+            }),
+          }),
+          upsert: upsertMock,
+        }),
+      }),
+    }));
+
+    const { default: Account } = await import("@/app/account/page");
+    render(await Account());
+
+    const updateButton = await screen.findByRole("button", { name: /update/i });
+    await user.click(updateButton);
+
+    await waitFor(() => {
+      expect(alertMock).toHaveBeenCalledWith(
+        "そのユーザー名はすでに使用されています。",
+      );
+    });
+  });
+
+  test("更新時に一般的なサーバーエラーが発生した場合、エラーメッセージが表示される", async () => {
+    const user = userEvent.setup();
+    const alertMock = vi.fn();
+    window.alert = alertMock;
+
+    vi.doMock("@/utils/supabase/server", () => ({
+      createClient: async () => ({
+        auth: {
+          getUser: async () => ({
+            data: { user: { id: "123", email: "test@example.com" } },
+          }),
+        },
+      }),
+    }));
+    vi.doMock("@/lib/supabase_function/profile", () => ({
+      fetchProfile: async () => ({ data: { username: "testuser" } }),
+    }));
+
+    const upsertMock = vi
+      .fn()
+      .mockResolvedValue({ error: { message: "Internal server error" } }); // 一般的なエラー
+    vi.doMock("@/utils/supabase/client", () => ({
+      createClient: () => ({
+        from: () => ({
+          select: () => ({
+            eq: () => ({
+              single: () =>
+                Promise.resolve({
+                  data: {
+                    username: "testuser",
+                    website: "",
+                    bio: "",
+                    avatar_url: "",
+                  },
+                  error: null,
+                }),
+            }),
+          }),
+          upsert: upsertMock,
+        }),
+      }),
+    }));
+
+    const { default: Account } = await import("@/app/account/page");
+    render(await Account());
+
+    const updateButton = await screen.findByRole("button", { name: /update/i });
+    await user.click(updateButton);
+
+    await waitFor(() => {
+      expect(alertMock).toHaveBeenCalledWith(
+        "プロフィールの更新中にエラーが発生しました。",
+      );
+    });
+  });
+
+  test("ユーザー名を空にするとUpdateボタンが無効になる", async () => {
+    const user = userEvent.setup();
+
+    vi.doMock("@/utils/supabase/server", () => ({
+      createClient: async () => ({
+        auth: {
+          getUser: async () => ({
+            data: { user: { id: "123", email: "test@example.com" } },
+          }),
+        },
+      }),
+    }));
+    vi.doMock("@/lib/supabase_function/profile", () => ({
+      fetchProfile: async () => ({ data: { username: "testuser" } }),
+    }));
+    vi.doMock("@/utils/supabase/client", () => ({
+      createClient: () => ({
+        from: () => ({
+          select: () => ({
+            eq: () => ({
+              single: () =>
+                Promise.resolve({
+                  data: {
+                    username: "testuser",
+                    website: "",
+                    bio: "",
+                    avatar_url: "",
+                  },
+                  error: null,
+                }),
+            }),
+          }),
+        }),
+      }),
+    }));
+
+    const { default: Account } = await import("@/app/account/page");
+    render(await Account());
+
+    const usernameInput = screen.getByLabelText(/username/i);
+    const updateButton = await screen.findByRole("button", { name: /update/i });
+
+    expect(updateButton).not.toBeDisabled();
+
+    await user.clear(usernameInput);
+
+    await waitFor(() => {
+      expect(updateButton).toBeDisabled();
+    });
+  });
 });
