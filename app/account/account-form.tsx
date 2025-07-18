@@ -20,6 +20,7 @@ export default function AccountForm({ user }: { user: User | null }) {
     handleSubmit,
     setValue,
     reset,
+    trigger, // triggerを追加
     formState: { errors, isValid },
   } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
@@ -54,6 +55,7 @@ export default function AccountForm({ user }: { user: User | null }) {
           bio: data.bio,
           avatar_url: data.avatar_url,
         });
+        trigger(); // バリデーションをトリガー
         setAvatarUrl(data.avatar_url);
       }
     } finally {
@@ -63,7 +65,7 @@ export default function AccountForm({ user }: { user: User | null }) {
 
   useEffect(() => {
     getProfile();
-  }, [user, getProfile]);
+  }, []);
 
   const onSubmit = async (values: ProfileFormData) => {
     try {
