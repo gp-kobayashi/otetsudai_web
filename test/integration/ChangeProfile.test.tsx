@@ -100,7 +100,9 @@ describe("AccountPage", () => {
       }));
 
       const { default: Account } = await import("@/app/account/page");
-      render(await Account());
+      await waitFor(async () => {
+        render(await Account());
+      });
 
       const signOutButton = screen.getByRole("button", { name: /sign out/i });
       expect(signOutButton).toBeInTheDocument();
@@ -151,8 +153,12 @@ describe("AccountPage", () => {
       const alertMock = vi.fn();
       window.alert = alertMock;
 
+      // Math.random()をモック化してファイル名を固定
+      vi.spyOn(Math, "random").mockReturnValue(0.123456789);
+      const expectedAvatarPath = `123-0.123456789.png`;
+
       const upsertMock = vi.fn().mockResolvedValue({ error: null });
-      const uploadMock = vi.fn().mockResolvedValue({ error: null });
+      const uploadMock = vi.fn().mockResolvedValue({ data: { path: expectedAvatarPath }, error: null });
 
       vi.doMock("@/utils/supabase/client", () => ({
         createClient: () => ({
@@ -176,13 +182,7 @@ describe("AccountPage", () => {
                 upsert: upsertMock,
               };
             }
-            return {
-              upload: uploadMock,
-              download: vi.fn().mockResolvedValue({
-                data: new Blob([""], { type: "image/png" }),
-                error: null,
-              }),
-            };
+            return {};
           },
           storage: {
             from: () => ({
@@ -219,13 +219,13 @@ describe("AccountPage", () => {
       const file = new File([""], "new_avatar.png", { type: "image/png" });
       await user.upload(fileInput, file);
 
-      // 更新ボタンをクリック
-      await user.click(updateButton);
-
       // onUploadが呼ばれ、stateが更新されるのを待つ
       await waitFor(() => {
         expect(uploadMock).toHaveBeenCalled();
       });
+
+      // 更新ボタンをクリック
+      await user.click(updateButton);
 
       // upsertが正しい値で呼ばれることを確認
       await waitFor(() => {
@@ -234,7 +234,7 @@ describe("AccountPage", () => {
             username: "newuser",
             website: "https://new-example.com",
             bio: "new bio",
-            avatar_url: expect.stringContaining("new_avatar.png"),
+            avatar_url: expectedAvatarPath,
           }),
         );
       });
