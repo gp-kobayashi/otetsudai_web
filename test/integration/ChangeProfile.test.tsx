@@ -11,6 +11,64 @@ vi.mock("next/navigation", () => ({
   },
 }));
 
+// 共通モック関数
+const mockSupabaseServer = (user: any) => {
+  vi.doMock("@/utils/supabase/server", () => ({
+    createClient: async () => ({
+      auth: {
+        getUser: async () => ({ data: { user } }),
+      },
+    }),
+  }));
+};
+
+const mockProfileFetch = (profile: any) => {
+  vi.doMock("@/lib/supabase_function/profile", () => ({
+    fetchProfile: async () => ({ data: profile }),
+  }));
+};
+
+const mockSupabaseClient = ({
+  profileData,
+  upsertMock,
+  uploadMock,
+  downloadMock,
+}: {
+  profileData?: any;
+  upsertMock?: any;
+  uploadMock?: any;
+  downloadMock?: any;
+}) => {
+  vi.doMock("@/utils/supabase/client", () => ({
+    createClient: () => ({
+      from: (table: string) => {
+        if (table === "profiles") {
+          return {
+            select: () => ({
+              eq: () => ({
+                single: () => Promise.resolve({ data: profileData, error: null }),
+              }),
+            }),
+            upsert: upsertMock,
+          };
+        }
+        return {};
+      },
+      storage: {
+        from: () => ({
+          upload: uploadMock,
+          download:
+            downloadMock ||
+            vi.fn().mockResolvedValue({
+              data: new Blob([""], { type: "image/png" }),
+              error: null,
+            }),
+        }),
+      },
+    }),
+  }));
+};
+
 describe("AccountPage", () => {
   beforeEach(() => {
     vi.resetModules();
@@ -18,16 +76,8 @@ describe("AccountPage", () => {
   });
 
   test("ユーザーが未認証の場合、/loginにリダイレクトされる", async () => {
-    vi.doMock("@/utils/supabase/server", () => ({
-      createClient: async () => ({
-        auth: {
-          getUser: async () => ({ data: { user: null } }),
-        },
-      }),
-    }));
-    vi.doMock("@/lib/supabase_function/profile", () => ({
-      fetchProfile: async () => ({ data: null }),
-    }));
+    mockSupabaseServer(null);
+    mockProfileFetch(null);
 
     const { default: Account } = await import("@/app/account/page");
     await expect(Account()).rejects.toThrow("NEXT_REDIRECT");
@@ -35,16 +85,8 @@ describe("AccountPage", () => {
   });
 
   test("ユーザーが認証済みでusernameが未設定の場合、/insertUserNameにリダイレクトされる", async () => {
-    vi.doMock("@/utils/supabase/server", () => ({
-      createClient: async () => ({
-        auth: {
-          getUser: async () => ({ data: { user: { id: "123" } } }),
-        },
-      }),
-    }));
-    vi.doMock("@/lib/supabase_function/profile", () => ({
-      fetchProfile: async () => ({ data: null }),
-    }));
+    mockSupabaseServer({ id: "123" });
+    mockProfileFetch(null);
 
     const { default: Account } = await import("@/app/account/page");
     await expect(Account()).rejects.toThrow("NEXT_REDIRECT");
@@ -54,50 +96,25 @@ describe("AccountPage", () => {
   describe("認証済みでプロフィールがある場合", () => {
     beforeEach(() => {
       // 共通のサーバーサイドモック
-      vi.doMock("@/utils/supabase/server", () => ({
-        createClient: async () => ({
-          auth: {
-            getUser: async () => ({
-              data: { user: { id: "123", email: "test@example.com" } },
-            }),
-          },
-        }),
-      }));
-      vi.doMock("@/lib/supabase_function/profile", () => ({
-        fetchProfile: async () => ({ data: { username: "testuser" } }),
-      }));
+      mockSupabaseServer({ id: "123", email: "test@example.com" });
+      mockProfileFetch({ username: "testuser" });
     });
 
     test("ユーザー情報が確認できた場合、AccountFormが表示される", async () => {
       const { default: Account } = await import("@/app/account/page");
       const result = await Account();
-
-      // AccountFormが描画されているか確認
       expect(result.type.name).toBe("AccountForm");
     });
 
     test("SignOutボタンが存在し、正しく動作する", async () => {
-      // Client Component (`AccountForm`) 用の依存関係をモック
-      vi.doMock("@/utils/supabase/client", () => ({
-        createClient: () => ({
-          from: () => ({
-            select: () => ({
-              eq: () => ({
-                single: () =>
-                  Promise.resolve({
-                    data: {
-                      username: "testuser",
-                      website: "",
-                      bio: "",
-                      avatar_url: "",
-                    },
-                    error: null,
-                  }),
-              }),
-            }),
-          }),
-        }),
-      }));
+      mockSupabaseClient({
+        profileData: {
+          username: "testuser",
+          website: "",
+          bio: "",
+          avatar_url: "",
+        },
+      });
 
       const { default: Account } = await import("@/app/account/page");
       await waitFor(async () => {
@@ -114,27 +131,14 @@ describe("AccountPage", () => {
     });
 
     test("フォームが不正な初期値で読み込まれた場合、エラーメッセージが表示されUpdateボタンは無効になる", async () => {
-      // AccountFormが読み込むデータはバリデーションに違反するものにする
-      vi.doMock("@/utils/supabase/client", () => ({
-        createClient: () => ({
-          from: () => ({
-            select: () => ({
-              eq: () => ({
-                single: () =>
-                  Promise.resolve({
-                    data: {
-                      username: "ab", // 3文字未満の不正な値
-                      website: "",
-                      bio: "",
-                      avatar_url: "",
-                    },
-                    error: null,
-                  }),
-              }),
-            }),
-          }),
-        }),
-      }));
+      mockSupabaseClient({
+        profileData: {
+          username: "ab", // 3文字未満の不正な値
+          website: "",
+          bio: "",
+          avatar_url: "",
+        },
+      });
 
       const { default: Account } = await import("@/app/account/page");
       render(await Account());
@@ -153,48 +157,24 @@ describe("AccountPage", () => {
       const alertMock = vi.fn();
       window.alert = alertMock;
 
-      // Math.random()をモック化してファイル名を固定
       vi.spyOn(Math, "random").mockReturnValue(0.123456789);
       const expectedAvatarPath = `123-0.123456789.png`;
 
       const upsertMock = vi.fn().mockResolvedValue({ error: null });
-      const uploadMock = vi.fn().mockResolvedValue({ data: { path: expectedAvatarPath }, error: null });
+      const uploadMock = vi
+        .fn()
+        .mockResolvedValue({ data: { path: expectedAvatarPath }, error: null });
 
-      vi.doMock("@/utils/supabase/client", () => ({
-        createClient: () => ({
-          from: (table: string) => {
-            if (table === "profiles") {
-              return {
-                select: () => ({
-                  eq: () => ({
-                    single: () =>
-                      Promise.resolve({
-                        data: {
-                          username: "testuser",
-                          website: "https://example.com",
-                          bio: "initial bio",
-                          avatar_url: "initial_avatar.png",
-                        },
-                        error: null,
-                      }),
-                  }),
-                }),
-                upsert: upsertMock,
-              };
-            }
-            return {};
-          },
-          storage: {
-            from: () => ({
-              upload: uploadMock,
-              download: vi.fn().mockResolvedValue({
-                data: new Blob([""], { type: "image/png" }),
-                error: null,
-              }),
-            }),
-          },
-        }),
-      }));
+      mockSupabaseClient({
+        profileData: {
+          username: "testuser",
+          website: "https://example.com",
+          bio: "initial bio",
+          avatar_url: "initial_avatar.png",
+        },
+        upsertMock,
+        uploadMock,
+      });
 
       const { default: Account } = await import("@/app/account/page");
       render(await Account());
@@ -207,7 +187,6 @@ describe("AccountPage", () => {
         name: /update/i,
       });
 
-      // フォーム入力
       await user.clear(usernameInput);
       await user.type(usernameInput, "newuser");
       await user.clear(websiteInput);
@@ -215,19 +194,15 @@ describe("AccountPage", () => {
       await user.clear(bioInput);
       await user.type(bioInput, "new bio");
 
-      // ファイルアップロード
       const file = new File([""], "new_avatar.png", { type: "image/png" });
       await user.upload(fileInput, file);
 
-      // onUploadが呼ばれ、stateが更新されるのを待つ
       await waitFor(() => {
         expect(uploadMock).toHaveBeenCalled();
       });
 
-      // 更新ボタンをクリック
       await user.click(updateButton);
 
-      // upsertが正しい値で呼ばれることを確認
       await waitFor(() => {
         expect(upsertMock).toHaveBeenCalledWith(
           expect.objectContaining({
@@ -249,28 +224,16 @@ describe("AccountPage", () => {
 
       const upsertMock = vi
         .fn()
-        .mockResolvedValue({ error: { code: "23505" } }); // ユーザー名重複エラー
-      vi.doMock("@/utils/supabase/client", () => ({
-        createClient: () => ({
-          from: () => ({
-            select: () => ({
-              eq: () => ({
-                single: () =>
-                  Promise.resolve({
-                    data: {
-                      username: "testuser",
-                      website: "",
-                      bio: "",
-                      avatar_url: "",
-                    },
-                    error: null,
-                  }),
-              }),
-            }),
-            upsert: upsertMock,
-          }),
-        }),
-      }));
+        .mockResolvedValue({ error: { code: "23505" } });
+      mockSupabaseClient({
+        profileData: {
+          username: "testuser",
+          website: "",
+          bio: "",
+          avatar_url: "",
+        },
+        upsertMock,
+      });
 
       const { default: Account } = await import("@/app/account/page");
       render(await Account());
@@ -294,28 +257,16 @@ describe("AccountPage", () => {
 
       const upsertMock = vi
         .fn()
-        .mockResolvedValue({ error: { message: "Internal server error" } }); // 一般的なエラー
-      vi.doMock("@/utils/supabase/client", () => ({
-        createClient: () => ({
-          from: () => ({
-            select: () => ({
-              eq: () => ({
-                single: () =>
-                  Promise.resolve({
-                    data: {
-                      username: "testuser",
-                      website: "",
-                      bio: "",
-                      avatar_url: "",
-                    },
-                    error: null,
-                  }),
-              }),
-            }),
-            upsert: upsertMock,
-          }),
-        }),
-      }));
+        .mockResolvedValue({ error: { message: "Internal server error" } });
+      mockSupabaseClient({
+        profileData: {
+          username: "testuser",
+          website: "",
+          bio: "",
+          avatar_url: "",
+        },
+        upsertMock,
+      });
 
       const { default: Account } = await import("@/app/account/page");
       render(await Account());
@@ -335,26 +286,14 @@ describe("AccountPage", () => {
     test("ユーザー名を空にするとUpdateボタンが無効になる", async () => {
       const user = userEvent.setup();
 
-      vi.doMock("@/utils/supabase/client", () => ({
-        createClient: () => ({
-          from: () => ({
-            select: () => ({
-              eq: () => ({
-                single: () =>
-                  Promise.resolve({
-                    data: {
-                      username: "testuser",
-                      website: "",
-                      bio: "",
-                      avatar_url: "",
-                    },
-                    error: null,
-                  }),
-              }),
-            }),
-          }),
-        }),
-      }));
+      mockSupabaseClient({
+        profileData: {
+          username: "testuser",
+          website: "",
+          bio: "",
+          avatar_url: "",
+        },
+      });
 
       const { default: Account } = await import("@/app/account/page");
       render(await Account());
