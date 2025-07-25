@@ -1,12 +1,8 @@
-import { Mock, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-<<<<<<< HEAD
 import { describe, test, expect, vi, beforeEach, type Mock } from "vitest";
 import { User } from "@supabase/supabase-js";
 import { Profile } from "@/types/supabase/types";
-=======
-import { describe, test, expect, vi, beforeEach, Mock } from "vitest";
->>>>>>> 208ded9b32aaebe1b95f0faeeaf25fadfd3d919d
 
 const redirectMock = vi.fn();
 
@@ -16,9 +12,6 @@ vi.mock("next/navigation", () => ({
     throw new Error("NEXT_REDIRECT");
   },
 }));
-
-import { User } from "@supabase/supabase-js";
-import { Profile } from "@/types/supabase/types";
 
 // 共通モック関数
 const mockSupabaseServer = (user: Partial<User> | null) => {
@@ -55,7 +48,8 @@ const mockSupabaseClient = ({
           return {
             select: () => ({
               eq: () => ({
-                single: () => Promise.resolve({ data: profileData, error: null }),
+                single: () =>
+                  Promise.resolve({ data: profileData, error: null }),
               }),
             }),
             upsert: upsertMock,
