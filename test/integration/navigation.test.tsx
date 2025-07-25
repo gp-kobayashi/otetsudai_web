@@ -5,7 +5,15 @@ vi.mock("@/lib/supabase_function/profile", () => ({
   fetchProfile: vi.fn(),
 }));
 
-import { beforeEach, describe, expect, type Mock, test, vi } from "vitest";
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  type Mock,
+  test,
+  vi,
+} from "vitest";
 import { render, screen } from "@testing-library/react";
 import Navigation from "@/components/navigation/Navigation";
 import { createClient } from "@/utils/supabase/server";
@@ -18,6 +26,11 @@ describe("navigation", () => {
   beforeEach(() => {
     mockedCreateClient.mockClear();
     mockedFetchProfile.mockClear();
+    vi.spyOn(console, "error").mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    vi.mocked(console.error).mockRestore();
   });
   test("ユーザー未ログイン状態の確認", async () => {
     mockedCreateClient.mockReturnValue({
