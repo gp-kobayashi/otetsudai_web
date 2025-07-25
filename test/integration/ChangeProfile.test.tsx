@@ -1,6 +1,8 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, test, expect, vi, beforeEach } from "vitest";
+import { describe, test, expect, vi, beforeEach, type Mock } from "vitest";
+import { User } from "@supabase/supabase-js";
+import { Profile } from "@/types/supabase/types";
 
 const redirectMock = vi.fn();
 
@@ -12,7 +14,7 @@ vi.mock("next/navigation", () => ({
 }));
 
 // 共通モック関数
-const mockSupabaseServer = (user: any) => {
+const mockSupabaseServer = (user: Partial<User> | null) => {
   vi.doMock("@/utils/supabase/server", () => ({
     createClient: async () => ({
       auth: {
@@ -22,7 +24,7 @@ const mockSupabaseServer = (user: any) => {
   }));
 };
 
-const mockProfileFetch = (profile: any) => {
+const mockProfileFetch = (profile: Partial<Profile> | null) => {
   vi.doMock("@/lib/supabase_function/profile", () => ({
     fetchProfile: async () => ({ data: profile }),
   }));
@@ -34,10 +36,10 @@ const mockSupabaseClient = ({
   uploadMock,
   downloadMock,
 }: {
-  profileData?: any;
-  upsertMock?: any;
-  uploadMock?: any;
-  downloadMock?: any;
+  profileData?: Partial<Profile>;
+  upsertMock?: Mock;
+  uploadMock?: Mock;
+  downloadMock?: Mock;
 }) => {
   vi.doMock("@/utils/supabase/client", () => ({
     createClient: () => ({
