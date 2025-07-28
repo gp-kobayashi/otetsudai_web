@@ -267,7 +267,9 @@ describe("recruitment/[id] test", () => {
     });
     render(rendered);
 
-    expect(screen.queryByText("内容を編集する")).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByText("内容を編集する")).not.toBeInTheDocument();
+    });
   });
 
   test("編集ボタンをクリックして募集内容を更新し、表示に反映される", async () => {
@@ -443,9 +445,11 @@ describe("recruitment/[id] test", () => {
     render(rendered);
 
     // 削除ボタンが表示されないことを確認
-    expect(
-      screen.queryByRole("button", { name: "削除" }),
-    ).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        screen.queryByRole("button", { name: "削除" }),
+      ).not.toBeInTheDocument();
+    });
   });
   test("ユーザーがログインしていない場合、/loginにリダイレクトされる", async () => {
     // ログインしていない状態を直接モックする
@@ -568,6 +572,8 @@ describe("recruitment/[id] test", () => {
     await waitFor(() => {
       expect(screen.getByText("新しいコメント")).toBeInTheDocument();
     });
-    expect(screen.getByText("初めてのコメント")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText("初めてのコメント")).toBeInTheDocument();
+    });
   });
 });
