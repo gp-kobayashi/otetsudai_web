@@ -26,7 +26,7 @@ vi.mock("@/utils/supabase/client", () => ({
         }),
         upload: vi.fn().mockResolvedValue({ error: null }),
         getPublicUrl: vi.fn((path) => ({
-          data: { publicUrl: `https://example.com/avatars/${path}` },
+          data: { publicUrl: path ? `https://example.com/avatars/${path}` : "/default.png" },
         })),
       }),
     },
@@ -62,10 +62,8 @@ type CommentData = {
   recruitment_id: number;
   text: string;
   created_at: string;
-  profile: {
-    username: string | null;
-    avatar_url: string | null;
-  };
+  username: string | null;
+  avatar_url: string | null;
 };
 
 // --- 共通モック関数 ---
@@ -550,7 +548,8 @@ describe("recruitment/[id] test", () => {
         recruitment_id: 1,
         text: "初めてのコメント",
         created_at: new Date().toISOString(),
-        profile: { username: "testuser", avatar_url: null },
+        username: "testuser",
+        avatar_url: null,
       },
     ]);
 
