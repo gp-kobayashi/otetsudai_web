@@ -120,12 +120,13 @@ const mockComment = (
   initialComments: CommentData[] = [],
   addCommentImpl?: any,
 ) => {
+  let commentId = 2;
   vi.doMock("@/lib/supabase_function/comment", () => ({
     addComment: addCommentImpl
       ? addCommentImpl
       : async (userId: string, recruitmentId: number, text: string) => ({
           data: {
-            id: 2,
+            id: commentId++,
             user_id: userId,
             recruitment_id: recruitmentId,
             text,
