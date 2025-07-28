@@ -1,5 +1,5 @@
 import { describe, expect, test, afterEach, vi } from "vitest";
-import { render, screen, waitFor, fireEvent } from "@testing-library/react";
+import { act, render, screen, waitFor, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import AccountForm from "../../app/account/account-form";
 import { User } from "@supabase/supabase-js";
@@ -146,7 +146,9 @@ describe("AccountForm", () => {
     );
 
     // Act: API呼び出しを成功させる
-    await resolveUpsert!({ error: null });
+    await act(async () => {
+      await resolveUpsert!({ error: null });
+    });
 
     // Assert: 更新後のUIとアラートを検証
     await waitFor(() => {
