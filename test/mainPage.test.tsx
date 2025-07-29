@@ -1,8 +1,9 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import Home from "../app/page";
 import List from "../components/mainPage/MainPageList";
-import { mockRecruitments } from "./mocks/mockData";
+import { mockRecruitmentsWithProfiles } from "./mocks/mockData";
+import * as recruitmentFunctions from "@/lib/supabase_function/recruitment";
 
 describe(Home, () => {
   test("初期レンダリングが行われる", () => {
@@ -21,11 +22,17 @@ describe(Home, () => {
 
 describe(List, () => {
   test("各募集のタイトル、説明が表示される", async () => {
+    // getRecruitmentList関数をモック
+    vi.spyOn(recruitmentFunctions, "getRecruitmentList").mockResolvedValue({
+      data: mockRecruitmentsWithProfiles,
+      error: null,
+    });
+
     render(<List />);
 
-    // MSWでモックされたデータが表示されることを確認
+    // モックされたデータが表示されることを確認
     await waitFor(() => {
-      mockRecruitments.slice(0, 10).forEach((recruitment) => {
+      mockRecruitmentsWithProfiles.slice(0, 10).forEach((recruitment) => {
         expect(screen.getByText(recruitment.title)).toBeInTheDocument();
         expect(screen.getByText(recruitment.explanation)).toBeInTheDocument();
       });
