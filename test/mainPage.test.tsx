@@ -6,16 +6,22 @@ import { mockRecruitmentsWithProfiles } from "./mocks/mockData";
 import * as recruitmentFunctions from "@/lib/supabase_function/recruitment";
 
 describe(Home, () => {
-  test("初期レンダリングが行われる", () => {
+  test("初期レンダリングが行われる", async () => {
     render(<Home />);
-    expect(screen.getByText("お手伝いをしましょう")).toBeInTheDocument();
-    expect(screen.getByText("最新募集一覧")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText("お手伝いをしましょう")).toBeInTheDocument();
+    });
+    await waitFor(() => {
+      expect(screen.getByText("最新募集一覧")).toBeInTheDocument();
+    });
   });
-  test("タグが正しく表示される", () => {
+  test("タグが正しく表示される", async () => {
     render(<Home />);
     const tags = ["Video", "Text", "Audio", "programming", "design", "other"];
-    tags.forEach((tag) => {
-      expect(screen.getByText(tag)).toBeInTheDocument();
+    await waitFor(() => {
+      tags.forEach((tag) => {
+        expect(screen.getByText(tag)).toBeInTheDocument();
+      });
     });
   });
 });

@@ -26,7 +26,7 @@ vi.mock("@/utils/supabase/client", () => ({
         }),
         upload: vi.fn().mockResolvedValue({ error: null }),
         getPublicUrl: vi.fn((path) => ({
-          data: { publicUrl: `https://example.com/avatars/${path}` },
+          data: { publicUrl: path ? `https://example.com/avatars/${path}` : "/default.png" },
         })),
       }),
     },
@@ -62,10 +62,8 @@ type CommentData = {
   recruitment_id: number;
   text: string;
   created_at: string;
-  profile: {
-    username: string | null;
-    avatar_url: string | null;
-  };
+  username: string | null;
+  avatar_url: string | null;
 };
 
 // --- 共通モック関数 ---
@@ -120,12 +118,13 @@ const mockComment = (
   initialComments: CommentData[] = [],
   addCommentImpl?: any,
 ) => {
+  let commentId = 2;
   vi.doMock("@/lib/supabase_function/comment", () => ({
     addComment: addCommentImpl
       ? addCommentImpl
       : async (userId: string, recruitmentId: number, text: string) => ({
           data: {
-            id: 2,
+            id: commentId++,
             user_id: userId,
             recruitment_id: recruitmentId,
             text,
@@ -267,7 +266,9 @@ describe("recruitment/[id] test", () => {
     });
     render(rendered);
 
-    expect(screen.queryByText("内容を編集する")).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByText("内容を編集する")).not.toBeInTheDocument();
+    });
   });
 
   test("編集ボタンをクリックして募集内容を更新し、表示に反映される", async () => {
@@ -443,9 +444,11 @@ describe("recruitment/[id] test", () => {
     render(rendered);
 
     // 削除ボタンが表示されないことを確認
-    expect(
-      screen.queryByRole("button", { name: "削除" }),
-    ).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        screen.queryByRole("button", { name: "削除" }),
+      ).not.toBeInTheDocument();
+    });
   });
   test("ユーザーがログインしていない場合、/loginにリダイレクトされる", async () => {
     // ログインしていない状態を直接モックする
@@ -545,7 +548,8 @@ describe("recruitment/[id] test", () => {
         recruitment_id: 1,
         text: "初めてのコメント",
         created_at: new Date().toISOString(),
-        profile: { username: "testuser", avatar_url: null },
+        username: "testuser",
+        avatar_url: null,
       },
     ]);
 
@@ -568,6 +572,8 @@ describe("recruitment/[id] test", () => {
     await waitFor(() => {
       expect(screen.getByText("新しいコメント")).toBeInTheDocument();
     });
-    expect(screen.getByText("初めてのコメント")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText("初めてのコメント")).toBeInTheDocument();
+    });
   });
 });
