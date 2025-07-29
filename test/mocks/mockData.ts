@@ -1,5 +1,7 @@
+import type { Recruitment, RecruitmentWithProfile } from "@/types/supabase/types";
+
 // Recruitmentsのモックデータ（profilesなし）
-export const mockRecruitments = [
+export const mockRecruitments: Recruitment[] = [
   { 
     id: 1, 
     user_id: 'test-user-1', 
@@ -23,7 +25,7 @@ export const mockRecruitments = [
 ];
 
 // profiles付きRecruitmentsのモックデータ
-export const mockRecruitmentsWithProfiles = [
+export const mockRecruitmentsWithProfiles: RecruitmentWithProfile[] = [
   { 
     id: 1, 
     user_id: 'test-user-1', 
@@ -33,10 +35,8 @@ export const mockRecruitmentsWithProfiles = [
     status: '募集中', 
     created_at: '2025-05-27T12:00:00Z', 
     updated_at: '2025-05-27T12:00:00Z',
-    profiles: {
-      avatar_url: 'test-avatar.jpg',
-      username: 'testuser1'
-    }
+    avatar_url: '/test-avatar.jpg',
+    username: 'testuser1'
   },
   { 
     id: 2, 
@@ -47,9 +47,7 @@ export const mockRecruitmentsWithProfiles = [
     status: '対応中', 
     created_at: '2025-05-27T13:00:00Z', 
     updated_at: '2025-05-27T13:00:00Z',
-    profiles: {
-      avatar_url: 'test-avatar2.jpg',
-      username: 'testuser2'
-    }
+    avatar_url: '/test-avatar2.jpg',
+    username: 'testuser2'
   },
 ]; 
