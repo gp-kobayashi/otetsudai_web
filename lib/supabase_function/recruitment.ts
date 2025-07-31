@@ -171,3 +171,40 @@ export const updateRecruitment = async (
 
   return { data, error: null };
 };
+
+export const searchRecruitment = async (
+  keyword: string,
+  limit = 5,
+  offset = 0,
+): Promise<SupabaseResponse<RecruitmentWithProfile[]>> => {
+  const formattedKeyword = keyword.trim().split(/\s+/).join(' | ');
+  const { data, error } = await supabase
+    .from("recruitments")
+    .select("*,profiles(avatar_url,username)")
+    .textSearch("title_explanation", formattedKeyword
+      , {
+        type: "websearch",
+        config: "japanese",
+      }
+    )
+    .range(offset, offset + limit - 1)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    return { data: null, error };
+  }
+  
+  const RecruitmentData = data.map((recruitment) => {
+    const avatarUrl = formatAvatarUrl(recruitment.profiles.avatar_url);
+    const userName = formatUserName(recruitment.profiles.username);
+    const created_at = formatDatetime(recruitment.created_at);
+    return {
+      ...recruitment,
+      avatar_url: avatarUrl,
+      username: userName,
+      created_at: created_at,
+    };
+  });
+  
+  return { data: RecruitmentData, error: null };
+}
