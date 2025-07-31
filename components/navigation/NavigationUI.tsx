@@ -1,7 +1,7 @@
 import styles from "./navigation.module.css";
 import Link from "next/link";
 import { User } from "@supabase/supabase-js";
-
+import SearchForm from "./search/SearchForm";
 type Props = {
   user: User | null;
   username?: string | null;
@@ -15,6 +15,9 @@ const NavigationUI = (props: Props) => {
       <Link href="/" className={styles.logo}>
         otetsudai
       </Link>
+      <div className={styles.search_container}>
+        <SearchForm />
+      </div>
       <div className={styles.navigation_link}>
         <Link href="/createRecruitment" className={styles.recruitment_link}>
           募集する
