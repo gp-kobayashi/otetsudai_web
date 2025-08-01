@@ -171,3 +171,38 @@ export const updateRecruitment = async (
 
   return { data, error: null };
 };
+
+export const searchRecruitment = async (
+  keyword: string,
+  limit = 5,
+  offset = 0,
+): Promise<{
+  data: RecruitmentWithProfile[] | null;
+  count: number | null;
+  error: PostgrestError | null;
+}> => {
+  const { data, count, error } = await supabase
+    .from("recruitments")
+    .select("*,profiles(avatar_url,username)", { count: "exact" })
+    .or(`title.ilike.%${keyword}%,explanation.ilike.%${keyword}%`)
+    .range(offset, offset + limit - 1)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    return { data: null, count: null, error };
+  }
+
+  const RecruitmentData = data.map((recruitment) => {
+    const avatarUrl = formatAvatarUrl(recruitment.profiles.avatar_url);
+    const userName = formatUserName(recruitment.profiles.username);
+    const created_at = formatDatetime(recruitment.created_at);
+    return {
+      ...recruitment,
+      avatar_url: avatarUrl,
+      username: userName,
+      created_at: created_at,
+    };
+  });
+
+  return { data: RecruitmentData, count, error: null };
+};

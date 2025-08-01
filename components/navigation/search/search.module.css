@@ -1,0 +1,25 @@
+.search_form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 250px;
+  min-height: 30px;
+  border: 1px solid #ccc;
+  background-color: gray;
+  border-radius: 5px;
+}
+.search_input {
+  width: 75%;
+  height: 25px;
+  border: solid 3px gray;
+  border-radius: 5px 0 0 5px;
+}
+.search_button {
+  width: 25%;
+  height: 25px;
+  border: none;
+  background-color: gray;
+  color: white;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+}
