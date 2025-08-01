@@ -3,7 +3,7 @@ import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import styles from "./category.module.css";
 import StatusFilter from "@/components/recruitment/category/StatusFilter";
-import Pagination from "@/components/recruitment/category/Pagination";
+import Pagination from "@/components/util/Pagination";
 import RecruitmentCard from "@/components/recruitment/card/RecruitmentCard";
 
 type PageProps = {
@@ -23,6 +23,7 @@ const categoryPage = async ({ params, searchParams }: PageProps) => {
   const itemsPerPage = 5;
   const offset = (currentPage - 1) * itemsPerPage;
   const supabase = await createClient();
+  const basePath = `/category/${tag}`;
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -64,7 +65,7 @@ const categoryPage = async ({ params, searchParams }: PageProps) => {
         filterQuery={filterQuery}
         currentPage={currentPage}
         hasNextPage={hasNextPage}
-        tag={tag}
+        basePath={basePath}
       />
     </div>
   );
