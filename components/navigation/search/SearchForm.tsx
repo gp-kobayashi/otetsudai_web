@@ -11,7 +11,7 @@ const SearchForm = () => {
     if (keyword.trim() === "") {
       return;
     }
-    router.push(`/search/${keyword}`);
+    router.push(`/search/${keyword}/1`);
   };
   return (
     <form className={styles.search_form} onSubmit={handleSubmit}>
