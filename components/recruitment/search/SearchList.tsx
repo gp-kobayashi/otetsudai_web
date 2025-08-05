@@ -9,7 +9,7 @@ type Props = {
 
 const SearchList = ({ keyword, recruitmentList }: Props) => {
   if (!recruitmentList) {
-    return <div>"{keyword}"に該当する募集はありません。</div>;
+    return <div>&quot;{keyword}&quot;に該当する募集はありません。</div>;
   }
   return (
     <div>
