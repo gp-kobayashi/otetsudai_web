@@ -24,4 +24,12 @@ export const profileSchema = z.object({
       .or(z.literal("")),
   });
 
+export const searchSchema = z.object({
+  keyword: z
+    .string()
+    .min(3, "検索キーワードは3文字以上で入力してください")
+    .max(50, "検索キーワードは50文字以内で入力してください")
+    .regex(/^[a-zA-Z0-9\s\u3000-〿\u3040-ゟ\u30A0-ヿ\uFF00-￯\u4E00-龯]+$/, "特殊文字は使用できません"),
+});
+
    
