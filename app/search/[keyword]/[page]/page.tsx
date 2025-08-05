@@ -4,7 +4,7 @@ import { searchRecruitment } from "@/lib/supabase_function/recruitment";
 
 type params = {
   keyword: string;
-  page: number;
+  page: string;
 };
 
 const itemsPerPage = 5;
