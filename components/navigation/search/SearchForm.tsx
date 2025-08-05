@@ -2,16 +2,19 @@
 import styles from "./search.module.css";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { searchSchema } from "@/utils/zod";
 
 const SearchForm = () => {
   const router = useRouter();
   const [keyword, setKeyword] = useState("");
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (keyword.trim() === "") {
+    const result = searchSchema.safeParse({ keyword });
+    if (!result.success) {
+      alert(result.error.errors[0].message);
       return;
     }
-    router.push(`/search/${keyword}/1`);
+    router.push(`/search/${result.data.keyword}/1`);
   };
   return (
     <form className={styles.search_form} onSubmit={handleSubmit}>
