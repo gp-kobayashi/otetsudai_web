@@ -31,7 +31,7 @@ const RecruitmentForm = ({ user_id }: Props) => {
       setExplanation("");
       setTag(tags[0]);
       router.push("/");
-    } catch (error) {
+    } catch {
       alert("投稿に失敗しました");
     }
   };
