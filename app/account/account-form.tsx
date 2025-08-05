@@ -63,7 +63,7 @@ export default function AccountForm({ user }: { user: User | null }) {
     } finally {
       setLoading(false);
     }
-  }, [user, supabase, reset]);
+  }, [user, supabase, reset, trigger]);
 
   useEffect(() => {
     loadProfile();
