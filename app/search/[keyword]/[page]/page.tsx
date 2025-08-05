@@ -27,7 +27,7 @@ const search = async ({ params }: { params: params }) => {
 
   return (
     <div>
-      <h1>"{decodedKeyword}"の検索結果</h1>
+      <h1>&quot;{decodedKeyword}&quot;の検索結果</h1>
       <SearchList keyword={decodedKeyword} recruitmentList={recruitmentList} />
 
       <Pagination
