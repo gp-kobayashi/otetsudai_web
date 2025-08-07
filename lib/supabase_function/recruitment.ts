@@ -6,7 +6,8 @@ import type {
 } from "@/types/supabase/types";
 import { PostgrestError } from "@supabase/supabase-js";
 import { formatAvatarUrl, formatUserName } from "./profile";
-import{formatDatetime} from "@/utils/date";
+import { formatDatetime } from "@/utils/date";
+import { searchSchema } from "@/utils/zod";
 const supabase = createClient();
 
 export const getRecruitmentList = async (): Promise<
@@ -180,16 +181,26 @@ export const searchRecruitment = async (
   data: RecruitmentWithProfile[] | null;
   count: number | null;
   error: PostgrestError | null;
+  zodError: string | null;
 }> => {
+  const validatedKeyword = searchSchema.safeParse({ keyword });
+  if (!validatedKeyword.success) {
+    return {
+      data: null,
+      count: null,
+      error: null,
+      zodError: validatedKeyword.error.errors[0].message,
+    };
+  }
   const { data, count, error } = await supabase
     .from("recruitments")
     .select("*,profiles(avatar_url,username)", { count: "exact" })
-    .or(`title.ilike.%${keyword}%,explanation.ilike.%${keyword}%`)
+    .or(`title.ilike.%${validatedKeyword.data.keyword}%,explanation.ilike.%${validatedKeyword.data.keyword}%`)
     .range(offset, offset + limit - 1)
     .order("created_at", { ascending: false });
 
   if (error) {
-    return { data: null, count: null, error };
+    return { data: null, count: null, error, zodError: null };
   }
 
   const RecruitmentData = data.map((recruitment) => {
@@ -204,5 +215,5 @@ export const searchRecruitment = async (
     };
   });
 
-  return { data: RecruitmentData, count, error: null };
+  return { data: RecruitmentData, count, error: null, zodError: null };
 };
