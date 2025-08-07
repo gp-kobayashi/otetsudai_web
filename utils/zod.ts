@@ -27,9 +27,9 @@ export const profileSchema = z.object({
 export const searchSchema = z.object({
   keyword: z
     .string()
-    .min(3, "検索キーワードは3文字以上で入力してください")
     .max(50, "検索キーワードは50文字以内で入力してください")
-    .regex(/^[a-zA-Z0-9\s\u3000-〿\u3040-ゟ\u30A0-ヿ\uFF00-￯\u4E00-龯]+$/, "特殊文字は使用できません"),
+    //アルファベット、数字、ひらがな、カタカナ、漢字、スペース、全角スペース、句読点、記号を許可
+    .regex(/^[\p{Script=Latin}\p{Nd}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}\s\u3000、。・ー〜！？「」『』（）\[\]【】]+$/u, "特殊文字は使用できません"),
 });
 
    
