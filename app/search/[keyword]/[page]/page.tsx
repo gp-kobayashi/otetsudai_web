@@ -20,8 +20,11 @@ const search = async ({ params }: { params: params }) => {
     data: recruitmentList = [],
     count = 0,
     validationError,
+    error,
   } = await searchRecruitment(decodedKeyword, itemsPerPage, offset);
-
+  if (error) {
+    return <div>検索中にエラーが発生しました: {error.message}</div>;
+  }
   const totalPages = count ? Math.ceil(count / itemsPerPage) : 1;
   const hasNextPage = currentPage < totalPages;
 
@@ -33,7 +36,6 @@ const search = async ({ params }: { params: params }) => {
         recruitmentList={recruitmentList}
         validationError={validationError}
       />
-
       <Pagination
         currentPage={currentPage}
         hasNextPage={hasNextPage}
