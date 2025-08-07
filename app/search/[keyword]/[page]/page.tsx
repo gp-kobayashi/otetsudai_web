@@ -16,7 +16,7 @@ const search = async ({ params }: { params: params }) => {
   const currentPage = Number(page);
   const offset = (currentPage - 1) * itemsPerPage;
 
-  const { data: recruitmentList = [], count = 0 } = await searchRecruitment(
+  const { data: recruitmentList = [], count = 0, zodError } = await searchRecruitment(
     decodedKeyword,
     itemsPerPage,
     offset,
@@ -28,7 +28,11 @@ const search = async ({ params }: { params: params }) => {
   return (
     <div>
       <h1>&quot;{decodedKeyword}&quot;の検索結果</h1>
-      <SearchList keyword={decodedKeyword} recruitmentList={recruitmentList} />
+      <SearchList
+        keyword={decodedKeyword}
+        recruitmentList={recruitmentList}
+        zodError={zodError}
+      />
 
       <Pagination
         currentPage={currentPage}
