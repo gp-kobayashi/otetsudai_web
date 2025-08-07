@@ -16,11 +16,11 @@ const search = async ({ params }: { params: params }) => {
   const currentPage = Number(page);
   const offset = (currentPage - 1) * itemsPerPage;
 
-  const { data: recruitmentList = [], count = 0, zodError } = await searchRecruitment(
-    decodedKeyword,
-    itemsPerPage,
-    offset,
-  );
+  const {
+    data: recruitmentList = [],
+    count = 0,
+    validationError,
+  } = await searchRecruitment(decodedKeyword, itemsPerPage, offset);
 
   const totalPages = count ? Math.ceil(count / itemsPerPage) : 1;
   const hasNextPage = currentPage < totalPages;
@@ -31,7 +31,7 @@ const search = async ({ params }: { params: params }) => {
       <SearchList
         keyword={decodedKeyword}
         recruitmentList={recruitmentList}
-        zodError={zodError}
+        validationError={validationError}
       />
 
       <Pagination

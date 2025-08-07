@@ -181,7 +181,7 @@ export const searchRecruitment = async (
   data: RecruitmentWithProfile[] | null;
   count: number | null;
   error: PostgrestError | null;
-  zodError: string | null;
+  validationError: string | null;
 }> => {
   const validatedKeyword = searchSchema.safeParse({ keyword });
   if (!validatedKeyword.success) {
@@ -189,7 +189,7 @@ export const searchRecruitment = async (
       data: null,
       count: null,
       error: null,
-      zodError: validatedKeyword.error.errors[0].message,
+      validationError: validatedKeyword.error.errors[0].message,
     };
   }
   const { data, count, error } = await supabase
@@ -200,7 +200,7 @@ export const searchRecruitment = async (
     .order("created_at", { ascending: false });
 
   if (error) {
-    return { data: null, count: null, error, zodError: null };
+    return { data: null, count: null, error, validationError: null };
   }
 
   const RecruitmentData = data.map((recruitment) => {
@@ -215,5 +215,5 @@ export const searchRecruitment = async (
     };
   });
 
-  return { data: RecruitmentData, count, error: null, zodError: null };
+  return { data: RecruitmentData, count, error: null, validationError: null };
 };
