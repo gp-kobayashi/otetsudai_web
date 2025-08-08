@@ -10,14 +10,10 @@ import { formatDatetime } from "@/utils/date";
 import { searchSchema } from "@/utils/zod";
 const supabase = createClient();
 
-const formatRecruitmentWithProfile = (recruitment: Recruitment & {
-  profiles: {
-    avatar_url: string | null;
-    username: string | null;
-  };
-} ) => {
-  const avatarUrl = formatAvatarUrl(recruitment.profiles.avatar_url);
-  const userName = formatUserName(recruitment.profiles.username);
+const formatRecruitmentWithProfile = (recruitment: RecruitmentWithProfile
+ ) => {
+  const avatarUrl = formatAvatarUrl(recruitment.avatar_url);
+  const userName = formatUserName(recruitment.username);
   const created_at = formatDatetime(recruitment.created_at);
   return {
     ...recruitment,
