@@ -10,6 +10,18 @@ import { formatDatetime } from "@/utils/date";
 import { searchSchema } from "@/utils/zod";
 const supabase = createClient();
 
+const formatRecruitmentWithProfile = (recruitment: any) => {
+  const avatarUrl = formatAvatarUrl(recruitment.profiles.avatar_url);
+  const userName = formatUserName(recruitment.profiles.username);
+  const created_at = formatDatetime(recruitment.created_at);
+  return {
+    ...recruitment,
+    avatar_url: avatarUrl,
+    username: userName,
+    created_at: created_at,
+  };
+};
+
 export const getRecruitmentList = async (): Promise<
   SupabaseResponse<RecruitmentWithProfile[]>
 > => {
@@ -21,17 +33,7 @@ export const getRecruitmentList = async (): Promise<
   if (error) {
     return { data: null, error };
   }
-  const RecruitmentData = data.map((recruitment) => {
-    const avatarUrl = formatAvatarUrl(recruitment.profiles.avatar_url);
-    const userName =formatUserName(recruitment.profiles.username);
-    const created_at = formatDatetime(recruitment.created_at);
-    return {
-      ...recruitment,
-      avatar_url: avatarUrl,
-      username: userName,
-      created_at: created_at,
-    };
-  });
+  const RecruitmentData = data.map(formatRecruitmentWithProfile);
   return { data: RecruitmentData, error: null };
 };
 
@@ -52,17 +54,7 @@ export const getRecruitmentBytag = async (
   if (error) {
     return { data: null,count:null ,error };
   }
-  const RecruitmentData = data.map((recruitment) => {
-    const avatarUrl = formatAvatarUrl(recruitment.profiles.avatar_url);
-    const userName =formatUserName(recruitment.profiles.username);
-    const created_at = formatDatetime(recruitment.created_at);
-    return {
-      ...recruitment,
-      avatar_url: avatarUrl,
-      username: userName,
-      created_at: created_at,
-    };
-  });
+  const RecruitmentData = data.map(formatRecruitmentWithProfile);
   return { data:RecruitmentData,count, error: null };
 };
 
@@ -93,15 +85,7 @@ export const getRecruitmentById = async (
   if (error) {
     return { data: null, error };
   }
-  const avatarUrl = formatAvatarUrl(data.profiles.avatar_url);
-  const userName = formatUserName(data.profiles.username);
-  const created_at = formatDatetime(data.created_at);
-  const recruitmentData = {
-    ...data,
-    avatar_url: avatarUrl,
-    username: userName,
-    created_at: created_at,
-  };
+  const recruitmentData = formatRecruitmentWithProfile(data);
   return { data: recruitmentData, error: null };
 }
 
@@ -203,17 +187,7 @@ export const searchRecruitment = async (
     return { data: null, count: null, error, validationError: null };
   }
 
-  const RecruitmentData = data.map((recruitment) => {
-    const avatarUrl = formatAvatarUrl(recruitment.profiles.avatar_url);
-    const userName = formatUserName(recruitment.profiles.username);
-    const created_at = formatDatetime(recruitment.created_at);
-    return {
-      ...recruitment,
-      avatar_url: avatarUrl,
-      username: userName,
-      created_at: created_at,
-    };
-  });
+  const RecruitmentData = data.map(formatRecruitmentWithProfile);
 
   return { data: RecruitmentData, count, error: null, validationError: null };
 };
