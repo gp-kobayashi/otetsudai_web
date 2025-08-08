@@ -7,6 +7,12 @@ dayjs.extend(timezone)
 
 
 export const formatDatetime = (date: string | null) => {
-  if (!date) return "";
-  return dayjs.utc(date).tz('Asia/Tokyo').format('YYYY/MM/DD HH:mm')
+  if (!date) {
+    return ""
+  }
+  const d = dayjs.utc(date)
+  if (!d.isValid()) {
+    return ""
+  }
+  return d.tz('Asia/Tokyo').format('YYYY/MM/DD HH:mm')
 }
