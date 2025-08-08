@@ -6,7 +6,13 @@ dayjs.extend(utc)
 dayjs.extend(timezone)
 
 
-export const formatDatetime = (created_at: string | null) => {
-  if (!created_at) return "";
-  return dayjs.utc(created_at).tz('Asia/Tokyo').format('YYYY/MM/DD HH:mm')
+export const formatDatetime = (date: string | null) => {
+  if (!date) {
+    return ""
+  }
+  const d = dayjs.utc(date)
+  if (!d.isValid()) {
+    return ""
+  }
+  return d.tz('Asia/Tokyo').format('YYYY/MM/DD HH:mm')
 }
