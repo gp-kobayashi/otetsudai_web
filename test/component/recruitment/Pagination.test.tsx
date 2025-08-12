@@ -8,7 +8,7 @@ describe("Pagination", () => {
       <Pagination
         currentPage={1}
         hasNextPage={true}
-        tag={"Video"}
+        basePath={"/category/Video"}
         filterQuery={""}
       />,
     );
@@ -20,7 +20,7 @@ describe("Pagination", () => {
       <Pagination
         currentPage={2}
         hasNextPage={true}
-        tag={"Video"}
+        basePath={"/category/Video"}
         filterQuery={""}
       />,
     );
@@ -32,7 +32,7 @@ describe("Pagination", () => {
       <Pagination
         currentPage={2}
         hasNextPage={true}
-        tag={"Video"}
+        basePath={"/category/Video"}
         filterQuery={""}
       />,
     );
@@ -46,7 +46,7 @@ describe("Pagination", () => {
       <Pagination
         currentPage={3}
         hasNextPage={false}
-        tag={"Video"}
+        basePath={"/category/Video"}
         filterQuery={""}
       />,
     );
@@ -57,7 +57,7 @@ describe("Pagination", () => {
       <Pagination
         currentPage={1}
         hasNextPage={true}
-        tag={"Video"}
+        basePath={"/category/Video"}
         filterQuery={""}
       />,
     );
@@ -74,7 +74,7 @@ describe("Pagination", () => {
       <Pagination
         currentPage={0}
         hasNextPage={false}
-        tag={""}
+        basePath={""}
         filterQuery={""}
       />,
     );
