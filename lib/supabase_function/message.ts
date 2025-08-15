@@ -1,11 +1,36 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Message, SupabaseResponse } from "@/types/supabase/types";
+import type { MessageWithProfile, SupabaseResponse } from "@/types/supabase/types";
+import { fetchProfile, formatAvatarUrl, formatUserName } from "./profile";
+import { formatDatetime } from "@/utils/date";
 
+const formatMessageWithProfile = async (message: MessageWithProfile) => {
+  const sender = await fetchProfile(message.sender_id);
+  const receiver = await fetchProfile(message.receiver_id);
+  const senderAvatarUrl = formatAvatarUrl(sender.data?.avatar_url);
+  const receiverAvatarUrl = formatAvatarUrl(receiver.data?.avatar_url);
+  const senderUsername = formatUserName(sender.data?.username);
+  const receiverUsername = formatUserName(receiver.data?.username);
+  const created_at = formatDatetime(message.created_at);
+  return {
+    ...message,
+    sender_avatar_url: senderAvatarUrl,
+    receiver_avatar_url: receiverAvatarUrl,
+    sender_username: senderUsername,
+    receiver_username: receiverUsername,
+    created_at: created_at,
+  };
+};
+
+const messageWithProfilesQuery = `
+  *,
+  sender:profiles!messages_sender_id_fkey(username, avatar_url),
+  receiver:profiles!messages_receiver_id_fkey(username, avatar_url)
+`;
 
 export const getReceivedMessages = async (
   supabase: SupabaseClient,
-  userId: string
-): Promise<Message[]> => {
+  userId: string,
+): Promise<MessageWithProfile[]> => {
   const { data, error } = await supabase
     .from("messages")
     .select("*")
@@ -16,14 +41,13 @@ export const getReceivedMessages = async (
     console.error("Error fetching received messages:", error);
     return [];
   }
-
-  return data;
+  return Promise.all(data.map(formatMessageWithProfile));
 };
 
 export const getSentMessages = async (
   supabase: SupabaseClient,
-  userId: string
-): Promise<Message[]> => {
+  userId: string,
+): Promise<MessageWithProfile[]> => {
   const { data, error } = await supabase
     .from("messages")
     .select("*")
@@ -35,5 +59,5 @@ export const getSentMessages = async (
     return [];
   }
 
-  return data;
+  return Promise.all(data.map(formatMessageWithProfile));
 };
