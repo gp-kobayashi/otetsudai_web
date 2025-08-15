@@ -1,9 +1,11 @@
-import { createClient } from "@/utils/supabase/client";
-import type { Message } from "@/types/supabase/types";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Message, SupabaseResponse } from "@/types/supabase/types";
 
-const supabase = createClient();
 
-export const getReceivedMessages = async (userId: string): Promise<Message[]> => {
+export const getReceivedMessages = async (
+  supabase: SupabaseClient,
+  userId: string
+): Promise<Message[]> => {
   const { data, error } = await supabase
     .from("messages")
     .select("*")
@@ -14,19 +16,24 @@ export const getReceivedMessages = async (userId: string): Promise<Message[]> =>
     console.error("Error fetching received messages:", error);
     return [];
   }
+
   return data;
 };
 
-export const getSentMessages = async (userId: string): Promise<Message[]> => {
-    const { data, error } = await supabase
-        .from("messages")
-        .select("*")
-        .eq("sender_id", userId)
-        .order("created_at", { ascending: false });
-    
-    if (error) {
-        console.error("Error fetching sent messages:", error);
-        return [];
-    }
-    return data;
-    }
+export const getSentMessages = async (
+  supabase: SupabaseClient,
+  userId: string
+): Promise<Message[]> => {
+  const { data, error } = await supabase
+    .from("messages")
+    .select("*")
+    .eq("sender_id", userId)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching sent messages:", error);
+    return [];
+  }
+
+  return data;
+};
