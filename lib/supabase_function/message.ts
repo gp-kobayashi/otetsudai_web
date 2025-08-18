@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { MessageWithProfile, SupabaseResponse } from "@/types/supabase/types";
+import type { Message, MessageWithProfile, SupabaseResponse } from "@/types/supabase/types";
 import { fetchProfile, formatAvatarUrl, formatUserName } from "./profile";
 import { formatDatetime } from "@/utils/date";
 
@@ -21,11 +21,6 @@ const formatMessageWithProfile = async (message: MessageWithProfile) => {
   };
 };
 
-const messageWithProfilesQuery = `
-  *,
-  sender:profiles!messages_sender_id_fkey(username, avatar_url),
-  receiver:profiles!messages_receiver_id_fkey(username, avatar_url)
-`;
 
 export const getReceivedMessages = async (
   supabase: SupabaseClient,
@@ -61,3 +56,28 @@ export const getSentMessages = async (
 
   return Promise.all(data.map(formatMessageWithProfile));
 };
+
+export const addSendMessage = async (
+  supabase: SupabaseClient,
+  senderId: string,
+  receiverId: string,
+  title: string,
+  text: string,
+): Promise<SupabaseResponse<Message>> => {
+  const { data, error } = await supabase
+    .from("messages")
+    .insert({
+      sender_id: senderId,
+      receiver_id: receiverId,
+      title: title,
+      text: text,
+    })
+    .select("*")
+    .single();
+
+  if (error) {
+    return { data: null, error };
+  }
+
+  return { data , error: null };
+}
