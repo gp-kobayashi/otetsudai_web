@@ -2,6 +2,7 @@ import styles from "./navigation.module.css";
 import Link from "next/link";
 import { User } from "@supabase/supabase-js";
 import SearchForm from "./search/SearchForm";
+import { CiMail } from "react-icons/ci";
 type Props = {
   user: User | null;
   username?: string | null;
@@ -37,6 +38,11 @@ const NavigationUI = (props: Props) => {
             ログイン
           </Link>
         )}
+        <div>
+          <Link href="/message/inbox" className={styles.message_link}>
+            <CiMail className={styles.message_icon} />
+          </Link>
+        </div>
       </div>
     </div>
   );
