@@ -44,3 +44,15 @@
   font-weight: bold;
   margin: 15px 15px;
 }
+
+.message_link {
+  text-decoration: none;
+  color: gray;
+  font-weight: bold;
+  margin: 15px 15px;
+}
+.message_icon {
+  font-size: 24px;
+  color: gray;
+  margin: 15px 0;
+}

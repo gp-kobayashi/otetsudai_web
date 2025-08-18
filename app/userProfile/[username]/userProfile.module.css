@@ -17,6 +17,20 @@
 .profile_link:hover {
   background-color: #4a8dc2;
 }
+
+.message_link {
+  width: 40%;
+  margin: 0 auto;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  font-size: 15px;
+  padding: 5px;
+  text-decoration: none;
+}
+.message_link:hover {
+  background-color: #0056b3;
+}
 .username {
   border-top: 5px solid #ccc;
 }
