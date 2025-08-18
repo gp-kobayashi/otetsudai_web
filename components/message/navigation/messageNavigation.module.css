@@ -1,0 +1,26 @@
+.navigation_container {
+  display: flex;
+  margin-bottom: 20px;
+}
+.navigation_item {
+  padding: 10px 40px;
+  margin: 0 10px;
+  cursor: pointer;
+  border-bottom: 2px solid black;
+  text-decoration: none;
+  color: black;
+}
+.navigation_item:hover {
+  border-bottom: 3px solid blue;
+}
+
+.send_button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 5px;
+  text-decoration: none;
+}
+.send_button:hover {
+  background-color: #0056b3;
+}
