@@ -9,6 +9,8 @@ import UserRecruitmentList from "@/components/profiles/user/UserRecruitmentList"
 import { getRecruitmentByUserList } from "@/lib/supabase_function/recruitment";
 import { createClient } from "@/utils/supabase/server";
 import { GoLink } from "react-icons/go";
+import Link from "next/link";
+
 interface Params {
   params: Promise<{ username: string }>;
 }
@@ -36,10 +38,17 @@ const UserProfile = async ({ params }: Params) => {
   return (
     <div>
       <div className={styles.user_profile_container}>
-        {checkUsername && (
+        {checkUsername ? (
           <a href="/account" className={styles.profile_link}>
             プロフィールを編集する
           </a>
+        ) : (
+          <Link
+            href={`/message/send/${profileData.username}`}
+            className={styles.message_link}
+          >
+            {profileData.username}にメッセージを送る
+          </Link>
         )}
         <h2 className={styles.username}>{profileData.username}</h2>
         <p className={styles.website}>
