@@ -13,7 +13,10 @@
 .navigation_item:hover {
   border-bottom: 3px solid blue;
 }
-
+.active {
+  border-bottom: 3px solid blue;
+  font-weight: bold;
+}
 .send_button {
   padding: 10px 20px;
   background-color: #007bff;
