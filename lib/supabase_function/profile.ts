@@ -61,23 +61,3 @@ export const formatAvatarUrl = (avatarUrl: string | null | undefined) => {
 export const formatUserName = (username: string | null | undefined) => {
   return username ? username : "名無し";
 }
-
-export const getProfilesByIds = async (
-  ids: string[],
-): Promise<SupabaseResponse<Profile[]>> => {
-  if (!ids || ids.length === 0) {
-    return { data: [], error: null };
-  }
-
-  const { data, error } = await supabase
-    .from("profiles")
-    .select("*")
-    .in("id", ids);
-
-  if (error) {
-    console.error("Error fetching profiles by IDs:", error);
-    return { data: null, error };
-  }
-
-  return { data, error: null };
-};
