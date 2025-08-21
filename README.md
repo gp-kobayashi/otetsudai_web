@@ -73,6 +73,32 @@ EmailとPasswordを入力しSIGN UPボタンをクリックすると入力した
 Confirm your mailをクリックすると登録が完了し
 [localhost:3000/account](http://localhost:3000/account)へ移動し各種プロフィールの設定が可能に。
 
-# supabase-groupchat1
+### spabaseCliの設定
 
-# supabase-groupchat1
+このプロジェクトではSQLのマイグレーションファイルを作成しそれをsupabaseへプッシュします
+
+1.まずはSupabase CLIにログイン
+`npx supabase login`
+
+2.supabaseのプロジェクトとリンク
+`npx supabase link --project-ref <プロジェクトのRef ID>`
+
+3.新規マイグレーションファイルを作成
+`npx supabase migration new ファイル名`
+
+4.リモートに適用
+`npx supabase db push`
+
+#### 他のコマンド
+
+既存のDB構成をマイグレーションに取り込み
+`npx supabase db pull`
+
+履歴の確認
+`npx supabase migration list`
+
+履歴のクリーン
+`npx supabase migration repair タイムスタンプ --status reverted --yes`
+
+履歴に追加
+`npx supabase migration repair タイムスタンプ --status applied --yes`
