@@ -75,3 +75,9 @@
 .form_btn:hover {
     background-color: #005bb5;
 }
+
+.error_message {
+  color: #d9534f;
+  font-size: 0.875rem;
+  margin-top: -0.25rem;
+}

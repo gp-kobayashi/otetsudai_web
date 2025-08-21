@@ -1,10 +1,12 @@
-"use client";
+'use client';
 
-import { addSendMessage } from "@/lib/supabase_function/message";
-import { createClient } from "@/utils/supabase/client";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import styles from "./sendForm.module.css";
+import { addSendMessage } from '@/lib/supabase_function/message';
+import { createClient } from '@/utils/supabase/client';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import styles from './sendForm.module.css';
+import { messageSchema } from '@/utils/zod';
+import type { z } from 'zod';
 
 type Props = {
   receiverId: string;
@@ -12,17 +14,35 @@ type Props = {
   receivUsername: string;
 };
 
+type FormErrors = {
+  title?: string[];
+  text?: string[];
+};
+
 const SendForm = (props: Props) => {
   const { receiverId, senderId, receivUsername } = props;
   const router = useRouter();
   const supabase = createClient();
-  const [title, setTitle] = useState("");
-  const [text, setText] = useState("");
+  const [title, setTitle] = useState('');
+  const [text, setText] = useState('');
+  const [errors, setErrors] = useState<FormErrors>({});
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setErrors({});
 
-    if (!title || !text) {
-      alert("タイトルとメッセージ内容は必須です。");
+    const validationResult = messageSchema.safeParse({ title, text });
+
+    if (!validationResult.success) {
+      const newErrors: FormErrors = {};
+      for (const issue of validationResult.error.issues) {
+        if (issue.path[0] === 'title') {
+          newErrors.title = [...(newErrors.title || []), issue.message];
+        } else if (issue.path[0] === 'text') {
+          newErrors.text = [...(newErrors.text || []), issue.message];
+        }
+      }
+      setErrors(newErrors);
       return;
     }
 
@@ -31,16 +51,16 @@ const SendForm = (props: Props) => {
         supabase,
         senderId,
         receiverId,
-        title,
-        text,
+        validationResult.data.title,
+        validationResult.data.text,
       );
       if (error) {
         throw error;
       }
-      alert("メッセージが送信されました。");
+      alert('メッセージが送信されました。');
       router.push(`/message/sent`);
     } catch {
-      alert("メッセージの送信に失敗しました。");
+      alert('メッセージの送信に失敗しました。');
     }
   };
 
@@ -60,6 +80,9 @@ const SendForm = (props: Props) => {
           onChange={(e) => setTitle(e.target.value)}
           className={styles.form_input}
         />
+        {errors.title && (
+          <p className={styles.error_message}>{errors.title.join(', ')}</p>
+        )}
         <label htmlFor="text" className={styles.form_label}>
           内容
         </label>
@@ -70,6 +93,9 @@ const SendForm = (props: Props) => {
           onChange={(e) => setText(e.target.value)}
           className={styles.form_textarea}
         />
+        {errors.text && (
+          <p className={styles.error_message}>{errors.text.join(', ')}</p>
+        )}
         <button type="submit" className={styles.form_btn}>
           送信
         </button>
