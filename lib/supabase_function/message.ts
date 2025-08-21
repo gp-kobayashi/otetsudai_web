@@ -1,26 +1,21 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Message, MessageWithProfile, SupabaseResponse } from "@/types/supabase/types";
-import { fetchProfile, formatAvatarUrl, formatUserName } from "./profile";
+import type { Message, MessageWithProfile, Profile, SupabaseResponse } from "@/types/supabase/types";
+import { formatAvatarUrl, formatUserName } from "./profile";
 import { formatDatetime } from "@/utils/date";
 
-const formatMessageWithProfile = async (message: MessageWithProfile) => {
-  const sender = await fetchProfile(message.sender_id);
-  const receiver = await fetchProfile(message.receiver_id);
-  const senderAvatarUrl = formatAvatarUrl(sender.data?.avatar_url);
-  const receiverAvatarUrl = formatAvatarUrl(receiver.data?.avatar_url);
-  const senderUsername = formatUserName(sender.data?.username);
-  const receiverUsername = formatUserName(receiver.data?.username);
-  const created_at = formatDatetime(message.created_at);
+const formatMessageWithProfile = (
+  message: Message & { sender: Profile | null; receiver: Profile | null }
+): MessageWithProfile => {
+  const { sender, receiver, ...restOfMessage } = message;
   return {
-    ...message,
-    sender_avatar_url: senderAvatarUrl,
-    receiver_avatar_url: receiverAvatarUrl,
-    sender_username: senderUsername,
-    receiver_username: receiverUsername,
-    created_at: created_at,
+    ...restOfMessage,
+    sender_avatar_url: formatAvatarUrl(sender?.avatar_url),
+    receiver_avatar_url: formatAvatarUrl(receiver?.avatar_url),
+    sender_username: formatUserName(sender?.username),
+    receiver_username: formatUserName(receiver?.username),
+    created_at: formatDatetime(message.created_at),
   };
 };
-
 
 export const getReceivedMessages = async (
   supabase: SupabaseClient,
@@ -28,7 +23,7 @@ export const getReceivedMessages = async (
 ): Promise<MessageWithProfile[]> => {
   const { data, error } = await supabase
     .from("messages")
-    .select("*")
+    .select("*, sender:profiles!sender_id(*)")
     .eq("receiver_id", userId)
     .order("created_at", { ascending: false });
 
@@ -36,7 +31,9 @@ export const getReceivedMessages = async (
     console.error("Error fetching received messages:", error);
     return [];
   }
-  return Promise.all(data.map(formatMessageWithProfile));
+  
+  const messages = data as unknown as (Message & { sender: Profile | null; receiver: Profile | null })[];
+  return messages.map(formatMessageWithProfile);
 };
 
 export const getSentMessages = async (
@@ -45,7 +42,7 @@ export const getSentMessages = async (
 ): Promise<MessageWithProfile[]> => {
   const { data, error } = await supabase
     .from("messages")
-    .select("*")
+    .select("*,  receiver:profiles!receiver_id(*)")
     .eq("sender_id", userId)
     .order("created_at", { ascending: false });
 
@@ -54,7 +51,8 @@ export const getSentMessages = async (
     return [];
   }
 
-  return Promise.all(data.map(formatMessageWithProfile));
+  const messages = data as unknown as (Message & { sender: Profile | null; receiver: Profile | null })[];
+  return messages.map(formatMessageWithProfile);
 };
 
 export const addSendMessage = async (
@@ -80,4 +78,4 @@ export const addSendMessage = async (
   }
 
   return { data , error: null };
-}
+};
