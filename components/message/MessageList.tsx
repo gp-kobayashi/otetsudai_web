@@ -9,11 +9,11 @@ import Link from "next/link";
 
 interface Props {
   messages: MessageWithProfile[];
-  boxType: string;
+  isInbox: boolean;
 }
 
 const MessageList = (props: Props) => {
-  const { messages, boxType } = props;
+  const { messages, isInbox } = props;
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
   if (!messages || messages.length === 0) {
@@ -27,7 +27,7 @@ const MessageList = (props: Props) => {
   return (
     <div className={styles.message_list}>
       {messages.map((message) => {
-        const userLabel = boxType ? "送信者" : "受信者";
+        const userLabel = isInbox ? "送信者" : "受信者";
 
         return (
           <div

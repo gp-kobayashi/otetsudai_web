@@ -32,11 +32,11 @@ const MessagePage = async ({ params }: props) => {
   } else {
     return redirect("/message/inbox");
   }
-
+  const isInbox = box === "inbox";
   return (
     <div>
       <MessageNavigation />
-      <MessageList messages={messages} boxType={box} />
+      <MessageList messages={messages} isInbox={isInbox} />
     </div>
   );
 };
