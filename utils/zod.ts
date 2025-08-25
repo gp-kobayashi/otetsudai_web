@@ -32,4 +32,15 @@ export const searchSchema = z.object({
     .regex(/^[\p{Script=Latin}\p{Nd}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}\s\u3000、。・ー〜！？「」『』（）\[\]【】]+$/u, "特殊文字は使用できません"),
 });
 
-   
+export const messageSchema = z.object({
+  title: z
+    .string()
+    .trim()
+    .min(1, "タイトルは1文字以上で入力してください")
+    .max(100, "タイトルは100文字以内で入力してください"),
+  text: z
+    .string()
+    .trim()
+    .min(1, "メッセージ本文は1文字以上で入力してください")
+    .max(500, "メッセージ本文は500文字以内で入力してください"),
+});
