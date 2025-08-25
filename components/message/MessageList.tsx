@@ -28,15 +28,7 @@ const MessageList = (props: Props) => {
     <div className={styles.message_list}>
       {messages.map((message) => {
         const isInbox = boxType === "inbox";
-        const user = isInbox
-          ? {
-              avatar: message.sender_avatar_url,
-              name: message.sender_username,
-            }
-          : {
-              avatar: message.receiver_avatar_url,
-              name: message.receiver_username,
-            };
+
         const userLabel = isInbox ? "送信者" : "受信者";
 
         return (
@@ -48,8 +40,8 @@ const MessageList = (props: Props) => {
             <div className={styles.message_container}>
               <div className={styles.avatar_container}>
                 <Image
-                  src={user.avatar || DEFAULT_AVATAR_URL}
-                  alt={`${user.name}'s Avatar`}
+                  src={message.avatar_url || DEFAULT_AVATAR_URL}
+                  alt={`${message.username}'s Avatar`}
                   width={50}
                   height={50}
                   className={styles.avatar}
@@ -61,11 +53,11 @@ const MessageList = (props: Props) => {
                 <div className={styles.meta_container}>
                   <p
                     className={styles.username}
-                  >{`${userLabel}: ${user.name}`}</p>
+                  >{`${userLabel}: ${message.username}`}</p>
                   <div className={styles.meta_right}>
                     <p className={styles.timestamp}>{message.created_at}</p>
                     <Link
-                      href={`/message/send/${user.name}`}
+                      href={`/message/send/${message.username}`}
                       className={styles.reply_button}
                     >
                       返信

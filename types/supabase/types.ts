@@ -22,11 +22,9 @@ export type CommentWithProfile =
 
 export type MessageWithProfile =
   Message & {
-    sender_avatar_url: string;
-    receiver_avatar_url: string;
+  avatar_url: string;
   } & {
-    sender_username: string | null;
-    receiver_username: string | null;
+  username: string;
   };
   
 export type SupabaseResponse<T> = {
