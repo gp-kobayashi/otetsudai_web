@@ -81,18 +81,18 @@ Confirm your mailをクリックすると登録が完了し
 `npx supabase login --no-install`
 
 2.supabaseのプロジェクトとリンク
-`npx supabase link --project-ref <プロジェクトのRef ID>`
+`npx supabase link --project-ref <プロジェクトのRef ID>　--no-install`
 
 3.新規マイグレーションファイルを作成
-`npx supabase migration new ファイル名`
+`npx supabase migration new ファイル名　--no-install`
 
 4.リモートに適用
-`npx supabase db push`
+`npx supabase db push　--no-install`
 
 #### 他のコマンド
 
 既存のDB構成をマイグレーションに取り込み
-`npx supabase db pull`
+`npx supabase db pull　--no-install`
 
 履歴の確認
 `npx supabase migration list`
