@@ -33,15 +33,8 @@ const SendForm = (props: Props) => {
     const validationResult = messageSchema.safeParse({ title, text });
 
     if (!validationResult.success) {
-      const newErrors: FormErrors = {};
-      for (const issue of validationResult.error.issues) {
-        if (issue.path[0] === "title") {
-          newErrors.title = [...(newErrors.title || []), issue.message];
-        } else if (issue.path[0] === "text") {
-          newErrors.text = [...(newErrors.text || []), issue.message];
-        }
-      }
-      setErrors(newErrors);
+      const { fieldErrors } = validationResult.error.flatten();
+      setErrors({ title: fieldErrors.title, text: fieldErrors.text });
       return;
     }
 
