@@ -78,7 +78,7 @@ Confirm your mailをクリックすると登録が完了し
 このプロジェクトではSQLのマイグレーションファイルを作成しそれをsupabaseへプッシュします
 
 1.まずはSupabase CLIにログイン
-`npx supabase login`
+`npx supabase login --no-install`
 
 2.supabaseのプロジェクトとリンク
 `npx supabase link --project-ref <プロジェクトのRef ID>`
@@ -96,9 +96,3 @@ Confirm your mailをクリックすると登録が完了し
 
 履歴の確認
 `npx supabase migration list`
-
-履歴のクリーン
-`npx supabase migration repair タイムスタンプ --status reverted --yes`
-
-履歴に追加
-`npx supabase migration repair タイムスタンプ --status applied --yes`
