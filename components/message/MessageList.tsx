@@ -27,9 +27,7 @@ const MessageList = (props: Props) => {
   return (
     <div className={styles.message_list}>
       {messages.map((message) => {
-        const isInbox = boxType === "inbox";
-
-        const userLabel = isInbox ? "送信者" : "受信者";
+        const userLabel = boxType ? "送信者" : "受信者";
 
         return (
           <div
