@@ -9,10 +9,8 @@ const formatMessageWithProfile = (
   const { sender, receiver, ...restOfMessage } = message;
   return {
     ...restOfMessage,
-    sender_avatar_url: formatAvatarUrl(sender?.avatar_url),
-    receiver_avatar_url: formatAvatarUrl(receiver?.avatar_url),
-    sender_username: formatUserName(sender?.username),
-    receiver_username: formatUserName(receiver?.username),
+    avatar_url: formatAvatarUrl(sender?.avatar_url||receiver?.avatar_url),
+    username: formatUserName(sender?.username || receiver?.username),
     created_at: formatDatetime(message.created_at),
   };
 };
