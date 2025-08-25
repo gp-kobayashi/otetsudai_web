@@ -44,11 +44,7 @@ const SendMessagePage = async ({ params }: props) => {
 
   return (
     <div>
-      <SendForm
-        receiverId={receiverId}
-        senderId={user.id}
-        receivUsername={username}
-      />
+      <SendForm receiverId={receiverId} receivUsername={username} />
     </div>
   );
 };

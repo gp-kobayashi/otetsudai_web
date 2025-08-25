@@ -57,11 +57,17 @@ export const getSentMessages = async (
 
 export const addSendMessage = async (
   supabase: SupabaseClient,
-  senderId: string,
   receiverId: string,
   title: string,
   text: string,
 ): Promise<SupabaseResponse<Message>> => {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return { data: null, error: new Error("User not authenticated") };
+  }
+  const senderId = user.id;
   const { data, error } = await supabase
     .from("messages")
     .insert({
@@ -77,5 +83,5 @@ export const addSendMessage = async (
     return { data: null, error };
   }
 
-  return { data , error: null };
+  return { data, error: null };
 };

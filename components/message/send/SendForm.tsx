@@ -9,7 +9,6 @@ import { messageSchema } from "@/utils/zod";
 
 type Props = {
   receiverId: string;
-  senderId: string;
   receivUsername: string;
 };
 
@@ -19,7 +18,7 @@ type FormErrors = {
 };
 
 const SendForm = (props: Props) => {
-  const { receiverId, senderId, receivUsername } = props;
+  const { receiverId, receivUsername } = props;
   const router = useRouter();
   const supabase = createClient();
   const [title, setTitle] = useState("");
@@ -41,7 +40,6 @@ const SendForm = (props: Props) => {
     try {
       const { error } = await addSendMessage(
         supabase,
-        senderId,
         receiverId,
         validationResult.data.title,
         validationResult.data.text,
