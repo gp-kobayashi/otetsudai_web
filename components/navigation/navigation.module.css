@@ -19,6 +19,7 @@
 }
 
 .recruitment_link {
+  min-width: 100px;
   text-decoration: none;
   color: #007bff;
   font-weight: bold;
