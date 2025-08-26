@@ -14,46 +14,50 @@
 
 .navigation_link {
   display: flex;
+  align-items: center;
+  gap: 25px;
   text-decoration: none;
   margin: 0 30px;
 }
 
 .recruitment_link {
-  min-width: 100px;
+  min-width: fit-content;
   text-decoration: none;
   color: #007bff;
   font-weight: bold;
-  margin: 15px 15px;
+  margin: 0;
 }
 .help_link {
   text-decoration: none;
   color: coral;
   font-weight: bold;
-  margin: 15px 30px;
+  margin: 0;
 }
 
 .account_link {
   text-decoration: none;
   color: gray;
   font-weight: bold;
-  margin: 15px 30px;
+  margin: 0;
 }
 
 .login_link {
   text-decoration: none;
   color: #007bff;
   font-weight: bold;
-  margin: 15px 15px;
+  margin: 0;
 }
 
 .message_link {
   text-decoration: none;
   color: gray;
   font-weight: bold;
-  margin: 15px 15px;
+  margin: 0;
+  display: flex;
+  align-items: center;
 }
 .message_icon {
   font-size: 24px;
   color: gray;
-  margin: 15px 0;
+  margin: 0;
 }
