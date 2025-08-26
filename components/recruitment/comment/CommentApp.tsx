@@ -62,7 +62,9 @@ const CommentApp = (props: Props) => {
                 value={text}
               ></textarea>
             </div>
-            <button type="submit">投稿</button>
+            <button className={styles.app_button} type="submit">
+              投稿
+            </button>
           </form>
         ) : (
           <div className={styles.attention}>
