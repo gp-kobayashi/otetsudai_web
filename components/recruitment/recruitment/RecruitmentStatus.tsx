@@ -21,11 +21,16 @@ const RecruitmentStatus = (props: Props) => {
     onStatusChange(newStatus);
   };
   return (
-    <div>
+    <div className={styles.status_container}>
       <label htmlFor="status-select" className={styles.status_label}>
         ステータス変更
       </label>
-      <select id="status-select" value={status} onChange={handleChange}>
+      <select
+        id="status-select"
+        value={status}
+        onChange={handleChange}
+        className={styles.status_select}
+      >
         {STATUS_VALUES.map((statusOption) => (
           <option key={statusOption} value={statusOption}>
             {statusOption}

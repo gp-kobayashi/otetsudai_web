@@ -3,6 +3,7 @@ import EditModal from "./EditModal";
 import { updateRecruitment } from "@/lib/supabase_function/recruitment";
 import { RecruitmentWithProfile } from "@/types/supabase/types";
 import { useState } from "react";
+import styles from "./edit.module.css";
 type props = {
   recruitmentData: RecruitmentWithProfile;
   onUpdate: (data: { title: string; explanation: string }) => void;
@@ -26,7 +27,9 @@ const EditButton = (props: props) => {
   };
   return (
     <div>
-      <button onClick={() => setIsEditOpen(true)}>内容を編集する</button>
+      <button className={styles.edit_btn} onClick={() => setIsEditOpen(true)}>
+        内容を編集する
+      </button>
       <div>
         {isEditOpen && (
           <EditModal

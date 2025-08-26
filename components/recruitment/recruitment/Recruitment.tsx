@@ -31,7 +31,7 @@ const Recruitment = (props: Props) => {
     <div className={styles.recruitment_container}>
       <div className={styles.info_status}>{currentStatus}</div>
       {userId === data.user_id && (
-        <div>
+        <div className={styles.btn_container}>
           <RecruitmentStatus
             id={id}
             onStatusChange={setCurrentStatus}
