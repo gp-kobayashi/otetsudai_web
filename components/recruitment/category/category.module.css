@@ -18,3 +18,23 @@
   color: white;
   border-color: #0070f3;
 }
+
+.tag_container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 30px 0;
+}
+.tag {
+  margin: 0.5rem;
+  padding: 0.5rem;
+  border: 2px solid #ccc;
+  border-radius: 1rem;
+  text-decoration: none;
+  color: #333;
+  background-color: #f0f0f0;
+  cursor: pointer;
+}
+.tag:hover {
+  background-color: #e0e0e0;
+}
