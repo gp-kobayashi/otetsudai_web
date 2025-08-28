@@ -39,6 +39,23 @@
   color: white;
   padding: 5px;
 }
+.list_text {
+  font-size: 14px;
+  color: dimgray;
+  margin-top: 5px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  text-overflow: ellipsis;
+  margin: 10px 0;
+  border-bottom: 3px solid #ccc;
+  padding-bottom: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  line-height: 1.4;
+  height: 2.8em;
+}
 .delete_button {
   z-index: 100;
   width: fit-content;

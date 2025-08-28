@@ -41,7 +41,7 @@ const UserRecruitmentList = (props: props) => {
               <div className={styles.list_title}>{recruitment.title}</div>
               <div className={styles.info_status}>{recruitment.status}</div>
             </div>
-            <div>{recruitment.explanation}</div>
+            <div className={styles.list_text}>{recruitment.explanation}</div>
             <div className={styles.list_item}>
               <div className={styles.list_tag}>{recruitment.tag}</div>
               {checkUsername && (
