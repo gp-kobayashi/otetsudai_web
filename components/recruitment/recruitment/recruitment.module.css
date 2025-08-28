@@ -29,6 +29,7 @@
 }
 .recruitment_user {
   display: flex;
+  align-items: center;
 }
 .tag {
   border-radius: 5px;
@@ -43,7 +44,7 @@
 .info_icon {
   width: 20px;
   height: 20px;
-  margin: 20px 0 0 15px;
+  margin-left: 15px;
 }
 .status_label {
   padding: 5px;

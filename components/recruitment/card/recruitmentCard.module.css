@@ -11,6 +11,7 @@
 }
 .recruitment_info {
   display: flex;
+  align-items: center;
 }
 
 .info_item {
