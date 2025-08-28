@@ -5,6 +5,7 @@ import styles from "./category.module.css";
 import StatusFilter from "@/components/recruitment/category/StatusFilter";
 import Pagination from "@/components/util/Pagination";
 import RecruitmentCard from "@/components/recruitment/card/RecruitmentCard";
+import TagLinks from "@/components/recruitment/category/TagLinks";
 
 type PageProps = {
   params: Promise<{
@@ -52,7 +53,9 @@ const categoryPage = async ({ params, searchParams }: PageProps) => {
   return (
     <div>
       <div className={styles.category_header}>
+        <TagLinks />
         <h3>カテゴリー：{tag}</h3>
+
         <StatusFilter tag={tag} currentStatus={status} />
         <h4>ページ：{page}</h4>
       </div>
