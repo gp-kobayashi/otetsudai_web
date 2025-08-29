@@ -36,6 +36,13 @@
   -webkit-line-clamp: 2;
   text-overflow: ellipsis;
 }
+.list_title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  text-overflow: ellipsis;
+}
 .info_status {
   width: fit-content;
   margin: 5px 10px;
