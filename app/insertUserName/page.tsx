@@ -1,7 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import InsertUserNameApp from "@/components/profiles/username/InsertUserNameApp";
-import styles from "./inserUserName.module.css";
+import styles from "./insertUserName.module.css";
 
 const InsertUserName = async () => {
   const supabase = await createClient();

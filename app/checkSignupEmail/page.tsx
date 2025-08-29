@@ -1,4 +1,4 @@
-import styles from "./checkSingup.module.css";
+import styles from "./checkSignup.module.css";
 
 const CheckSignupEmail = () => {
   return (

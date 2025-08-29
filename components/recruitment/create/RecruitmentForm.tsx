@@ -43,7 +43,7 @@ const RecruitmentForm = ({ user_id }: Props) => {
         </label>
         <input
           id="title"
-          className={styles.from_input}
+          className={styles.form_input}
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
@@ -55,7 +55,7 @@ const RecruitmentForm = ({ user_id }: Props) => {
         </label>
         <textarea
           id="explanation"
-          className={styles.from_textarea}
+          className={styles.form_textarea}
           value={explanation}
           onChange={(e) => setExplanation(e.target.value)}
         />

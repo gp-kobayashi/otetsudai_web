@@ -2,7 +2,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  hight: 50px;
+  height: 50px;
   background-color: #f8f9fa;
 }
 .logo {
@@ -16,43 +16,32 @@
   display: flex;
   align-items: center;
   gap: 25px;
-  text-decoration: none;
   margin: 0 30px;
+}
+
+.navigation_link a {
+  text-decoration: none;
+  font-weight: bold;
 }
 
 .recruitment_link {
   min-width: fit-content;
-  text-decoration: none;
   color: #007bff;
-  font-weight: bold;
-  margin: 0;
 }
 .help_link {
-  text-decoration: none;
   color: coral;
-  font-weight: bold;
-  margin: 0;
 }
 
 .account_link {
-  text-decoration: none;
   color: gray;
-  font-weight: bold;
-  margin: 0;
 }
 
 .login_link {
-  text-decoration: none;
   color: #007bff;
-  font-weight: bold;
-  margin: 0;
 }
 
 .message_link {
-  text-decoration: none;
   color: gray;
-  font-weight: bold;
-  margin: 0;
   display: flex;
   align-items: center;
 }

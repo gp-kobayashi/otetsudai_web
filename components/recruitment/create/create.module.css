@@ -13,12 +13,12 @@
   margin-bottom: 5px;
   font-weight: bold;
 }
-.from_input {
+.form_input {
   width: 60%;
   height: 20px;
 }
 
-.from_textarea {
+.form_textarea {
   width: 60%;
   height: 100px;
 }
